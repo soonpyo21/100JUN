@@ -1,24 +1,34 @@
 import java.util.Scanner;
 
 // 문제
-// 아래 예제와 같이 새싹을 출력하시오.
+// 두 정수 A와 B가 주어졌을 때, A와 B를 비교하는 프로그램을 작성하시오.
 //
 // 입력
-// 입력은 없다.
+// 첫째 줄에 A와 B가 주어진다. A와 B는 공백 한 칸으로 구분되어져 있다.
 //
 // 출력
-// 새싹을 출력한다.
+// 첫째 줄에 다음 세 가지 중 하나를 출력한다.
+//
+// A가 B보다 큰 경우에는 '>'를 출력한다.
+// A가 B보다 작은 경우에는 '<'를 출력한다.
+// A와 B가 같은 경우에는 '=='를 출력한다.
 
 public class Application {
 
     public static void main(String[] args) {
 
-        System.out.println("         ,r\'\"7");
-        System.out.println("r`-_   ,'  ,/");
-        System.out.println(" \\. \". L_r'");
-        System.out.println("   `~\\/");
-        System.out.println("      |");
-        System.out.println("      |");
+        Scanner sc = new Scanner(System.in);
+
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        if(a < b) {
+            System.out.println("<");
+        } else if (a > b) {
+            System.out.println(">");
+        } else if (a == b) {
+            System.out.println("==");
+        }
 
     }
 }
