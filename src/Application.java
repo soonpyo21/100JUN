@@ -8,7 +8,7 @@ import java.io.*;
 // 각 테스트 케이스는 한 줄로 이루어져 있으며, 각 줄에 A와 B가 주어진다. (0 < A, B < 10)
 //
 // 출력
-// 각 테스트 케이스마다 "Case #x: "를 출력한 다음, A+B를 출력한다. 테스트 케이스 번호는 1부터 시작한다.
+// 각 테스트 케이스마다 "Case #x: A + B = C" 형식으로 출력한다. x는 테스트 케이스 번호이고 1부터 시작하며, C는 A+B이다.
 
 public class Application {
 
@@ -24,7 +24,7 @@ public class Application {
             String[] num =  input.split(" ");
             int result = Integer.parseInt(num[0]) + Integer.parseInt(num[1]);
             int count = i + 1;
-            bw.append("Case #" + count + ": " + result + "\n");
+            bw.append("Case #" + count + ": " + num[0] + " + " + num[1] +  " = " + result + "\n");
         }
         bw.flush();
         br.close();
