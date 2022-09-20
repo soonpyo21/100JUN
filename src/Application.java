@@ -17,16 +17,13 @@ public class Application {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int T = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
+        String star = "*";
 
-        for(int i = 0; i < T; i++) {
-            String input = br.readLine();
-            String[] num =  input.split(" ");
-            int result = Integer.parseInt(num[0]) + Integer.parseInt(num[1]);
-            int count = i + 1;
-            bw.append("Case #" + count + ": " + num[0] + " + " + num[1] +  " = " + result + "\n");
+        for(int i = 0; i < N; i++) {
+            bw.write(star + "\n");
+            star = star + "*";
         }
-        bw.flush();
         br.close();
         bw.close();
     }
