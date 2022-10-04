@@ -1,16 +1,18 @@
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 // 문제
-// 두 자연수 A와 B가 있을 때, A%B는 A를 B로 나눈 나머지 이다. 예를 들어, 7, 14, 27, 38을 3으로 나눈 나머지는 1, 2, 0, 2이다.
-// 수 10개를 입력받은 뒤, 이를 42로 나눈 나머지를 구한다. 그 다음 서로 다른 값이 몇 개 있는지 출력하는 프로그램을 작성하시오.
+// 세준이는 기말고사를 망쳤다. 세준이는 점수를 조작해서 집에 가져가기로 했다. 일단 세준이는 자기 점수 중에 최댓값을 골랐다.
+// 이 값을 M이라고 한다. 그리고 나서 모든 점수를 점수/M*100으로 고쳤다.
+// 예를 들어, 세준이의 최고점이 70이고, 수학점수가 50이었으면 수학점수는 50/70*100이 되어 71.43점이 된다.
+// 세준이의 성적을 위의 방법대로 새로 계산했을 때, 새로운 평균을 구하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄부터 열번째 줄 까지 숫자가 한 줄에 하나씩 주어진다. 이 숫자는 1,000보다 작거나 같고, 음이 아닌 정수이다.
+// 첫째 줄에 시험 본 과목의 개수 N이 주어진다. 이 값은 1000보다 작거나 같다. 둘째 줄에 세준이의 현재 성적이 주어진다.
+// 이 값은 100보다 작거나 같은 음이 아닌 정수이고, 적어도 하나의 값은 0보다 크다.
 //
 // 출력
-// 첫째 줄에, 42로 나누었을 때, 서로 다른 나머지가 몇 개 있는지 출력한다.
+// 첫째 줄에 새로운 평균을 출력한다. 실제 정답과 출력값의 절대오차 또는 상대오차가 10-2 이하이면 정답이다.
 
 public class Application {
 
@@ -19,38 +21,23 @@ public class Application {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int[] remainder = new int[10];
-        for(int i = 0; i < 10; i ++) {
-            int num = Integer.parseInt(br.readLine());
-            remainder[i] = num % 42;
-        }
+        int[] grades = new int[Integer.parseInt(br.readLine())];
+        String[] num = br.readLine().split(" ");
 
-        Set set = new HashSet<>();
-        for(int i = 0; i < remainder.length; i ++) {
-            set.add(remainder[i]);
+        for(int i = 0; i < num.length; i ++) {
+            grades[i] = Integer.parseInt(num[i]);
         }
-        bw.write(set.size() + "");
+        Arrays.sort(grades);
+        int max = grades[grades.length -1];
+
+        double average = 0;
+        for(int i = 0; i < grades.length; i ++) {
+            average += (grades[i]+0.0)/max*100;
+        }
+        bw.write(average/grades.length + " ");
 
         br.close();
         bw.close();
     }
 }
 
-// 모범답안
-
-//import java.io.*;
-//import java.util.HashSet;
-//
-//public class Main {
-//    public static void main(String args[]) throws IOException {
-//        InputStream in = System.in;
-//        InputStreamReader reader = new InputStreamReader(in);
-//        BufferedReader br = new BufferedReader(reader);
-//        HashSet<Integer> remainderSet = new HashSet<>();
-//        for(int i=0; i<10; i++){
-//            int input = Integer.valueOf(br.readLine());
-//            remainderSet.add(input%42);
-//        }
-//        System.out.println(remainderSet.size());
-//    }
-//}
