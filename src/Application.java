@@ -1,18 +1,17 @@
 import java.io.*;
-import java.util.Arrays;
 
 // 문제
-// 세준이는 기말고사를 망쳤다. 세준이는 점수를 조작해서 집에 가져가기로 했다. 일단 세준이는 자기 점수 중에 최댓값을 골랐다.
-// 이 값을 M이라고 한다. 그리고 나서 모든 점수를 점수/M*100으로 고쳤다.
-// 예를 들어, 세준이의 최고점이 70이고, 수학점수가 50이었으면 수학점수는 50/70*100이 되어 71.43점이 된다.
-// 세준이의 성적을 위의 방법대로 새로 계산했을 때, 새로운 평균을 구하는 프로그램을 작성하시오.
+// "OOXXOXXOOO"와 같은 OX퀴즈의 결과가 있다. O는 문제를 맞은 것이고, X는 문제를 틀린 것이다.
+// 문제를 맞은 경우 그 문제의 점수는 그 문제까지 연속된 O의 개수가 된다. 예를 들어, 10번 문제의 점수는 3이 된다.
+// "OOXXOXXOOO"의 점수는 1+2+0+0+1+0+0+1+2+3 = 10점이다.
+// OX퀴즈의 결과가 주어졌을 때, 점수를 구하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄에 시험 본 과목의 개수 N이 주어진다. 이 값은 1000보다 작거나 같다. 둘째 줄에 세준이의 현재 성적이 주어진다.
-// 이 값은 100보다 작거나 같은 음이 아닌 정수이고, 적어도 하나의 값은 0보다 크다.
+// 첫째 줄에 테스트 케이스의 개수가 주어진다. 각 테스트 케이스는 한 줄로 이루어져 있고,
+// 길이가 0보다 크고 80보다 작은 문자열이 주어진다. 문자열은 O와 X만으로 이루어져 있다.
 //
 // 출력
-// 첫째 줄에 새로운 평균을 출력한다. 실제 정답과 출력값의 절대오차 또는 상대오차가 10-2 이하이면 정답이다.
+// 각 테스트 케이스마다 점수를 출력한다.
 
 public class Application {
 
@@ -21,20 +20,28 @@ public class Application {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int[] grades = new int[Integer.parseInt(br.readLine())];
-        String[] num = br.readLine().split(" ");
+        int num = Integer.parseInt(br.readLine());
+        String[] testCase = new String[num];
+        int[] scores = new int[num];
 
-        for(int i = 0; i < num.length; i ++) {
-            grades[i] = Integer.parseInt(num[i]);
+        for(int i = 0; i < testCase.length; i ++) {
+            testCase[i] = br.readLine();
+            int score = 0;
+            int cnt = 0;
+            for(int j = 0; j < testCase[i].length(); j ++) {
+                if(testCase[i].charAt(j) == 'O') {
+                    cnt ++;
+                    score += cnt;
+                } else {
+                    cnt = 0;
+                }
+            }
+            scores[i] = score;
         }
-        Arrays.sort(grades);
-        int max = grades[grades.length -1];
 
-        double average = 0;
-        for(int i = 0; i < grades.length; i ++) {
-            average += (grades[i]+0.0)/max*100;
+        for(int i = 0; i < scores.length; i ++) {
+            bw.write(scores[i] + "\n");
         }
-        bw.write(average/grades.length + " ");
 
         br.close();
         bw.close();
