@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 // 문제
@@ -20,7 +19,7 @@ import java.util.*;
 // 출력
 // 10,000보다 작거나 같은 셀프 넘버를 한 줄에 하나씩 증가하는 순서로 출력한다.
 
-public class Test {
+public class Main {
 
     public static void main(String[] args) {
 
@@ -56,24 +55,24 @@ public class Test {
 
     private static int sum(int num) {
 
-        System.out.println("전달인자 : " + num);
-
         int length = String.valueOf(num).length();
 
         int[] numbers = new int[length];
         for(int i = 0; i < length; i ++) {
-            System.out.println("변경전 : " + (int) String.valueOf(num).charAt(i));
-            numbers[i] = (int) String.valueOf(num).charAt(i);
-            System.out.println("요소 : " + numbers[i]);
+            numbers[i] = Character.getNumericValue(String.valueOf(num).charAt(i));
         }
 
-        int result = 0;
+        int result = num;
         for(int n : numbers) {
             result += n;
         }
 
-        System.out.println("result : " + result);
         return result;
     }
 }
 
+// 어제 막혔던 이유와 해결
+// 1. char 형을 int로 강제 형변환하니 ascii code로 변환됨
+// - Character.getNumericValue를 이용해 인수가 나타내는 데이터 자체를 int로 변환
+// 2. sum 함수의 반환값에 전달 인자로 넘어온 num을 더해주지 않아 리턴값 오류
+// - result에 num + 각 자릿수를 알맞게 더해준 후 리턴
