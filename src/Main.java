@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // 문제
 // 어떤 양의 정수 X의 각 자리가 등차수열을 이룬다면, 그 수를 한수라고 한다. 등차수열은 연속된 두 개의 수의 차이가 일정한 수열을 말한다.
@@ -22,41 +24,59 @@ public class Main {
         int first = 0;
         int second = 0;
 
-        for(int i = 0; i < String.valueOf(N).length(); i ++) {
-            if(i == 0) {
-                first = Character.getNumericValue(String.valueOf(N).charAt(i));
+        List<Integer> hansu = new ArrayList<>();
+        for(int i = 1; i < String.valueOf(N).length(); i ++) {
+
+            if(i < 10) {
+                hansu.add(i);
             } else {
-                if(i + 1 < String.valueOf(N).length()) {
-                    first = Character.getNumericValue(String.valueOf(N).charAt(i));
-                    second = Character.getNumericValue(String.valueOf(N).charAt(i+1));
+                int[] nums = new int[String.valueOf(N).length()];
+                for(int j = 0; j < nums.length; j ++) {
+                    nums[i] = Character.getNumericValue(String.valueOf(N).charAt(j));
+                }
 
-                    int distance = 0;
-                    int saved = 0;
-
-                    if(first > second) {
-                        distance = first - second;
-                    } else if(second > first) {
-                        distance = second = first;
-                    }
-
-                    if(saved != distance) {
-                        break;
-                    }
-
-                    saved = distance;
+                if(isSameDiff(nums)) {
+                    hansu.add(i);
                 }
             }
-
-
-
-
-
-
         }
+
+        for(int i = 0; i < hansu.size(); i ++) {
+            System.out.println("한수 : " + hansu.get(i));
+        }
+
+        bw.write(hansu.size() + "");
 
         br.close();
         bw.close();
+    }
 
+    private static boolean isSameDiff(int[] nums) {
+
+        int su = 0;
+        int saved = 0;
+        boolean result = false;
+        for(int i = 0; i < nums.length; i ++) {
+            if(i + 1 < nums.length) {
+                if (nums[i] > nums[i + 1]) {
+                    su = nums[i] - nums[i + 1];
+                } else {
+                    su = nums[i + 1] - nums[i];
+                }
+            }
+
+            if(i == 0) {
+                saved = su;
+            } else {
+                if(saved == su) {
+                    result = true;
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
 
     }
 
