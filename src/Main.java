@@ -21,30 +21,18 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-        int first = 0;
-        int second = 0;
-
         List<Integer> hansu = new ArrayList<>();
-        for(int i = 1; i < String.valueOf(N).length(); i ++) {
+        for(int i = 1; i <= N; i ++) {
 
-            if(i < 10) {
+            int[] nums = new int[String.valueOf(i).length()];
+            for(int j = 0; j < nums.length; j ++) {
+                nums[j] = Character.getNumericValue(String.valueOf(i).charAt(j));
+            }
+
+            if(isSameDiff(nums)) {
                 hansu.add(i);
-            } else {
-                int[] nums = new int[String.valueOf(N).length()];
-                for(int j = 0; j < nums.length; j ++) {
-                    nums[i] = Character.getNumericValue(String.valueOf(N).charAt(j));
-                }
-
-                if(isSameDiff(nums)) {
-                    hansu.add(i);
-                }
             }
         }
-
-        for(int i = 0; i < hansu.size(); i ++) {
-            System.out.println("한수 : " + hansu.get(i));
-        }
-
         bw.write(hansu.size() + "");
 
         br.close();
@@ -58,15 +46,12 @@ public class Main {
         boolean result = false;
         for(int i = 0; i < nums.length; i ++) {
             if(i + 1 < nums.length) {
-                if (nums[i] > nums[i + 1]) {
-                    su = nums[i] - nums[i + 1];
-                } else {
-                    su = nums[i + 1] - nums[i];
-                }
+                su = nums[i] - nums[i + 1];
             }
 
             if(i == 0) {
                 saved = su;
+                result = true;
             } else {
                 if(saved == su) {
                     result = true;
@@ -81,3 +66,14 @@ public class Main {
     }
 
 }
+
+// 막혔던 이유와 해결
+//
+// 1. 문제 자체가 이해안됨
+// 처음 풀 때 입력 받는 정수 N이 등차 수열인 경우 N보다 작은 한수를 가져오려고 했다.
+// 왜 그랬는지는 나도 모르겠다
+//
+// 1. 등차 수열 개념 자체가 이해 안됨
+// 공차를 구할 때 양수와 음수 상관없이 절대값으로 가져오는 줄 알았다.
+// 뭔가 미심쩍은 부분이 있어 구글링으로 개념을 다시 잡았다.
+
