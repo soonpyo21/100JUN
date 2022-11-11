@@ -1,4 +1,4 @@
-    import java.io.*;
+import java.io.*;
 
 // 문제
 // N개의 숫자가 공백 없이 쓰여있다. 이 숫자를 모두 합해서 출력하는 프로그램을 작성하시오.
@@ -16,18 +16,12 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int[] arr = new int[Integer.parseInt(br.readLine())];
-
-        for(int i = 0; i < arr.length; i ++) {
-            arr[i] = Integer.parseInt(br.readLine());
-        }
+        int N = Integer.parseInt(br.readLine());
 
         int sum = 0;
-        for(int i = 0; i < arr.length; i++) {
-            int len = String.valueOf(arr[i]).length();
-            for(int j = 0; j < len; j++) {
-                sum += Character.getNumericValue(String.valueOf(arr[i]).charAt(j));
-            }
+        for(int i = 0; i < N; i ++) {
+            int num = Character.getNumericValue(br.read());
+            sum += num;
         }
 
         bw.write(sum + "");
