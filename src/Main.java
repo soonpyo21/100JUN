@@ -1,13 +1,13 @@
     import java.io.*;
 
 // 문제
-// 알파벳 소문자, 대문자, 숫자 0-9중 하나가 주어졌을 때, 주어진 글자의 아스키 코드값을 출력하는 프로그램을 작성하시오.
+// N개의 숫자가 공백 없이 쓰여있다. 이 숫자를 모두 합해서 출력하는 프로그램을 작성하시오.
 //
 // 입력
-// 알파벳 소문자, 대문자, 숫자 0-9 중 하나가 첫째 줄에 주어진다.
+// 첫째 줄에 숫자의 개수 N (1 ≤ N ≤ 100)이 주어진다. 둘째 줄에 숫자 N개가 공백없이 주어진다.
 //
 // 출력
-// 입력으로 주어진 글자의 아스키 코드 값을 출력한다.
+// 입력으로 주어진 숫자 N개의 합을 출력한다.
 
 public class Main {
 
@@ -16,9 +16,21 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int input = (int) br.readLine().charAt(0);
-        bw.write(input + "");
+        int[] arr = new int[Integer.parseInt(br.readLine())];
 
+        for(int i = 0; i < arr.length; i ++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
+
+        int sum = 0;
+        for(int i = 0; i < arr.length; i++) {
+            int len = String.valueOf(arr[i]).length();
+            for(int j = 0; j < len; j++) {
+                sum += Character.getNumericValue(String.valueOf(arr[i]).charAt(j));
+            }
+        }
+
+        bw.write(sum + "");
         br.close();
         bw.close();
     }
