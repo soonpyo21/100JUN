@@ -1,13 +1,15 @@
 import java.io.*;
 
 // 문제
-// N개의 숫자가 공백 없이 쓰여있다. 이 숫자를 모두 합해서 출력하는 프로그램을 작성하시오.
+// 알파벳 소문자로만 이루어진 단어 S가 주어진다. 각각의 알파벳에 대해서, 단어에 포함되어 있는 경우에는 처음 등장하는 위치를,
+// 포함되어 있지 않은 경우에는 -1을 출력하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄에 숫자의 개수 N (1 ≤ N ≤ 100)이 주어진다. 둘째 줄에 숫자 N개가 공백없이 주어진다.
+// 첫째 줄에 단어 S가 주어진다. 단어의 길이는 100을 넘지 않으며, 알파벳 소문자로만 이루어져 있다.
 //
 // 출력
-// 입력으로 주어진 숫자 N개의 합을 출력한다.
+// 각각의 알파벳에 대해서, a가 처음 등장하는 위치, b가 처음 등장하는 위치, ... z가 처음 등장하는 위치를 공백으로 구분해서 출력한다.
+// 만약, 어떤 알파벳이 단어에 포함되어 있지 않다면 -1을 출력한다. 단어의 첫 번째 글자는 0번째 위치이고, 두 번째 글자는 1번째 위치이다.
 
 public class Main {
 
@@ -16,19 +18,40 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int N = Integer.parseInt(br.readLine());
+        String S = br.readLine();
 
-        int sum = 0;
-        for(int i = 0; i < N; i ++) {
-            int num = Character.getNumericValue(br.read());
-            sum += num;
+        int num = 0;
+        for(int i = 0; i < 26; i ++) {
+            num = 97 + i;
+            char ch = (char) num;
+
+            if(S.indexOf(String.valueOf(ch)) >= 0) {
+                System.out.print(S.indexOf(String.valueOf(ch)) + " ");
+            } else {
+                System.out.print("-1 ");
+            }
         }
-
-        bw.write(sum + "");
         br.close();
         bw.close();
     }
-
 }
 
-
+// 다른 답안
+//public class Main {
+//    public static void main(String[] args) throws IOException {
+//        char[] S;
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        S = br.readLine().toCharArray();
+//        for (int i = 'a'; i <= 'z'; i++) {
+//            for (int j = 0; j < S.length; j++) {
+//                if (S[j] == i) {
+//                    System.out.print(j + " ");
+//                    break;
+//                }
+//                if (j == S.length - 1) {
+//                    System.out.print(-1 + " ");
+//                }
+//            }
+//        }
+//    }
+//}
