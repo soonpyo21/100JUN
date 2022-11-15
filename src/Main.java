@@ -1,16 +1,17 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 // 문제
-// 문자열 S를 입력받은 후에, 각 문자를 R번 반복해 새 문자열 P를 만든 후 출력하는 프로그램을 작성하시오.
-// 즉, 첫 번째 문자를 R번 반복하고, 두 번째 문자를 R번 반복하는 식으로 P를 만들면 된다. S에는 QR Code "alphanumeric" 문자만 들어있다.
-// QR Code "alphanumeric" 문자는 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\$%*+-./: 이다.
+// 알파벳 대소문자로 된 단어가 주어지면, 이 단어에서 가장 많이 사용된 알파벳이 무엇인지 알아내는 프로그램을 작성하시오.
+// 단, 대문자와 소문자를 구분하지 않는다.
 //
 // 입력
-// 첫째 줄에 테스트 케이스의 개수 T(1 ≤ T ≤ 1,000)가 주어진다. 각 테스트 케이스는 반복 횟수 R(1 ≤ R ≤ 8),
-// 문자열 S가 공백으로 구분되어 주어진다. S의 길이는 적어도 1이며, 20글자를 넘지 않는다.
+// 첫째 줄에 알파벳 대소문자로 이루어진 단어가 주어진다. 주어지는 단어의 길이는 1,000,000을 넘지 않는다.
 //
 // 출력
-// 각 테스트 케이스에 대해 P를 출력한다.
+// 첫째 줄에 이 단어에서 가장 많이 사용된 알파벳을 대문자로 출력한다.
+// 단, 가장 많이 사용된 알파벳이 여러 개 존재하는 경우에는 ?를 출력한다.
 
 public class Main {
 
@@ -19,17 +20,42 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int T = Integer.parseInt(br.readLine());
+        String word = br.readLine().toUpperCase();
+        char[] words = word.toCharArray();
+        Map<String, Integer> map = new HashMap<>();
 
-        for(int i = 0; i < T; i ++) {
-            String P = "";
-            String[] S = br.readLine().split(" ");
-            for(int j = 0; j < S[1].length(); j++) {
-                for(int k = 0; k < Integer.parseInt(S[0]); k ++) {
-                    P += S[1].charAt(j);
+        for(int i = 0; i < words.length; i ++) {
+            int cnt = 0;
+            for(int j = 0; j < words.length; j ++) {
+                if(words[i] == words[j]) {
+                    cnt++;
                 }
             }
-            bw.write(P + "\n");
+            map.put(String.valueOf(words[i]), cnt);
+        }
+
+        int max = 0;
+        String key = "";
+        for(int i = 0; i < words.length; i ++) {
+            if(map.get(String.valueOf(words[i])) > max) {
+                max = map.get(String.valueOf(words[i]));
+                key = String.valueOf(words[i]);
+            }
+        }
+
+        int overlap = 0;
+        for(int i = 0; i < words.length; i ++) {
+            if(!key.equals(String.valueOf(words[i]))) {
+                if(max == map.get(String.valueOf(words[i]))) {
+                    overlap ++;
+                }
+            }
+        }
+
+        if(overlap == 0) {
+            bw.write(key);
+        } else {
+            bw.write("?");
         }
 
         br.close();
