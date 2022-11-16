@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 // 문제
 // 알파벳 대소문자로 된 단어가 주어지면, 이 단어에서 가장 많이 사용된 알파벳이 무엇인지 알아내는 프로그램을 작성하시오.
@@ -20,10 +18,11 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        String word = br.readLine().toUpperCase();
-        char[] words = word.toCharArray();
-        Map<String, Integer> map = new HashMap<>();
+        char[] words = br.readLine().toUpperCase().toCharArray();
 
+        int max = 0;
+        String key = "";
+        int overlap = 0;
         for(int i = 0; i < words.length; i ++) {
             int cnt = 0;
             for(int j = 0; j < words.length; j ++) {
@@ -31,22 +30,12 @@ public class Main {
                     cnt++;
                 }
             }
-            map.put(String.valueOf(words[i]), cnt);
-        }
 
-        int max = 0;
-        String key = "";
-        for(int i = 0; i < words.length; i ++) {
-            if(map.get(String.valueOf(words[i])) > max) {
-                max = map.get(String.valueOf(words[i]));
+            if(cnt > max) {
+                max = cnt;
                 key = String.valueOf(words[i]);
-            }
-        }
-
-        int overlap = 0;
-        for(int i = 0; i < words.length; i ++) {
-            if(!key.equals(String.valueOf(words[i]))) {
-                if(max == map.get(String.valueOf(words[i]))) {
+            } else if (cnt == max) {
+                if(!key.equals(String.valueOf(words[i]))) {
                     overlap ++;
                 }
             }
