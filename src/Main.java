@@ -25,8 +25,10 @@ public class Main {
         int[] arr = new int[2];
 
         for(int i = 0; i < 2; i ++) {
-            for(int j = 2; j < 1; j --) {
-               arr[i] = Character.getNumericValue(numbers[i].charAt(j));
+            int digit = 100;
+            for(int j = 2; j > -1; j --) {
+               arr[i] += Character.getNumericValue(numbers[i].charAt(j)) * digit;
+               digit = digit / 10;
             }
         }
 
