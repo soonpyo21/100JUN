@@ -23,6 +23,32 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+        String input = br.readLine();
+
+        int time = 0;
+        for(int i = 0; i < input.length(); i ++) {
+            int su = (int) input.charAt(i) - 65;
+            if(su <= 2) {
+                time += 3;
+            } else if (su <= 5) {
+                time += 4;
+            } else if (su <= 8) {
+                time += 5;
+            } else if (su <= 11) {
+                time += 6;
+            } else if (su <= 14) {
+                time += 7;
+            } else if (su <= 18) {
+                time += 8;
+            } else if (su <= 21) {
+                time += 9;
+            } else if (su <= 25) {
+                time += 10;
+            }
+        }
+
+        bw.write(time + "");
+
         br.close();
         bw.close();
     }
