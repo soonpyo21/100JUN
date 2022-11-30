@@ -1,20 +1,18 @@
 import java.io.*;
 
 // 문제
-// 상근이의 할머니는 아래 그림과 같이 오래된 다이얼 전화기를 사용한다.
-// 전화를 걸고 싶은 번호가 있다면, 숫자를 하나를 누른 다음에 금속 핀이 있는 곳 까지 시계방향으로 돌려야 한다.
-// 숫자를 하나 누르면 다이얼이 처음 위치로 돌아가고, 다음 숫자를 누르려면 다이얼을 처음 위치에서 다시 돌려야 한다.
-// 숫자 1을 걸려면 총 2초가 필요하다. 1보다 큰 수를 거는데 걸리는 시간은 이보다 더 걸리며,
-// 한 칸 옆에 있는 숫자를 걸기 위해선 1초씩 더 걸린다.
-// 상근이의 할머니는 전화 번호를 각 숫자에 해당하는 문자로 외운다. 즉, 어떤 단어를 걸 때, 각 알파벳에 해당하는 숫자를 걸면 된다.
-// 예를 들어, UNUCIC는 868242와 같다.
-// 할머니가 외운 단어가 주어졌을 때, 이 전화를 걸기 위해서 필요한 최소 시간을 구하는 프로그램을 작성하시오.
+// 예전에는 운영체제에서 크로아티아 알파벳을 입력할 수가 없었다. 따라서, 다음과 같이 크로아티아 알파벳을 변경해서 입력했다.
+// 예를 들어, ljes=njak은 크로아티아 알파벳 6개(lj, e, š, nj, a, k)로 이루어져 있다. 단어가 주어졌을 때,
+// 몇 개의 크로아티아 알파벳으로 이루어져 있는지 출력한다.
+// dž는 무조건 하나의 알파벳으로 쓰이고, d와 ž가 분리된 것으로 보지 않는다. lj와 nj도 마찬가지이다.
+// 위 목록에 없는 알파벳은 한 글자씩 센다.
 //
 // 입력
-// 첫째 줄에 알파벳 대문자로 이루어진 단어가 주어진다. 단어의 길이는 2보다 크거나 같고, 15보다 작거나 같다.
+// 첫째 줄에 최대 100글자의 단어가 주어진다. 알파벳 소문자와 '-', '='로만 이루어져 있다.
+// 단어는 크로아티아 알파벳으로 이루어져 있다. 문제 설명의 표에 나와있는 알파벳은 변경된 형태로 입력된다.
 //
 // 출력
-// 첫째 줄에 다이얼을 걸기 위해서 필요한 최소 시간을 출력한다.
+// 입력으로 주어진 단어가 몇 개의 크로아티아 알파벳으로 이루어져 있는지 출력한다.
 
 public class Main {
 
@@ -23,31 +21,38 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        String input = br.readLine();
+        char[] input = br.readLine().toCharArray();
 
-        int time = 0;
-        for(int i = 0; i < input.length(); i ++) {
-            int su = (int) input.charAt(i) - 65;
-            if(su <= 2) {
-                time += 3;
-            } else if (su <= 5) {
-                time += 4;
-            } else if (su <= 8) {
-                time += 5;
-            } else if (su <= 11) {
-                time += 6;
-            } else if (su <= 14) {
-                time += 7;
-            } else if (su <= 18) {
-                time += 8;
-            } else if (su <= 21) {
-                time += 9;
-            } else if (su <= 25) {
-                time += 10;
+        int length = input.length;
+
+        for(int i = 0; i < input.length; i ++) {
+            if(input[i] == '-' || input[i] == '=') {
+                length --;
             }
+
+            if(i != input.length - 1) {
+                if(input[i] == 'd') {
+                    if(input[i+1] == 'z') {
+                        length --;
+                    }
+                }
+
+                if(input[i] == 'l') {
+                    if(input[i+1] == 'j') {
+                        length --;
+                    }
+                }
+
+                if(input[i] == 'n') {
+                    if(input[i+1] == 'j') {
+                        length --;
+                    }
+                }
+            }
+
         }
 
-        bw.write(time + "");
+        bw.write(length + "");
 
         br.close();
         bw.close();
