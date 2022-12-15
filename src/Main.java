@@ -21,38 +21,18 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        char[] input = br.readLine().toCharArray();
+        String input = br.readLine();
 
-        int length = input.length;
+        input.replaceAll("c=", "0");
+        input.replaceAll("c-", "0");
+        input.replaceAll("dz=", "0");
+        input.replaceAll("d-", "0");
+        input.replaceAll("lj", "0");
+        input.replaceAll("nj", "0");
+        input.replaceAll("s=", "0");
+        input.replaceAll("z=", "0");
 
-        for(int i = 0; i < input.length; i ++) {
-            if(input[i] == '-' || input[i] == '=') {
-                length --;
-            }
-
-            if(i != input.length - 1) {
-                if(input[i] == 'd') {
-                    if(input[i+1] == 'z') {
-                        length --;
-                    }
-                }
-
-                if(input[i] == 'l') {
-                    if(input[i+1] == 'j') {
-                        length --;
-                    }
-                }
-
-                if(input[i] == 'n') {
-                    if(input[i+1] == 'j') {
-                        length --;
-                    }
-                }
-            }
-
-        }
-
-        bw.write(length + "");
+        bw.write(input.length() + "");
 
         br.close();
         bw.close();
