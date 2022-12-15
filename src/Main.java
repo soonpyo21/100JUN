@@ -23,14 +23,14 @@ public class Main {
 
         String input = br.readLine();
 
-        input.replaceAll("c=", "0");
-        input.replaceAll("c-", "0");
-        input.replaceAll("dz=", "0");
-        input.replaceAll("d-", "0");
-        input.replaceAll("lj", "0");
-        input.replaceAll("nj", "0");
-        input.replaceAll("s=", "0");
-        input.replaceAll("z=", "0");
+        input = input.replaceAll("c=", "0");
+        input = input.replaceAll("c-", "0");
+        input = input.replaceAll("dz=", "0");
+        input = input.replaceAll("d-", "0");
+        input = input.replaceAll("lj", "0");
+        input = input.replaceAll("nj", "0");
+        input = input.replaceAll("s=", "0");
+        input = input.replaceAll("z=", "0");
 
         bw.write(input.length() + "");
 
