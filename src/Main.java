@@ -27,13 +27,11 @@ public class Main {
 
         for(int i = 0; i < N; i ++) {
             char[] word = br.readLine().toCharArray();
-            int uniqueCnt = 0;
+            int uniqueCnt = 1;
             Set<String> uniqueWordSet = new HashSet<>();
 
             for(int j = 0; j < word.length; j ++) {
-                if(j == 0) {
-                    uniqueCnt ++;
-                } else {
+                if(word.length != 1) {
                     if(j != word.length-1) {
                         if(word[j] != word[j+1]) {
                             uniqueCnt ++;
@@ -44,6 +42,7 @@ public class Main {
                         }
                     }
                 }
+                System.out.println("]]]" + uniqueCnt);
                 uniqueWordSet.add(String.valueOf(word[j]));
             }
 
