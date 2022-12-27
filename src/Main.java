@@ -36,13 +36,8 @@ public class Main {
                         if(word[j] != word[j+1]) {
                             uniqueCnt ++;
                         }
-                    } else {
-                        if(word[j] != word[j-1]) {
-                            uniqueCnt ++;
-                        }
                     }
                 }
-                System.out.println("]]]" + uniqueCnt);
                 uniqueWordSet.add(String.valueOf(word[j]));
             }
 
