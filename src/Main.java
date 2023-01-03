@@ -1,6 +1,5 @@
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Scanner;
 
 // 문제
 // 어떠한 수 N이 1이 될 때까지 다음의 두 과정 중 하나를 반복적으로 선택하여 수행하려 한다. 단, 두번째 연산은 N이 K로 나누어 떨어질 때만 선택할 수 있다.
@@ -20,26 +19,27 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        Scanner sc = new Scanner(System.in);
 
-        String[] input = br.readLine().split(" ");
-        int N = Integer.parseInt(input[0]);
-        int K = Integer.parseInt(input[1]);
-        int cnt = 0;
+        // N, K를 공백을 기준으로 구분하여 입력 받기
+        int N = sc.nextInt();
+        int K = sc.nextInt();
+        int result = 0;
 
-        while(N != 1) {
-            if(N % K != 0) {
-                N = N - 1;
-                cnt ++;
-            } else {
-                N = N / K;
-                cnt ++;
-            }
+        while(true) {
+            // N이 K로 나누어 떨어지는 수가 될 때까지 빼기
+            int target = (N/K) * K;
+            result += (N - target);
+            N = target;
+            // N이 K보다 작을 때, (더 이상 나눌 수 없을 때) 반복문 탈출
+            if(N < K)  break;
+            // K로 나누기
+            result += 1;
+            N /= K;
         }
+        // 마지막으로 남은 수에 대하여 1씩 빼기
+        result += (N-1);
+        System.out.println(result);
 
-        bw.write(cnt + " ");
-        br.close();
-        bw.close();
     }
 }
