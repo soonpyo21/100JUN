@@ -23,23 +23,18 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         
         String[] input = br.readLine().split(" ");
-        int fixedCost = Integer.parseInt(input[0]);
-        int variableCost = Integer.parseInt(input[1]);
-        int price = Integer.parseInt(input[2]);
-        long cnt = 0;
+        double fixedCost = Integer.parseInt(input[0]);
+        double variableCost = Integer.parseInt(input[1]);
+        double price = Integer.parseInt(input[2]);
+        double cnt = 0;
         
-        while(true) {
-            cnt ++;
-            if(fixedCost + (variableCost * cnt) < price * cnt) {
-                break;
-            }
-            if(cnt > 2100000000) {
-                cnt = -1;
-                break;
-            }
+        if(variableCost < price) {
+            cnt = fixedCost / (price - variableCost) + 1;
+        } else {
+            cnt = -1;
         }
         
-        bw.write(cnt + "");
+        bw.write((long) cnt + "");
         br.close();
         bw.close();
     }
