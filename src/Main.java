@@ -24,21 +24,10 @@ public class Main {
         long B = Integer.parseInt(arr[1]);
         long V = Integer.parseInt(arr[2]);
         
-        long meter = 0;
-        long day = 0;
+        long day = (V - B) / (A - B);
         
-        while(true) {
+        if((V - B) % (A - B) != 0) day ++;
             
-            meter += A;
-            day ++;
-            
-            if(meter >= V) {
-                break;
-            }
-            
-            meter -= B;
-        }
-
         bw.write(day + "");
         br.close();
         bw.close();
