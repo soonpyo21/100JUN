@@ -2,17 +2,17 @@ import java.io.*;
 import java.util.Scanner;
 
 // 문제
-// 평소 반상회에 참석하는 것을 좋아하는 주희는 이번 기회에 부녀회장이 되고 싶어 각 층의 사람들을 불러 모아 반상회를 주최하려고 한다.
-// 이 아파트에 거주를 하려면 조건이 있는데, 
-// “a층의 b호에 살려면 자신의 아래(a-1)층의 1호부터 b호까지 사람들의 수의 합만큼 사람들을 데려와 살아야 한다” 는 계약 조항을 꼭 지키고 들어와야 한다.
-// 아파트에 비어있는 집은 없고 모든 거주민들이 이 계약 조건을 지키고 왔다고 가정했을 때, 주어지는 양의 정수 k와 n에 대해 k층에 n호에는 몇 명이 살고 있는지 출력하라. 
-// 단, 아파트에는 0층부터 있고 각층에는 1호부터 있으며, 0층의 i호에는 i명이 산다.
+// 상근이는 요즘 설탕공장에서 설탕을 배달하고 있다. 상근이는 지금 사탕가게에 설탕을 정확하게 N킬로그램을 배달해야 한다. 
+// 설탕공장에서 만드는 설탕은 봉지에 담겨져 있다. 봉지는 3킬로그램 봉지와 5킬로그램 봉지가 있다.
+// 상근이는 귀찮기 때문에, 최대한 적은 봉지를 들고 가려고 한다. 예를 들어, 18킬로그램 설탕을 배달해야 할 때, 3킬로그램 봉지 6개를 가져가도 되지만, 
+// 5킬로그램 3개와 3킬로그램 1개를 배달하면, 더 적은 개수의 봉지를 배달할 수 있다.
+// 상근이가 설탕을 정확하게 N킬로그램 배달해야 할 때, 봉지 몇 개를 가져가면 되는지 그 수를 구하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫 번째 줄에 Test case의 수 T가 주어진다. 그리고 각각의 케이스마다 입력으로 첫 번째 줄에 정수 k, 두 번째 줄에 정수 n이 주어진다
+// 첫째 줄에 N이 주어진다. (3 ≤ N ≤ 5000)
 //
 // 출력
-// 각각의 Test case에 대해서 해당 집에 거주민 수를 출력하라.
+// 상근이가 배달하는 봉지의 최소 개수를 출력한다. 만약, 정확하게 N킬로그램을 만들 수 없다면 -1을 출력한다.
 
 public class Main {
 
@@ -21,28 +21,33 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int T = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
+        int bag = 0;
         
-        // 아파트 생성
-        int[][] apt = new int[15][15];
-        
-        for(int i = 0; i < 15; i ++) {
-            apt[0][i] = i;    // 아파트의 0층의 i호에는 i명이 존재
-            apt[i][1] = 1;    // 아파트의 i층의 1호에는 1명이 존재
-        }
-        
-        for(int i = 1; i < 15; i ++) {                    // 1층부터 14층까지
-            for(int j = 2; j < 15; j ++) {                // 2호부터 14호까지
-                // 아파트 i층의 j호의 세대원 =
-                // i-1층의 j호의 세대원 + i층의 j-1호의 세대원
-                apt[i][j] = apt[i][j-1] + apt[i-1][j];    
+        while(true) {
+            if(N == 0) {
+                break;
+            } else {
+                if(N % 5 == 0) {
+                    N = N - 5;
+                    bag ++;
+                } else if (N % 3 == 0) {
+                    N = N - 3;
+                    bag ++;
+                } else if (N >= 5) {
+                    N = N - 5;
+                    bag ++;
+                } else if (N >= 3) {
+                    N = N - 3;
+                    bag ++;
+                } else {
+                    bag = -1;
+                    break;
+                }
             }
         }
-        
-        for(int i = 0; i < T; i ++) {
-            bw.write(apt[Integer.parseInt(br.readLine())][Integer.parseInt(br.readLine())] + "\n");
-        }
-        
+
+        bw.write(bag + "");
         br.close();
         bw.close();
     }
