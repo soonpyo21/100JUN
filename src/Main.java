@@ -2,17 +2,13 @@ import java.io.*;
 import java.util.Scanner;
 
 // 문제
-// 상근이는 요즘 설탕공장에서 설탕을 배달하고 있다. 상근이는 지금 사탕가게에 설탕을 정확하게 N킬로그램을 배달해야 한다. 
-// 설탕공장에서 만드는 설탕은 봉지에 담겨져 있다. 봉지는 3킬로그램 봉지와 5킬로그램 봉지가 있다.
-// 상근이는 귀찮기 때문에, 최대한 적은 봉지를 들고 가려고 한다. 예를 들어, 18킬로그램 설탕을 배달해야 할 때, 3킬로그램 봉지 6개를 가져가도 되지만, 
-// 5킬로그램 3개와 3킬로그램 1개를 배달하면, 더 적은 개수의 봉지를 배달할 수 있다.
-// 상근이가 설탕을 정확하게 N킬로그램 배달해야 할 때, 봉지 몇 개를 가져가면 되는지 그 수를 구하는 프로그램을 작성하시오.
+// 두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄에 N이 주어진다. (3 ≤ N ≤ 5000)
+// 첫째 줄에 A와 B가 주어진다. (0 < A,B < 1010000)
 //
 // 출력
-// 상근이가 배달하는 봉지의 최소 개수를 출력한다. 만약, 정확하게 N킬로그램을 만들 수 없다면 -1을 출력한다.
+// 첫째 줄에 A+B를 출력한다.
 
 public class Main {
 
@@ -21,33 +17,69 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int N = Integer.parseInt(br.readLine());
-        int bag = 0;
+        String[] input = br.readLine().split(" ");
+        String[] Aarr = input[0].split("");
+        String[] Barr = input[1].split("");
         
-        while(true) {
-            if(N == 0) {
-                break;
-            } else {
-                if(N % 5 == 0) {
-                    N = N - 5;
-                    bag ++;
-                } else if (N % 3 == 0) {
-                    N = N - 3;
-                    bag ++;
-                } else if (N >= 5) {
-                    N = N - 5;
-                    bag ++;
-                } else if (N >= 3) {
-                    N = N - 3;
-                    bag ++;
-                } else {
-                    bag = -1;
-                    break;
-                }
-            }
+        int gap = 0;
+        int plus = 0;
+        String first = "";
+        
+        if(Aarr.length == Barr.length) {
+            gap = 0;
+        } else {
+            gap = Math.abs(Aarr.length - Barr.length);
         }
+        
+        String[] newAarr, newBarr, result;
+        
+        if(Aarr.length > Barr.length) {
+            newAarr = Aarr;
+            newBarr = new String[Aarr.length];
+            
+            for(int i = 0; i < gap; i ++) {
+                newBarr[i] = "0";
+            }
+            for(int i = 0; i < Barr.length; i ++) {
+                newBarr[gap + i] = Barr[i];
+            }
+        } else if (Barr.length > Aarr.length) {
+            newAarr = new String[Barr.length];
+            newBarr = Barr;
 
-        bw.write(bag + "");
+            for(int i = 0; i < gap; i ++) {
+                newAarr[i] = "0";
+            }
+            for(int i = 0; i < Aarr.length; i ++) {
+                newAarr[gap + i] = Aarr[i];
+            }
+        } else {
+            newAarr = Aarr;
+            newBarr = Barr;
+        }
+        
+        result = new String[newAarr.length];
+        
+        for(int i = newAarr.length - 1; i >= 0; i --) {
+            int num = Integer.parseInt(newAarr[i]) + Integer.parseInt(newBarr[i]) + plus;
+            
+            if(num >= 10) {
+                if(i == 0) {
+                    first = "1";
+                }
+                result[i] = String.valueOf(String.valueOf(num).charAt(1));
+                plus = 1;
+            } else {
+                result[i] = String.valueOf(num);
+                plus = 0;
+            }
+        }    
+        
+        bw.write(first);
+        for(int i = 0; i < result.length; i ++) {
+            bw.write(result[i] + "");
+        }
+        
         br.close();
         bw.close();
     }
