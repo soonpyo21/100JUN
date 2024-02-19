@@ -1,164 +1,53 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.Scanner;
 
 // 문제
-// 선물을 직접 전하기 힘들 때 카카오톡 선물하기 기능을 이용해 축하 선물을 보낼 수 있습니다.
-// 당신의 친구들이 이번 달까지 선물을 주고받은 기록을 바탕으로 다음 달에 누가 선물을 많이 받을지 예측하려고 합니다.
+// 얀에서는 매년 달리기 경주가 열립니다.
+// 해설진들은 선수들이 자기 바로 앞의 선수를 추월할 때 추월한 선수의 이름을 부릅니다.
+// 예를 들어 1등부터 3등까지 "mumu", "soe", "poe" 선수들이 순서대로 달리고 있을 때,
+// 해설진이 "soe"선수를 불렀다면 2등인 "soe" 선수가 1등인 "mumu" 선수를 추월했다는 것입니다.
+// 즉 "soe" 선수가 1등, "mumu" 선수가 2등으로 바뀝니다.
 //
-// 두 사람이 선물을 주고받은 기록이 있다면, 이번 달까지 두 사람 사이에 더 많은 선물을 준 사람이 다음 달에 선물을 하나 받습니다.
-// 예를 들어 A가 B에게 선물을 5번 줬고, B가 A에게 선물을 3번 줬다면 다음 달엔 A가 B에게 선물을 하나 받습니다.
-//
-// 두 사람이 선물을 주고받은 기록이 하나도 없거나 주고받은 수가 같다면, 선물 지수가 더 큰 사람이 선물 지수가 더 작은 사람에게 선물을 하나 받습니다.
-// 선물 지수는 이번 달까지 자신이 친구들에게 준 선물의 수에서 받은 선물의 수를 뺀 값입니다.
-// 예를 들어 A가 친구들에게 준 선물이 3개고 받은 선물이 10개라면 A의 선물 지수는 -7입니다.
-// B가 친구들에게 준 선물이 3개고 받은 선물이 2개라면 B의 선물 지수는 1입니다.
-// 만약 A와 B가 선물을 주고받은 적이 없거나 정확히 같은 수로 선물을 주고받았다면, 다음 달엔 B가 A에게 선물을 하나 받습니다.
-// 만약 두 사람의 선물 지수도 같다면 다음 달에 선물을 주고받지 않습니다.
-//
-// 위에서 설명한 규칙대로 다음 달에 선물을 주고받을 때, 당신은 선물을 가장 많이 받을 친구가 받을 선물의 수를 알고 싶습니다.
-//
-// 친구들의 이름을 담은 1차원 문자열 배열 friends 이번 달까지 친구들이 주고받은 선물 기록을 담은 1차원 문자열 배열 gifts가 매개변수로 주어집니다.
-// 이때, 다음달에 가장 많은 선물을 받는 친구가 받을 선물의 수를 return 하도록 solution 함수를 완성해 주세요.
+// 선수들의 이름이 1등부터 현재 등수 순서대로 담긴 문자열 배열 players와 해설진이 부른 이름을 담은 문자열 배열 callings가 매개변수로 주어질 때,
+// 경주가 끝났을 때 선수들의 이름을 1등부터 등수 순서대로 배열에 담아 return 하는 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 2 ≤ friends의 길이 = 친구들의 수 ≤ 50
-// friends의 원소는 친구의 이름을 의미하는 알파벳 소문자로 이루어진 길이가 10 이하인 문자열입니다.
-// 이름이 같은 친구는 없습니다.
+// 5 ≤ players의 길이 ≤ 50,000
+// players[i]는 i번째 선수의 이름을 의미합니다.
+// players의 원소들은 알파벳 소문자로만 이루어져 있습니다.
+// players에는 중복된 값이 들어가 있지 않습니다.
+// 3 ≤ players[i]의 길이 ≤ 10
 //
-// 1 ≤ gifts의 길이 ≤ 10,000
-// gifts의 원소는 "A B"형태의 문자열입니다. A는 선물을 준 친구의 이름을 B는 선물을 받은 친구의 이름을 의미하며 공백 하나로 구분됩니다.
-// A와 B는 friends의 원소이며 A와 B가 같은 이름인 경우는 존재하지 않습니다.
+// 2 ≤ callings의 길이 ≤ 1,000,000
+// callings는 players의 원소들로만 이루어져 있습니다.
+// 경주 진행중 1등인 선수의 이름은 불리지 않습니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String[] friends = {"muzi", "ryan", "frodo", "neo"};
-        String[] gifts = {"muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"};
+        String[] players = {"mumu", "soe", "poe", "kai", "mine"};
+        String[] callings = {"kai", "kai", "mine", "mine"};
 
-        solution(friends, gifts);
+        solution(players, callings);
 
     }
 
-    public static int solution(String[] friends, String[] gifts) {
+    public static String[] solution(String[] players, String[] callings) {
 
-        String[] from = new String[gifts.length];
-        String[] to = new String[gifts.length];
-
-        for(int i = 0; i < gifts.length; i ++) {
-            String[] arr = gifts[i].split(" ");
-            from[i] = arr[0];
-            to[i] = arr[1];
-        }
-
-        int[][] arr = new int[friends.length][friends.length];
-
-        for(int i = 0; i < friends.length; i ++) {
-
-            for(int j = 0; j < friends.length; j ++) {
-                int cnt = 0;
-                for(int k = 0; k < gifts.length; k ++) {
-                    if(friends[i].equals(from[k]) && friends[j].equals(to[k])) {
-                        cnt ++;
-                    }
-                }
-                arr[i][j] = cnt;
-            }
-
-        }
-
-        int[][] sumArr = new int[friends.length][3];
-
-        for(int i = 0; i < friends.length; i ++) {
-            int sendSum = 0;
-            int reciveSum = 0;
-
-            for(int j = 0; j < friends.length; j ++) {
-                sendSum += arr[i][j];
-                reciveSum += arr[j][i];
-            }
-            sumArr[i][0] = sendSum;
-            sumArr[i][1] = reciveSum;
-            sumArr[i][2] = sendSum - reciveSum;
-        }
-
-        int[] resultArr = new int[friends.length];
-
-        for(int i = 0; i < friends.length; i ++) {
-
-            int giftCnt = 0;
-
-            for(int j = 0; j < friends.length; j ++) {
-
-                if(i != j && arr[i][j] != 0) {
-                    int send = arr[i][j];
-                    int recive = arr[j][i];
-
-                    if(send > recive) {
-                        System.out.println(friends[i] + "가 " + friends[j] + "에게서 선물을 하나 받습니다.");
-                        giftCnt ++;
-                    } else if (send == recive) {
-                        int senderJisoo = sumArr[i][2];
-                        int reciverJisoo = sumArr[j][2];
-
-                        if(senderJisoo > reciverJisoo) {
-                            System.out.println(friends[i] + "가 " + friends[j] + "보다 선물지수가 커 선물을 하나 받습니다.");
-                            giftCnt ++;
-                        }
-                    }
-                } else {
-                    if(i != j && arr[i][j] == 0 && arr[j][i] == 0) {
-                        int senderJisoo = sumArr[i][2];
-                        int reciverJisoo = sumArr[j][2];
-
-                        if(senderJisoo > reciverJisoo) {
-                            System.out.println(friends[i] + "가 " + friends[j] + "보다 선물지수가 커 선물을 하나 받습니다.");
-                            giftCnt ++;
-                        }
-                    }
+        for(int i = 0; i < callings.length; i ++) {
+            for(int j = 0; j < players.length; j ++) {
+                if(callings[i].equals(players[j])) {
+                    players[j] = players[j-1];
+                    players[j-1] = callings[i];
                 }
             }
-
-            resultArr[i] = giftCnt;
         }
 
-        int max = 0;
-        for(int i = 0; i < resultArr.length; i ++) {
-            if(resultArr[i] > max) {
-                max = resultArr[i];
-            }
+        for(int i = 0; i < players.length; i ++) {
+            System.out.println(players[i]);
         }
 
-        System.out.println();
-
-        for(int i = 0; i < friends.length; i ++) {
-            for(int j = 0; j < friends.length; j ++) {
-                System.out.print(arr[i][j]);
-            }
-            System.out.println();
-        }
-
-        System.out.println();
-
-        for(int i = 0; i < friends.length; i ++) {
-            for(int j = 0; j < 3; j ++) {
-                System.out.print(sumArr[i][j]);
-            }
-            System.out.println();
-        }
-
-        System.out.println();
-
-        for(int i = 0; i < friends.length; i ++) {
-            System.out.print(resultArr[i]);
-        }
-
-        System.out.println();
-
-        System.out.println(max);
-
-        int answer = max;
+        String[] answer = players;
         return answer;
     }
 
