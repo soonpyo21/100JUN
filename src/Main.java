@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 // 문제
 // 얀에서는 매년 달리기 경주가 열립니다.
@@ -34,13 +36,22 @@ public class Main {
 
     public static String[] solution(String[] players, String[] callings) {
 
+        Map<String, Integer> order = new HashMap<>();
+
+        for(int i = 0; i < players.length; i ++) {
+            order.put(players[i], i);
+        }
+
         for(int i = 0; i < callings.length; i ++) {
-            for(int j = 0; j < players.length; j ++) {
-                if(callings[i].equals(players[j])) {
-                    players[j] = players[j-1];
-                    players[j-1] = callings[i];
-                }
-            }
+            int index = order.get(callings[i]);
+            String oldPlayer = players[index-1];
+            String newPlayer = players[index];
+
+            order.put(players[index], index-1);
+            order.put(players[index-1], index);
+
+            players[index] = oldPlayer;
+            players[index-1] = newPlayer;
         }
 
         for(int i = 0; i < players.length; i ++) {
