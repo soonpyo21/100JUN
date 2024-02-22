@@ -3,67 +3,126 @@ import java.util.HashMap;
 import java.util.Map;
 
 // 문제
-// 사진들을 보며 추억에 젖어 있던 루는 사진별로 추억 점수를 매길려고 합니다.
-// 사진 속에 나오는 인물의 그리움 점수를 모두 합산한 값이 해당 사진의 추억 점수가 됩니다.
-// 예를 들어 사진 속 인물의 이름이 ["may", "kein", "kain"]이고
-// 각 인물의 그리움 점수가 [5점, 10점, 1점]일 때 해당 사진의 추억 점수는 16(5 + 10 + 1)점이 됩니다.
-// 다른 사진 속 인물의 이름이 ["kali", "mari", "don", "tony"]이고
-// ["kali", "mari", "don"]의 그리움 점수가 각각 [11점, 1점, 55점]]이고,
-// "tony"는 그리움 점수가 없을 때, 이 사진의 추억 점수는 3명의 그리움 점수를 합한 67(11 + 1 + 55)점입니다.
+// 지나다니는 길을 'O', 장애물을 'X'로 나타낸 직사각형 격자 모양의 공원에서 로봇 강아지가 산책을 하려합니다.
+// 산책은 로봇 강아지에 미리 입력된 명령에 따라 진행하며, 명령은 다음과 같은 형식으로 주어집니다.
 //
-// 그리워하는 사람의 이름을 담은 문자열 배열 name, 각 사람별 그리움 점수를 담은 정수 배열 yearning,
-// 각 사진에 찍힌 인물의 이름을 담은 이차원 문자열 배열 photo가 매개변수로 주어질 때,
-// 사진들의 추억 점수를 photo에 주어진 순서대로 배열에 담아 return하는 solution 함수를 완성해주세요.
+// ["방향 거리", "방향 거리" … ]
+// 예를 들어 "E 5"는 로봇 강아지가 현재 위치에서 동쪽으로 5칸 이동했다는 의미입니다.
+// 로봇 강아지는 명령을 수행하기 전에 다음 두 가지를 먼저 확인합니다.
+//
+// 주어진 방향으로 이동할 때 공원을 벗어나는지 확인합니다.
+// 주어진 방향으로 이동 중 장애물을 만나는지 확인합니다.
+// 위 두 가지중 어느 하나라도 해당된다면, 로봇 강아지는 해당 명령을 무시하고 다음 명령을 수행합니다.
+// 공원의 가로 길이가 W, 세로 길이가 H라고 할 때, 공원의 좌측 상단의 좌표는 (0, 0), 우측 하단의 좌표는 (H - 1, W - 1) 입니다.
+//
+// 공원을 나타내는 문자열 배열 park, 로봇 강아지가 수행할 명령이 담긴 문자열 배열 routes가 매개변수로 주어질 때,
+// 로봇 강아지가 모든 명령을 수행 후 놓인 위치를 [세로 방향 좌표, 가로 방향 좌표] 순으로 배열에 담아 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 3 ≤ name의 길이 = yearning의 길이≤ 100
-// 3 ≤ name의 원소의 길이 ≤ 7
-// name의 원소들은 알파벳 소문자로만 이루어져 있습니다.
-// name에는 중복된 값이 들어가지 않습니다.
-// 1 ≤ yearning[i] ≤ 100
-// yearning[i]는 i번째 사람의 그리움 점수입니다.
+// 3 ≤ park의 길이 ≤ 50
+// 3 ≤ park[i]의 길이 ≤ 50
+// park[i]는 다음 문자들로 이루어져 있으며 시작지점은 하나만 주어집니다.
+// S : 시작 지점
+// O : 이동 가능한 통로
+// X : 장애물
+// park는 직사각형 모양입니다.
 //
-// 3 ≤ photo의 길이 ≤ 100
-// 1 ≤ photo[i]의 길이 ≤ 100
-// 3 ≤ photo[i]의 원소(문자열)의 길이 ≤ 7
-// photo[i]의 원소들은 알파벳 소문자로만 이루어져 있습니다.
-// photo[i]의 원소들은 중복된 값이 들어가지 않습니다.
+// 1 ≤ routes의 길이 ≤ 50
+// routes의 각 원소는 로봇 강아지가 수행할 명령어를 나타냅니다.
+// 로봇 강아지는 routes의 첫 번째 원소부터 순서대로 명령을 수행합니다.
+// routes의 원소는 "op n"과 같은 구조로 이루어져 있으며, op는 이동할 방향, n은 이동할 칸의 수를 의미합니다.
+// op는 다음 네 가지중 하나로 이루어져 있습니다.
+// N : 북쪽으로 주어진 칸만큼 이동합니다.
+// S : 남쪽으로 주어진 칸만큼 이동합니다.
+// W : 서쪽으로 주어진 칸만큼 이동합니다.
+// E : 동쪽으로 주어진 칸만큼 이동합니다.
+// 1 ≤ n ≤ 9
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String[] name = {"may", "kein", "kain", "radi"};
-        int[] yearning = {5, 10, 1, 3};
-        String[][] photo = {{"may", "kein", "kain", "radi"}, {"may", "kein", "brin", "deny"}, {"kon", "kain", "may", "coni"}};
+        String[] park = {"OSO","OOO","OXO","OOO"};
+        String[] routes = {"E 2","S 3","W 1"};
 
-        solution(name, yearning, photo);
+        solution(park, routes);
 
     }
 
-    public static int[] solution(String[] name, int[] yearning, String[][] photo) {
+    public static int[] solution(String[] park, String[] routes) {
 
-        Map<String, Integer> pointMap = new HashMap<>();    // 이름과 추억 점수를 매핑할 맵
-        int[] result = new int[photo.length];                // 각 사진의 추억 점수를 담을 배열
+        int width = park[0].length();
+        int height = park.length;
 
-        // 각 이름에 따른 점수 매핑
-        for(int i = 0; i < name.length; i ++) {
-            pointMap.put(name[i], yearning[i]);
+        System.out.println("넓이 및 높이");
+        System.out.println(width);
+        System.out.println(height);
+
+        String[] direction = new String[routes.length];
+        int[] distance = new int[routes.length];
+        for(int i = 0; i < routes.length; i ++) {
+            String[] tmp = routes[i].split(" ");
+            direction[i] = tmp[0];
+            distance[i] = Integer.parseInt(tmp[1]);
         }
 
-        // 각 사진의 추억 점수 산정
-        for(int i = 0; i < photo.length; i ++) {
-            int point = 0;
-            for(int j = 0; j < photo[i].length; j ++) {
-                String tmp = photo[i][j];
-                if(pointMap.get(tmp) != null) {
-                    point += pointMap.get(tmp);
+        Map<String, String> locationMap = new HashMap<>();
+        int row = 0;
+        int col = 0;
+        for(int i = 0; i < park.length; i ++) {
+            char[] cArr = park[i].toCharArray();
+            for(int j = 0; j < cArr.length; j ++) {
+                locationMap.put(i+""+j, String.valueOf(cArr[j]));
+                System.out.println("key : " + i+""+j);
+                System.out.println("val : " + String.valueOf(cArr[j]));
+                if((cArr[j]) == 'S') {
+                    row = i;
+                    col = j;
                 }
             }
-            result[i] = point;
         }
 
-        int[] answer = result;
+        System.out.println("시작 포인트");
+        System.out.println(row);
+        System.out.println(col);
+
+        for(int i = 0; i < routes.length; i ++) {
+            String cel = "";
+            if(direction[i].equals("E")) {
+                cel = locationMap.get(row + "" + (col + distance[i]));
+                if(col + distance[i] >= 0 && col + distance[i] < width && cel.equals("O")) {
+                    col += distance[i];
+                    System.out.println("E로 " + distance[i] + "칸 이동합니다.");
+                }
+            }
+            if (direction[i].equals("S")) {
+                cel = locationMap.get((row + distance[i]) + "" + col);
+                if(row + distance[i] >= 0 && row + distance[i] < height && cel.equals("O")) {
+                    row += distance[i];
+                    System.out.println("S로 " + distance[i] + "칸 이동합니다.");
+                }
+            }
+            if (direction[i].equals("N")) {
+                cel = locationMap.get((row - distance[i]) + "" + col);
+                if(row - distance[i] >= 0 && row - distance[i] < height && cel.equals("O")) {
+                    row -= distance[i];
+                    System.out.println("N로 " + distance[i] + "칸 이동합니다.");
+                }
+            }
+            if (direction[i].equals("W")) {
+                cel = locationMap.get(row + "" + (col - distance[i]));
+                if(col - distance[i] >= 0 && col - distance[i] < width && cel.equals("O")) {
+                    col -= distance[i];
+                    System.out.println("W로 " + distance[i] + "칸 이동합니다.");
+                }
+            }
+        }
+
+        System.out.println("이동 후 위치");
+        System.out.println(row);
+        System.out.println(col);
+
+        int[] answer = {};
         return answer;
     }
 
