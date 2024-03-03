@@ -59,14 +59,14 @@ public class Main {
 
     public static int[] solution(String[] park, String[] routes) {
 
-        int row = 0;
-        int col = 0;
-        Map<String, String> location = new HashMap();
+        int row = 0;    // 시작 지점 행번호
+        int col = 0;    // 시작 지점 열번호
+        Map<String, String> location = new HashMap();   // 행번호_열번호에 따라 통로 / 장애물 여부를 저장할 위치 맵
 
         for(int i = 0; i < park.length; i ++) {
             char[] cArr = park[i].toCharArray();
             for(int j = 0; j < cArr.length; j ++) {
-                location.put(i + "" + j, String.valueOf(cArr[j]));
+                location.put(i + "_" + j, String.valueOf(cArr[j]));
                 if(cArr[j] == 'S') {
                     row = i;
                     col = j;
@@ -75,13 +75,12 @@ public class Main {
         }
 
         for(int i = 0; i < routes.length; i ++) {
-            char direction = routes[i].charAt(0);
-            int distance = Integer.parseInt(routes[i].charAt(2) + "");
+            char direction = routes[i].charAt(0);   // 이동할 방향
+            int distance = Integer.parseInt(routes[i].charAt(2) + "");  // 이동할 거리
+            int changeRow = 0;  // 이동할 행 거리
+            int changeCol = 0;  // 이동할 열 거리
 
-            int changeRow = 0;
-            int changeCol = 0;
-            for(int j = 0; j < distance; j ++) {
-
+            for(int j = 0; j < distance; j ++) {    // 각 방향에 따라 1칸씩 이동
                 if(direction == 'E') {
                     changeCol += 1;
                 } else if (direction == 'S') {
@@ -92,23 +91,20 @@ public class Main {
                     changeRow -= 1;
                 }
 
-                String movePoint = location.get((row + changeRow) + "" + (col + changeCol));
+                String movePoint = location.get((row + changeRow) + "_" + (col + changeCol));   // 이동 후 위치의 통로 / 장애물 여부
                 if(movePoint == null || movePoint.equals("X")) {
+                    // 정해진 구간을 벗어났거나, 장애물이 있는 위치로 이동했다면 이동할 행, 열 거리를 0으로 조정 후 다음 루트를 실행한다.
                     changeRow = 0;
                     changeCol = 0;
                     break;
                 }
             }
+            // 정상적인 이동이라면 행, 열 번호가 변경되고, 비정상적인 이동이라면 행, 열번호 고정
             row += changeRow;
             col += changeCol;
         }
 
-        System.out.println(row);
-        System.out.println(col);
-
         int[] answer = {row, col};
         return answer;
     }
-
-
 }
