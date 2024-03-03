@@ -42,87 +42,71 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String[] park = {"OSO","OOO","OXO","OOO"};
-        String[] routes = {"E 2","S 3","W 1"};
+//        String[] park = {"OSO","OOO","OXO","OOO"};
+//        String[] routes = {"E 2","S 3","W 1"};
+
+//        String[] park = {"SOO","OOO","OOO"};
+//        String[] routes = {"E 2","S 2","W 1"};
+
+//        String[] park = {"SOO","OXX","OOO"};
+//        String[] routes = {"E 2","S 2","W 1"};
+
+          String[] park = {"OXXO", "XSXO", "XXXX"};
+          String[] routes = {"E 1", "S 1"};
 
         solution(park, routes);
-
     }
 
     public static int[] solution(String[] park, String[] routes) {
 
-        int width = park[0].length();
-        int height = park.length;
-
-        System.out.println("넓이 및 높이");
-        System.out.println(width);
-        System.out.println(height);
-
-        String[] direction = new String[routes.length];
-        int[] distance = new int[routes.length];
-        for(int i = 0; i < routes.length; i ++) {
-            String[] tmp = routes[i].split(" ");
-            direction[i] = tmp[0];
-            distance[i] = Integer.parseInt(tmp[1]);
-        }
-
-        Map<String, String> locationMap = new HashMap<>();
         int row = 0;
         int col = 0;
+        Map<String, String> location = new HashMap();
+
         for(int i = 0; i < park.length; i ++) {
             char[] cArr = park[i].toCharArray();
             for(int j = 0; j < cArr.length; j ++) {
-                locationMap.put(i+""+j, String.valueOf(cArr[j]));
-                System.out.println("key : " + i+""+j);
-                System.out.println("val : " + String.valueOf(cArr[j]));
-                if((cArr[j]) == 'S') {
+                location.put(i + "" + j, String.valueOf(cArr[j]));
+                if(cArr[j] == 'S') {
                     row = i;
                     col = j;
                 }
             }
         }
 
-        System.out.println("시작 포인트");
-        System.out.println(row);
-        System.out.println(col);
-
         for(int i = 0; i < routes.length; i ++) {
-            String cel = "";
-            if(direction[i].equals("E")) {
-                cel = locationMap.get(row + "" + (col + distance[i]));
-                if(col + distance[i] >= 0 && col + distance[i] < width && cel.equals("O")) {
-                    col += distance[i];
-                    System.out.println("E로 " + distance[i] + "칸 이동합니다.");
+            char direction = routes[i].charAt(0);
+            int distance = Integer.parseInt(routes[i].charAt(2) + "");
+
+            int changeRow = 0;
+            int changeCol = 0;
+            for(int j = 0; j < distance; j ++) {
+
+                if(direction == 'E') {
+                    changeCol += 1;
+                } else if (direction == 'S') {
+                    changeRow += 1;
+                } else if (direction == 'W') {
+                    changeCol -= 1;
+                } else if (direction == 'N') {
+                    changeRow -= 1;
+                }
+
+                String movePoint = location.get((row + changeRow) + "" + (col + changeCol));
+                if(movePoint == null || movePoint.equals("X")) {
+                    changeRow = 0;
+                    changeCol = 0;
+                    break;
                 }
             }
-            if (direction[i].equals("S")) {
-                cel = locationMap.get((row + distance[i]) + "" + col);
-                if(row + distance[i] >= 0 && row + distance[i] < height && cel.equals("O")) {
-                    row += distance[i];
-                    System.out.println("S로 " + distance[i] + "칸 이동합니다.");
-                }
-            }
-            if (direction[i].equals("N")) {
-                cel = locationMap.get((row - distance[i]) + "" + col);
-                if(row - distance[i] >= 0 && row - distance[i] < height && cel.equals("O")) {
-                    row -= distance[i];
-                    System.out.println("N로 " + distance[i] + "칸 이동합니다.");
-                }
-            }
-            if (direction[i].equals("W")) {
-                cel = locationMap.get(row + "" + (col - distance[i]));
-                if(col - distance[i] >= 0 && col - distance[i] < width && cel.equals("O")) {
-                    col -= distance[i];
-                    System.out.println("W로 " + distance[i] + "칸 이동합니다.");
-                }
-            }
+            row += changeRow;
+            col += changeCol;
         }
 
-        System.out.println("이동 후 위치");
         System.out.println(row);
         System.out.println(col);
 
-        int[] answer = {};
+        int[] answer = {row, col};
         return answer;
     }
 
