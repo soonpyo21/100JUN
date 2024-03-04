@@ -1,110 +1,62 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 // 문제
-// 지나다니는 길을 'O', 장애물을 'X'로 나타낸 직사각형 격자 모양의 공원에서 로봇 강아지가 산책을 하려합니다.
-// 산책은 로봇 강아지에 미리 입력된 명령에 따라 진행하며, 명령은 다음과 같은 형식으로 주어집니다.
+// 코딩테스트를 준비하는 머쓱이는 프로그래머스에서 문제를 풀고 나중에 다시 코드를 보면서 공부하려고 작성한 코드를 컴퓨터 바탕화면에 아무 위치에나 저장해 둡니다.
+// 저장한 코드가 많아지면서 머쓱이는 본인의 컴퓨터 바탕화면이 너무 지저분하다고 생각했습니다.
+// 프로그래머스에서 작성했던 코드는 그 문제에 가서 다시 볼 수 있기 때문에 저장해 둔 파일들을 전부 삭제하기로 했습니다.
+// 컴퓨터 바탕화면은 각 칸이 정사각형인 격자판입니다. 이때 컴퓨터 바탕화면의 상태를 나타낸 문자열 배열 wallpaper가 주어집니다.
+// 파일들은 바탕화면의 격자칸에 위치하고 바탕화면의 격자점들은 바탕화면의 가장 왼쪽 위를 (0, 0)으로 시작해 (세로 좌표, 가로 좌표)로 표현합니다.
+// 빈칸은 ".", 파일이 있는 칸은 "#"의 값을 가집니다. 드래그를 하면 파일들을 선택할 수 있고, 선택된 파일들을 삭제할 수 있습니다.
+// 머쓱이는 최소한의 이동거리를 갖는 한 번의 드래그로 모든 파일을 선택해서 한 번에 지우려고 하며 드래그로 파일들을 선택하는 방법은 다음과 같습니다.
 //
-// ["방향 거리", "방향 거리" … ]
-// 예를 들어 "E 5"는 로봇 강아지가 현재 위치에서 동쪽으로 5칸 이동했다는 의미입니다.
-// 로봇 강아지는 명령을 수행하기 전에 다음 두 가지를 먼저 확인합니다.
+// 드래그는 바탕화면의 격자점 S(lux, luy)를 마우스 왼쪽 버튼으로 클릭한 상태로 격자점 E(rdx, rdy)로 이동한 뒤 마우스 왼쪽 버튼을 떼는 행동입니다.
+// 이때, "점 S에서 점 E로 드래그한다"고 표현하고 점 S와 점 E를 각각 드래그의 시작점, 끝점이라고 표현합니다.
+// 점 S(lux, luy)에서 점 E(rdx, rdy)로 드래그를 할 때, "드래그 한 거리"는 |rdx - lux| + |rdy - luy|로 정의합니다.
+// 점 S에서 점 E로 드래그를 하면 바탕화면에서 두 격자점을 각각 왼쪽 위, 오른쪽 아래로 하는 직사각형 내부에 있는 모든 파일이 선택됩니다.
 //
-// 주어진 방향으로 이동할 때 공원을 벗어나는지 확인합니다.
-// 주어진 방향으로 이동 중 장애물을 만나는지 확인합니다.
-// 위 두 가지중 어느 하나라도 해당된다면, 로봇 강아지는 해당 명령을 무시하고 다음 명령을 수행합니다.
-// 공원의 가로 길이가 W, 세로 길이가 H라고 할 때, 공원의 좌측 상단의 좌표는 (0, 0), 우측 하단의 좌표는 (H - 1, W - 1) 입니다.
-//
-// 공원을 나타내는 문자열 배열 park, 로봇 강아지가 수행할 명령이 담긴 문자열 배열 routes가 매개변수로 주어질 때,
-// 로봇 강아지가 모든 명령을 수행 후 놓인 위치를 [세로 방향 좌표, 가로 방향 좌표] 순으로 배열에 담아 return 하도록 solution 함수를 완성해주세요.
-//
-// 제한사항
-// 3 ≤ park의 길이 ≤ 50
-// 3 ≤ park[i]의 길이 ≤ 50
-// park[i]는 다음 문자들로 이루어져 있으며 시작지점은 하나만 주어집니다.
-// S : 시작 지점
-// O : 이동 가능한 통로
-// X : 장애물
-// park는 직사각형 모양입니다.
-//
-// 1 ≤ routes의 길이 ≤ 50
-// routes의 각 원소는 로봇 강아지가 수행할 명령어를 나타냅니다.
-// 로봇 강아지는 routes의 첫 번째 원소부터 순서대로 명령을 수행합니다.
-// routes의 원소는 "op n"과 같은 구조로 이루어져 있으며, op는 이동할 방향, n은 이동할 칸의 수를 의미합니다.
-// op는 다음 네 가지중 하나로 이루어져 있습니다.
-// N : 북쪽으로 주어진 칸만큼 이동합니다.
-// S : 남쪽으로 주어진 칸만큼 이동합니다.
-// W : 서쪽으로 주어진 칸만큼 이동합니다.
-// E : 동쪽으로 주어진 칸만큼 이동합니다.
-// 1 ≤ n ≤ 9
+// 머쓱이의 컴퓨터 바탕화면의 상태를 나타내는 문자열 배열 wallpaper가 매개변수로 주어질 때
+// 바탕화면의 파일들을 한 번에 삭제하기 위해 최소한의 이동거리를 갖는 드래그의 시작점과 끝점을 담은 정수 배열을 return하는 solution 함수를 작성해 주세요.
+// 드래그의 시작점이 (lux, luy), 끝점이 (rdx, rdy)라면 정수 배열 [lux, luy, rdx, rdy]를 return하면 됩니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        String[] park = {"OSO","OOO","OXO","OOO"};
-//        String[] routes = {"E 2","S 3","W 1"};
+//        String[] wallpaper = {".#...", "..#..", "...#."};
+//        String[] wallpaper = {"..........", ".....#....", "......##..", "...##.....", "....#....."};
+//        String[] wallpaper = {".##...##.", "#..#.#..#", "#...#...#", ".#.....#.", "..#...#..", "...#.#...", "....#...."};
+        String[] wallpaper = {"..", "#."};
 
-//        String[] park = {"SOO","OOO","OOO"};
-//        String[] routes = {"E 2","S 2","W 1"};
-
-//        String[] park = {"SOO","OXX","OOO"};
-//        String[] routes = {"E 2","S 2","W 1"};
-
-          String[] park = {"OXXO", "XSXO", "XXXX"};
-          String[] routes = {"E 1", "S 1"};
-
-        solution(park, routes);
+        solution(wallpaper);
     }
 
-    public static int[] solution(String[] park, String[] routes) {
+    public static int[] solution(String[] wallpaper) {
 
-        int row = 0;    // 시작 지점 행번호
-        int col = 0;    // 시작 지점 열번호
-        Map<String, String> location = new HashMap();   // 행번호_열번호에 따라 통로 / 장애물 여부를 저장할 위치 맵
+        List<Integer> xList = new ArrayList<>();    // 파일들이 위치한 행번호를 담을 리스트
+        List<Integer> yList = new ArrayList<>();    // 파일들이 위치한 열번호를 담을 리스트
+        int idx = 0;    // 번호를 저장할 인덱스
 
-        for(int i = 0; i < park.length; i ++) {
-            char[] cArr = park[i].toCharArray();
-            for(int j = 0; j < cArr.length; j ++) {
-                location.put(i + "_" + j, String.valueOf(cArr[j]));
-                if(cArr[j] == 'S') {
-                    row = i;
-                    col = j;
+        for(int i = 0; i < wallpaper.length; i ++) {
+            char[] row = wallpaper[i].toCharArray();    // 하나의 행을 담은 문자 배열
+            for(int j = 0; j < row.length; j ++) {
+                if(row[j] == '#') {
+                    xList.add(idx, i);
+                    yList.add(idx, j);
+                    idx ++;
                 }
             }
         }
 
-        for(int i = 0; i < routes.length; i ++) {
-            char direction = routes[i].charAt(0);   // 이동할 방향
-            int distance = Integer.parseInt(routes[i].charAt(2) + "");  // 이동할 거리
-            int changeRow = 0;  // 이동할 행 거리
-            int changeCol = 0;  // 이동할 열 거리
+        Collections.sort(xList);    // 행번호 오름차순 정렬
+        Collections.sort(yList);    // 열번호 오름차순 정렬
 
-            for(int j = 0; j < distance; j ++) {    // 각 방향에 따라 1칸씩 이동
-                if(direction == 'E') {
-                    changeCol += 1;
-                } else if (direction == 'S') {
-                    changeRow += 1;
-                } else if (direction == 'W') {
-                    changeCol -= 1;
-                } else if (direction == 'N') {
-                    changeRow -= 1;
-                }
+        int lux = xList.get(0);         // S의 행번호
+        int luy = yList.get(0);         // S의 열번호
+        int rdx = xList.get(idx-1) + 1; // E의 행번호
+        int rdy = yList.get(idx-1) + 1; // E의 열번호
 
-                String movePoint = location.get((row + changeRow) + "_" + (col + changeCol));   // 이동 후 위치의 통로 / 장애물 여부
-                if(movePoint == null || movePoint.equals("X")) {
-                    // 정해진 구간을 벗어났거나, 장애물이 있는 위치로 이동했다면 이동할 행, 열 거리를 0으로 조정 후 다음 루트를 실행한다.
-                    changeRow = 0;
-                    changeCol = 0;
-                    break;
-                }
-            }
-            // 정상적인 이동이라면 행, 열 번호가 변경되고, 비정상적인 이동이라면 행, 열번호 고정
-            row += changeRow;
-            col += changeCol;
-        }
-
-        int[] answer = {row, col};
+        int[] answer = {lux, luy, rdx, rdy};
         return answer;
     }
 }
