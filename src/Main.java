@@ -42,23 +42,19 @@ public class Main {
 
     public static int solution(int n, int m, int[] section) {
 
-        // selection 영역의 최대값 - 최소값 구하기
-        int min = section[0];
-        int max = section[section.length-1];
+        int num = section[0] + m;   // 첫번째 페인트를 칠했을 때의 마지막 구역 번호
+        int cnt = 1;                // 페인트칠 횟수 (section의 요소가 1 이상이므로 최소치 1번으로 가정)
 
-        int paintArea = max+1 - min;
-        int num = 0;
-
-        if(paintArea > m) {
-            num = paintArea / m;
-            if(paintArea % m > 0) {
-                num ++;
+        for(int i = 1; i < section.length; i ++) {
+            if(section[i] >= num) {     // 구역 번호가 위에서 칠해진 마지막 구역 번호보다 크거나 같다면
+                num = section[i] + m;   // 해당 구역 번호 + 룰러의 길이
+                cnt ++;                 // 페인트칠 횟수 증가
             }
         }
 
-        System.out.println(num);
+        System.out.println(cnt);
 
-        int answer = 0;
+        int answer = cnt;
         return answer;
     }
 }
