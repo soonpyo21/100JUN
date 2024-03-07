@@ -42,18 +42,24 @@ public class Main {
 
     public static int[] solution(String[] keymap, String[] targets) {
 
+        // 최소 입력값들을 담을 배열
         int[] cnts = new int[targets.length];
 
         for(int i = 0; i < targets.length; i ++) {
+            // 최소 입력값들을 합산할 변수
             int sum = 0;
             for(int j = 0; j < targets[i].length(); j ++) {
+                // 최소 입력값을 담을 변수, keymap의 범위보다 큰 101로 선언함
                 int min = 101;
                 for(int k = 0; k < keymap.length; k ++) {
+                    // indexOf()는 0부터 시작하기 때문에 +1 처리
                     int idx = keymap[k].indexOf(targets[i].charAt(j)) + 1;
-                    if(min > idx && idx > 0) {
+                    // idx를 찾았고, 그 idx가 현재까지의 최소값보다 더 작다면 치환 처리
+                    if(idx > 0 && min > idx) {
                         min = idx;
                     }
                 }
+                // 만약 최소값을 찾지 못했다면, 해당 문자열은 작성 불가능하므로 -1 처리 후 종료
                 if(min == 101) {
                     sum = -1;
                     break;
