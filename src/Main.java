@@ -2,59 +2,72 @@ import java.io.*;
 import java.util.*;
 
 // 문제
-// 어느 학교에 페인트가 칠해진 길이가 n미터인 벽이 있습니다.
-// 벽에 동아리 · 학회 홍보나 회사 채용 공고 포스터 등을 게시하기 위해 테이프로 붙였다가 철거할 때 떼는 일이 많고 그 과정에서 페인트가 벗겨지곤 합니다.
-// 페인트가 벗겨진 벽이 보기 흉해져 학교는 벽에 페인트를 덧칠하기로 했습니다.
-// 넓은 벽 전체에 페인트를 새로 칠하는 대신, 구역을 나누어 일부만 페인트를 새로 칠 함으로써 예산을 아끼려 합니다.
-// 이를 위해 벽을 1미터 길이의 구역 n개로 나누고, 각 구역에 왼쪽부터 순서대로 1번부터 n번까지 번호를 붙였습니다.
-// 그리고 페인트를 다시 칠해야 할 구역들을 정했습니다.
-//
-// 벽에 페인트를 칠하는 롤러의 길이는 m미터이고, 롤러로 벽에 페인트를 한 번 칠하는 규칙은 다음과 같습니다.
-// 롤러가 벽에서 벗어나면 안 됩니다.
-// 구역의 일부분만 포함되도록 칠하면 안 됩니다.
-// 즉, 롤러의 좌우측 끝을 구역의 경계선 혹은 벽의 좌우측 끝부분에 맞춘 후 롤러를 위아래로 움직이면서 벽을 칠합니다.
-// 현재 페인트를 칠하는 구역들을 완전히 칠한 후 벽에서 롤러를 떼며, 이를 벽을 한 번 칠했다고 정의합니다.
-//
-// 한 구역에 페인트를 여러 번 칠해도 되고 다시 칠해야 할 구역이 아닌 곳에 페인트를 칠해도 되지만 다시 칠하기로 정한 구역은 적어도 한 번 페인트칠을 해야 합니다.
-// 예산을 아끼기 위해 다시 칠할 구역을 정했듯 마찬가지로 롤러로 페인트칠을 하는 횟수를 최소화하려고 합니다.
-//
-// 정수 n, m과 다시 페인트를 칠하기로 정한 구역들의 번호가 담긴 정수 배열 section이 매개변수로 주어질 때
-// 롤러로 페인트칠해야 하는 최소 횟수를 return 하는 solution 함수를 작성해 주세요.
-//
+// 휴대폰의 자판은 컴퓨터 키보드 자판과는 다르게 하나의 키에 여러 개의 문자가 할당될 수 있습니다.
+// 키 하나에 여러 문자가 할당된 경우, 동일한 키를 연속해서 빠르게 누르면 할당된 순서대로 문자가 바뀝니다.
+// 예를 들어, 1번 키에 "A", "B", "C" 순서대로 문자가 할당되어 있다면 1번 키를 한 번 누르면 "A", 두 번 누르면 "B", 세 번 누르면 "C"가 되는 식입니다.
+// 같은 규칙을 적용해 아무렇게나 만든 휴대폰 자판이 있습니다.
+// 이 휴대폰 자판은 키의 개수가 1개부터 최대 100개까지 있을 수 있으며, 특정 키를 눌렀을 때 입력되는 문자들도 무작위로 배열되어 있습니다.
+// 또, 같은 문자가 자판 전체에 여러 번 할당된 경우도 있고, 키 하나에 같은 문자가 여러 번 할당된 경우도 있습니다.
+// 심지어 아예 할당되지 않은 경우도 있습니다. 따라서 몇몇 문자열은 작성할 수 없을 수도 있습니다.
+// 이 휴대폰 자판을 이용해 특정 문자열을 작성할 때, 키를 최소 몇 번 눌러야 그 문자열을 작성할 수 있는지 알아보고자 합니다.
+// 1번 키부터 차례대로 할당된 문자들이 순서대로 담긴 문자열배열 keymap과 입력하려는 문자열들이 담긴 문자열 배열 targets가 주어질 때,
+// 각 문자열을 작성하기 위해 키를 최소 몇 번씩 눌러야 하는지 순서대로 배열에 담아 return 하는 solution 함수를 완성해 주세요.
+// 단, 목표 문자열을 작성할 수 없을 때는 -1을 저장합니다.
+
 // 제한사항
-// 1 ≤ m ≤ n ≤ 100,000
-// 1 ≤ section의 길이 ≤ n
-// 1 ≤ section의 원소 ≤ n
-// section의 원소는 페인트를 다시 칠해야 하는 구역의 번호입니다.
-// section에서 같은 원소가 두 번 이상 나타나지 않습니다.
-// section의 원소는 오름차순으로 정렬되어 있습니다.
+// 1 ≤ keymap의 길이 ≤ 100
+// 1 ≤ keymap의 원소의 길이 ≤ 100
+// keymap[i]는 i + 1번 키를 눌렀을 때 순서대로 바뀌는 문자를 의미합니다.
+// 예를 들어 keymap[0] = "ABACD" 인 경우 1번 키를 한 번 누르면 A, 두 번 누르면 B, 세 번 누르면 A 가 됩니다.
+// keymap의 원소의 길이는 서로 다를 수 있습니다.
+// keymap의 원소는 알파벳 대문자로만 이루어져 있습니다.
+// 1 ≤ targets의 길이 ≤ 100
+// 1 ≤ targets의 원소의 길이 ≤ 100
+// targets의 원소는 알파벳 대문자로만 이루어져 있습니다.
+
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 8;
-        int m = 2;
-        int[] selection = {1,2,4,5,7,8};
+        String[] keymap = {"ABACD", "BCEFD"};
+        String[] targets = {"ABCD","AABB"};
+//        String[] keymap = {"AA"};
+//        String[] targets = {"B"};
+//        String[] keymap = {"AGZ", "BSSS"};
+//        String[] targets = {"ASA","BGZ"};
 
-        solution(n, m, selection);
+        solution(keymap, targets);
     }
 
-    public static int solution(int n, int m, int[] section) {
+    public static int[] solution(String[] keymap, String[] targets) {
 
-        int num = section[0] + m;   // 첫번째 페인트를 칠했을 때의 마지막 구역 번호
-        int cnt = 1;                // 페인트칠 횟수 (section의 요소가 1 이상이므로 최소치 1번으로 가정)
+        int[] cnts = new int[targets.length];
 
-        for(int i = 1; i < section.length; i ++) {
-            if(section[i] >= num) {     // 구역 번호가 위에서 칠해진 마지막 구역 번호보다 크거나 같다면
-                num = section[i] + m;   // 해당 구역 번호 + 룰러의 길이
-                cnt ++;                 // 페인트칠 횟수 증가
+        for(int i = 0; i < targets.length; i ++) {
+            int sum = 0;
+            for(int j = 0; j < targets[i].length(); j ++) {
+                int min = 101;
+                for(int k = 0; k < keymap.length; k ++) {
+                    int idx = keymap[k].indexOf(targets[i].charAt(j)) + 1;
+                    if(min > idx && idx > 0) {
+                        min = idx;
+                    }
+                }
+                if(min == 101) {
+                    sum = -1;
+                    break;
+                }
+                sum += min;
             }
+            cnts[i] = sum;
         }
 
-        System.out.println(cnt);
+        for(int i : cnts) {
+            System.out.println(i);
+        }
 
-        int answer = cnt;
+        int[] answer = cnts;
         return answer;
     }
 }
