@@ -2,78 +2,77 @@ import java.io.*;
 import java.util.*;
 
 // 문제
-// 휴대폰의 자판은 컴퓨터 키보드 자판과는 다르게 하나의 키에 여러 개의 문자가 할당될 수 있습니다.
-// 키 하나에 여러 문자가 할당된 경우, 동일한 키를 연속해서 빠르게 누르면 할당된 순서대로 문자가 바뀝니다.
-// 예를 들어, 1번 키에 "A", "B", "C" 순서대로 문자가 할당되어 있다면 1번 키를 한 번 누르면 "A", 두 번 누르면 "B", 세 번 누르면 "C"가 되는 식입니다.
-// 같은 규칙을 적용해 아무렇게나 만든 휴대폰 자판이 있습니다.
-// 이 휴대폰 자판은 키의 개수가 1개부터 최대 100개까지 있을 수 있으며, 특정 키를 눌렀을 때 입력되는 문자들도 무작위로 배열되어 있습니다.
-// 또, 같은 문자가 자판 전체에 여러 번 할당된 경우도 있고, 키 하나에 같은 문자가 여러 번 할당된 경우도 있습니다.
-// 심지어 아예 할당되지 않은 경우도 있습니다. 따라서 몇몇 문자열은 작성할 수 없을 수도 있습니다.
-// 이 휴대폰 자판을 이용해 특정 문자열을 작성할 때, 키를 최소 몇 번 눌러야 그 문자열을 작성할 수 있는지 알아보고자 합니다.
-// 1번 키부터 차례대로 할당된 문자들이 순서대로 담긴 문자열배열 keymap과 입력하려는 문자열들이 담긴 문자열 배열 targets가 주어질 때,
-// 각 문자열을 작성하기 위해 키를 최소 몇 번씩 눌러야 하는지 순서대로 배열에 담아 return 하는 solution 함수를 완성해 주세요.
-// 단, 목표 문자열을 작성할 수 없을 때는 -1을 저장합니다.
+// 코니는 영어 단어가 적힌 카드 뭉치 두 개를 선물로 받았습니다.
+// 코니는 다음과 같은 규칙으로 카드에 적힌 단어들을 사용해 원하는 순서의 단어 배열을 만들 수 있는지 알고 싶습니다.
+// 원하는 카드 뭉치에서 카드를 순서대로 한 장씩 사용합니다.
+// 한 번 사용한 카드는 다시 사용할 수 없습니다.
+// 카드를 사용하지 않고 다음 카드로 넘어갈 수 없습니다.
+// 기존에 주어진 카드 뭉치의 단어 순서는 바꿀 수 없습니다.
+// 예를 들어 첫 번째 카드 뭉치에 순서대로 ["i", "drink", "water"],
+// 두 번째 카드 뭉치에 순서대로 ["want", "to"]가 적혀있을 때 ["i", "want", "to", "drink", "water"] 순서의 단어 배열을 만들려고 한다면
+// 첫 번째 카드 뭉치에서 "i"를 사용한 후 두 번째 카드 뭉치에서 "want"와 "to"를 사용하고
+// 첫 번째 카드뭉치에 "drink"와 "water"를 차례대로 사용하면 원하는 순서의 단어 배열을 만들 수 있습니다.
+// 문자열로 이루어진 배열 cards1, cards2와 원하는 단어 배열 goal이 매개변수로 주어질 때,
+// cards1과 cards2에 적힌 단어들로 goal를 만들 있다면 "Yes"를, 만들 수 없다면 "No"를 return하는 solution 함수를 완성해주세요.
 
 // 제한사항
-// 1 ≤ keymap의 길이 ≤ 100
-// 1 ≤ keymap의 원소의 길이 ≤ 100
-// keymap[i]는 i + 1번 키를 눌렀을 때 순서대로 바뀌는 문자를 의미합니다.
-// 예를 들어 keymap[0] = "ABACD" 인 경우 1번 키를 한 번 누르면 A, 두 번 누르면 B, 세 번 누르면 A 가 됩니다.
-// keymap의 원소의 길이는 서로 다를 수 있습니다.
-// keymap의 원소는 알파벳 대문자로만 이루어져 있습니다.
-// 1 ≤ targets의 길이 ≤ 100
-// 1 ≤ targets의 원소의 길이 ≤ 100
-// targets의 원소는 알파벳 대문자로만 이루어져 있습니다.
+// 1 ≤ cards1의 길이, cards2의 길이 ≤ 10
+// 1 ≤ cards1[i]의 길이, cards2[i]의 길이 ≤ 10
+//
+// cards1과 cards2에는 서로 다른 단어만 존재합니다.
+// 2 ≤ goal의 길이 ≤ cards1의 길이 + cards2의 길이
+// 1 ≤ goal[i]의 길이 ≤ 10
+// goal의 원소는 cards1과 cards2의 원소들로만 이루어져 있습니다.
+//
+// cards1, cards2, goal의 문자열들은 모두 알파벳 소문자로만 이루어져 있습니다.
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String[] keymap = {"ABACD", "BCEFD"};
-        String[] targets = {"ABCD","AABB"};
-//        String[] keymap = {"AA"};
-//        String[] targets = {"B"};
-//        String[] keymap = {"AGZ", "BSSS"};
-//        String[] targets = {"ASA","BGZ"};
+//        String[] cards1 = {"i", "drink", "water"};
+//        String[] cards2 = {"want", "to"};
+//        String[] goal = {"i", "want", "to", "drink", "water"};
+        String[] cards1 = {"i", "water", "drink"};
+        String[] cards2 = {"want", "to"};
+        String[] goal = {"i", "want", "to", "drink", "water"};
 
-        solution(keymap, targets);
+        solution(cards1, cards2, goal);
     }
 
-    public static int[] solution(String[] keymap, String[] targets) {
+    public static String solution(String[] cards1, String[] cards2, String[] goal) {
 
-        // 최소 입력값들을 담을 배열
-        int[] cnts = new int[targets.length];
+        int idx1 = 0;           // 첫번쨰 카드 뭉치의 순서
+        int idx2 = 0;           // 두번째 카드 뭉치의 순서
+        String card1 = "";      // 첫번째 카드에 적힌 단어
+        String card2 = "";      // 두번째 카드에 적힌 단어
+        String result = "Yes";  // 결과값. 목표 배열을 만들 수 있다면 값이 바뀌지 않는다.
 
-        for(int i = 0; i < targets.length; i ++) {
-            // 최소 입력값들을 합산할 변수
-            int sum = 0;
-            for(int j = 0; j < targets[i].length(); j ++) {
-                // 최소 입력값을 담을 변수, keymap의 범위보다 큰 101로 선언함
-                int min = 101;
-                for(int k = 0; k < keymap.length; k ++) {
-                    // indexOf()는 0부터 시작하기 때문에 +1 처리
-                    int idx = keymap[k].indexOf(targets[i].charAt(j)) + 1;
-                    // idx를 찾았고, 그 idx가 현재까지의 최소값보다 더 작다면 치환 처리
-                    if(idx > 0 && min > idx) {
-                        min = idx;
-                    }
-                }
-                // 만약 최소값을 찾지 못했다면, 해당 문자열은 작성 불가능하므로 -1 처리 후 종료
-                if(min == 101) {
-                    sum = -1;
-                    break;
-                }
-                sum += min;
+        for(int i = 0; i < goal.length; i ++) {
+            String word = goal[i];
+
+            if(idx1 != cards1.length) {
+                card1 = cards1[idx1];
             }
-            cnts[i] = sum;
+            if(idx2 != cards2.length) {
+                card2 = cards2[idx2];
+            }
+
+            if(word.equals(card1)) {
+                idx1 ++;
+            } else if (word.equals(card2)) {
+                idx2 ++;
+            } else {
+                result = "No";
+                break;
+            }
+
         }
 
-        for(int i : cnts) {
-            System.out.println(i);
-        }
+        System.out.println(result);
 
-        int[] answer = cnts;
+        String answer = result;
         return answer;
     }
 }
