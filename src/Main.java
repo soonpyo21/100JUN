@@ -24,9 +24,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String s = "aukks";
-        String skip = "wbqd";
-        int index = 5;
+//        String s = "aukks";
+//        String skip = "wbqd";
+//        int index = 5;
+        String s = "a";
+        String skip = "cb";
+        int index = 2;
 
         solution(s, skip, index);
     }
@@ -39,12 +42,13 @@ public class Main {
             char ch = s.charAt(i);
             for(int j = 0; j < index; j ++) {
                 ch ++;
-                if(skip.contains(String.valueOf(ch))) {
-                    ch ++;
-                }
                 if(ch > 122) {
                     ch = (char) (ch - 26);
                 }
+                if(skip.contains(String.valueOf(ch))) {
+                    ch ++;
+                }
+
             }
             result += String.valueOf(ch);
 
