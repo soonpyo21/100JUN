@@ -27,9 +27,14 @@ public class Main {
 //        String s = "aukks";
 //        String skip = "wbqd";
 //        int index = 5;
-        String s = "a";
-        String skip = "cb";
-        int index = 2;
+
+//        String s = "a";
+//        String skip = "cb";
+//        int index = 2;
+
+        String s = "z";
+        String skip = "abcdefghij";
+        int index = 20;
 
         solution(s, skip, index);
     }
@@ -40,18 +45,17 @@ public class Main {
 
         for(int i = 0; i < s.length(); i ++) {
             char ch = s.charAt(i);
-            for(int j = 0; j < index; j ++) {
+            int changeIndex = index;
+            for(int j = 0; j < changeIndex; j ++) {
                 ch ++;
                 if(ch > 122) {
                     ch = (char) (ch - 26);
                 }
                 if(skip.contains(String.valueOf(ch))) {
-                    ch ++;
+                    changeIndex ++;
                 }
-
             }
             result += String.valueOf(ch);
-
         }
 
         System.out.println(result);
