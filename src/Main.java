@@ -1,7 +1,5 @@
-import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 // 문제
@@ -63,55 +61,58 @@ public class Main {
 
     public static void main(String[] args) throws ParseException {
 
-        String today = "2022.05.19";
-        String[] terms = {"A 6", "B 12", "C 3"};
-        String[] privacies = {"2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"};
+//        String today = "2022.05.19";
+//        String[] terms = {"A 6", "B 12", "C 3"};
+//        String[] privacies = {"2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"};
+
+        String today = "2020.01.01";
+        String[] terms = {"Z 3", "D 5"};
+        String[] privacies = {"2019.01.01 D", "2019.11.15 Z", "2019.08.02 D", "2019.07.01 D", "2018.12.28 Z"};
 
         solution(today, terms, privacies);
     }
 
     public static int[] solution(String today, String[] terms, String[] privacies) throws ParseException {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");    // 문자열을 날짜형으로 바꿀 포맷터
+        Calendar calendar1 = Calendar.getInstance();     // 현재 날짜를 담을 캘린더
+        Calendar calendar2 = Calendar.getInstance();     // 유효 기간의 마지막 날짜를 담을 캘린더
+        Map<String, Integer> periodMap = new HashMap();  // 약관과 유효기간을 담을 맵
+        List<Integer> iList = new ArrayList<>();         // 유효 기간이 만료된 번호를 담을 리스트
+
+        // calendar1 시간 세팅
         Date date = formatter.parse(today);
+        calendar1.setTime(date);
 
-        Calendar calendar = Calendar.getInstance();
-        Calendar calendar2 = Calendar.getInstance();
-
-        calendar.setTime(date);
-
-        Map<String, Integer> periodMap = new HashMap();
-
-        int[] iArr = new int[privacies.length];
-
+        // periodMap 키-값 세팅
         for(int i = 0; i < terms.length; i ++) {
             periodMap.put(terms[i].split(" ")[0], Integer.parseInt(terms[i].split(" ")[1]));
         }
 
         for(int i = 0; i < privacies.length; i ++) {
-            String compareDate = privacies[i].split(" ")[0];
-            String type = privacies[i].split(" ")[1];
+            String compareDate = privacies[i].split(" ")[0];    // 개인 정보 수집 일자
+            String type = privacies[i].split(" ")[1];           // 약관 종류
+            int period = periodMap.get(type);                         // 약관의 유효 기간
 
-            int period = periodMap.get(type);
-
+            // calender2에 해당 개인 정보의 만료 일자를 세팅
             Date startDate = formatter.parse(compareDate);
             calendar2.setTime(startDate);
             calendar2.add(Calendar.MONTH, period);
 
-            if(calendar2.after(calendar)) {
-                System.out.println(calendar.getTime());
-                System.out.println(calendar2.getTime());
-                iArr[i] = i + 1;
-            } else {
-                iArr[i] = 0;
+            // 유효 기간이 만료되었다면(현재 일자가 만료 일자 이후거나 같다면) 리스트에 담아준다.
+            if(!calendar2.after(calendar1)) {
+                iList.add(i + 1);
             }
         }
 
-        for(int i = 0; i < iArr.length; i ++) {
-            System.out.println(iArr[i]);
+        // 리턴값 세팅
+        int[] result = new int[iList.size()];
+        for(int i = 0; i < iList.size(); i ++) {
+            result[i] = iList.get(i);
+            System.out.println(result[i]);
         }
 
-        int[] answer = {};
+        int[] answer = result;
         return answer;
     }
 }
