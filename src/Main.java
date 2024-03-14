@@ -32,23 +32,23 @@ public class Main {
 
     public static int[] solution(String s) {
 
-        String copyS = String.valueOf(s.charAt(0));
-        int[] idxList = new int[s.length()];
-        idxList[0] = -1;
-        Map<String, Integer> idxMap = new HashMap<>();
+        int[] idxList = new int[s.length()];            // 결과 리스트
+        Map<String, Integer> idxMap = new HashMap<>();  // 각 알파벳의 마지막 탐색 인덱스를 담을 맵
 
+        // 각 알파벳의 탐색 인덱스를 -1 로 초기 세팅
         for(int i = 0; i < s.length(); i ++) {
-            idxMap.put(String.valueOf(s.charAt(i)), 0);
+            idxMap.put(String.valueOf(s.charAt(i)), -1);
         }
 
-        for(int i = 1; i < s.length(); i ++) {
-            if(copyS.contains(String.valueOf(s.charAt(i)))) {
-                int idx = s.indexOf(s.charAt(i), idxMap.get(String.valueOf(s.charAt(i))));
-                idxList[i] = i - idx;
-                idxMap.put(String.valueOf(s.charAt(i)), idx + 1);
+        for(int i = 0; i < s.length(); i ++) {
+            String str = String.valueOf(s.charAt(i));        // 탐색값
+            if(idxMap.get(str) > -1) {                       // 탐색값의 탐색 인덱스가 초기값보다 크다면 (이전에 탐색된 값이라면)
+                int idx = s.indexOf(str, idxMap.get(str));
+                idxList[i] = i - idx;                        // 탐색 중인 인덱스 - 마지막 탐색 인덱스
+                idxMap.put(str, idx + 1);                    // 마지막 탐색 인덱스는 + 1 해주어 재탐색을 방지한다.
             } else {
                 idxList[i] = -1;
-                copyS += s.charAt(i);
+                idxMap.put(str, 0);                          // 초기값이 들어온 경우 0으로 인덱스 재세팅
             }
         }
 
