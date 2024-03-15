@@ -1,62 +1,61 @@
 // 문제
-// 문자열 s가 주어졌을 때, s의 각 위치마다 자신보다 앞에 나왔으면서, 자신과 가장 가까운 곳에 있는 같은 글자가 어디 있는지 알고 싶습니다.
-// 예를 들어, s="banana"라고 할 때,  각 글자들을 왼쪽부터 오른쪽으로 읽어 나가면서 다음과 같이 진행할 수 있습니다.
-//
-// b는 처음 나왔기 때문에 자신의 앞에 같은 글자가 없습니다. 이는 -1로 표현합니다.
-// a는 처음 나왔기 때문에 자신의 앞에 같은 글자가 없습니다. 이는 -1로 표현합니다.
-// n은 처음 나왔기 때문에 자신의 앞에 같은 글자가 없습니다. 이는 -1로 표현합니다.
-// a는 자신보다 두 칸 앞에 a가 있습니다. 이는 2로 표현합니다.
-// n도 자신보다 두 칸 앞에 n이 있습니다. 이는 2로 표현합니다.
-// a는 자신보다 두 칸, 네 칸 앞에 a가 있습니다. 이 중 가까운 것은 두 칸 앞이고, 이는 2로 표현합니다.
-// 따라서 최종 결과물은 [-1, -1, -1, 2, 2, 2]가 됩니다.
-//
-// 문자열 s이 주어질 때, 위와 같이 정의된 연산을 수행하는 함수 solution을 완성해주세요.
+// 문자열 s가 입력되었을 때 다음 규칙을 따라서 이 문자열을 여러 문자열로 분해하려고 합니다.
+// 먼저 첫 글자를 읽습니다. 이 글자를 x라고 합시다.
+// 이제 이 문자열을 왼쪽에서 오른쪽으로 읽어나가면서, x와 x가 아닌 다른 글자들이 나온 횟수를 각각 셉니다.
+// 처음으로 두 횟수가 같아지는 순간 멈추고, 지금까지 읽은 문자열을 분리합니다.
+// s에서 분리한 문자열을 빼고 남은 부분에 대해서 이 과정을 반복합니다. 남은 부분이 없다면 종료합니다.
+// 만약 두 횟수가 다른 상태에서 더 이상 읽을 글자가 없다면, 역시 지금까지 읽은 문자열을 분리하고, 종료합니다.
+// 문자열 s가 매개변수로 주어질 때, 위 과정과 같이 문자열들로 분해하고, 분해한 문자열의 개수를 return 하는 함수 solution을 완성하세요.
 //
 // 제한사항
 // 1 ≤ s의 길이 ≤ 10,000
-// s은 영어 소문자로만 이루어져 있습니다.
-
-import java.util.HashMap;
-import java.util.Map;
+// s는 영어 소문자로만 이루어져 있습니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
 //        String s = "banana";
-//        String s = "foobar";
-        String s = "baaab";
+//        String s = "abracadabra";
+//        String s = "aaabbaccccabba";
+        String s = "abaabab";
 
         solution(s);
     }
 
-    public static int[] solution(String s) {
+    public static int solution(String s) {
 
-        int[] idxList = new int[s.length()];            // 결과 리스트
-        Map<String, Integer> idxMap = new HashMap<>();  // 각 알파벳의 마지막 탐색 인덱스를 담을 맵
-
-        // 각 알파벳의 탐색 인덱스를 -1 로 초기 세팅
-        for(int i = 0; i < s.length(); i ++) {
-            idxMap.put(String.valueOf(s.charAt(i)), -1);
-        }
+        int cnt1 = 0;          // x(첫글자)가 나온 횟수
+        int cnt2 = 0;          // x가 아닌 글자가 나온 횟수
+        int result = 0;        // 분해한 문자열의 개수
+        char x = s.charAt(0);  // x
 
         for(int i = 0; i < s.length(); i ++) {
-            String str = String.valueOf(s.charAt(i));        // 탐색값
-            if(idxMap.get(str) > -1) {                       // 탐색값의 탐색 인덱스가 초기값보다 크다면 (이전에 탐색된 값이라면)
-                int idx = s.indexOf(str, idxMap.get(str));
-                idxList[i] = i - idx;                        // 탐색 중인 인덱스 - 마지막 탐색 인덱스
-                idxMap.put(str, idx + 1);                    // 마지막 탐색 인덱스는 + 1 해주어 재탐색을 방지한다.
+            // 탐색 문자가 x와 같다면 cnt1 증가, 다르다면 cnt2 증가
+            if(x == s.charAt(i)) {
+                cnt1 ++;
             } else {
-                idxList[i] = -1;
-                idxMap.put(str, 0);                          // 초기값이 들어온 경우 0으로 인덱스 재세팅
+                cnt2 ++;
+            }
+
+            // cnt1과 cnt가 같을 때 result 증가 및 cnt 초기화
+            if(cnt1 == cnt2) {
+                result ++;
+                cnt1 = 0;
+                cnt2 = 0;
+                // i가 마지막이 아니라면 x값 수정
+                if(i != s.length() - 1) {
+                    x = s.charAt(i + 1);
+                }
             }
         }
 
-        for(int i : idxList) {
-            System.out.println(i);
-        }
+        // cnt1과 cnt2가 초기화되지 않았다면 -> 잔여 문자열에 남은 상태이므로 result 증가
+        if(cnt1 != cnt2) result ++;
 
-        int[] answer = idxList;
+        System.out.println(result);
+
+        int answer = result;
         return answer;
     }
 }
