@@ -1,61 +1,63 @@
 // 문제
-// 문자열 s가 입력되었을 때 다음 규칙을 따라서 이 문자열을 여러 문자열로 분해하려고 합니다.
-// 먼저 첫 글자를 읽습니다. 이 글자를 x라고 합시다.
-// 이제 이 문자열을 왼쪽에서 오른쪽으로 읽어나가면서, x와 x가 아닌 다른 글자들이 나온 횟수를 각각 셉니다.
-// 처음으로 두 횟수가 같아지는 순간 멈추고, 지금까지 읽은 문자열을 분리합니다.
-// s에서 분리한 문자열을 빼고 남은 부분에 대해서 이 과정을 반복합니다. 남은 부분이 없다면 종료합니다.
-// 만약 두 횟수가 다른 상태에서 더 이상 읽을 글자가 없다면, 역시 지금까지 읽은 문자열을 분리하고, 종료합니다.
-// 문자열 s가 매개변수로 주어질 때, 위 과정과 같이 문자열들로 분해하고, 분해한 문자열의 개수를 return 하는 함수 solution을 완성하세요.
+// "명예의 전당"이라는 TV 프로그램에서는 매일 1명의 가수가 노래를 부르고,
+// 시청자들의 문자 투표수로 가수에게 점수를 부여합니다.
+// 매일 출연한 가수의 점수가 지금까지 출연 가수들의 점수 중 상위 k번째 이내이면 해당 가수의 점수를 명예의 전당이라는 목록에 올려 기념합니다.
+// 즉 프로그램 시작 이후 초기에 k일까지는 모든 출연 가수의 점수가 명예의 전당에 오르게 됩니다.
+// k일 다음부터는 출연 가수의 점수가 기존의 명예의 전당 목록의 k번째 순위의 가수 점수보다 더 높으면,
+// 출연 가수의 점수가 명예의 전당에 오르게 되고 기존의 k번째 순위의 점수는 명예의 전당에서 내려오게 됩니다.
+//
+// 이 프로그램에서는 매일 "명예의 전당"의 최하위 점수를 발표합니다. 예를 들어, k = 3이고,
+// 7일 동안 진행된 가수의 점수가 [10, 100, 20, 150, 1, 100, 200]이라면,
+// 명예의 전당에서 발표된 점수는 아래의 그림과 같이 [10, 10, 10, 20, 20, 100, 100]입니다.
+//
+// 명예의 전당 목록의 점수의 개수 k, 1일부터 마지막 날까지 출연한 가수들의 점수인 score가 주어졌을 때,
+// 매일 발표된 명예의 전당의 최하위 점수를 return하는 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 1 ≤ s의 길이 ≤ 10,000
-// s는 영어 소문자로만 이루어져 있습니다.
+// 3 ≤ k ≤ 100
+// 7 ≤ score의 길이 ≤ 1,000
+// 0 ≤ score[i] ≤ 2,000
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        String s = "banana";
-//        String s = "abracadabra";
-//        String s = "aaabbaccccabba";
-        String s = "abaabab";
+//        int k = 3;
+//        int[] score = {10, 100, 20, 150, 1, 100, 200};
 
-        solution(s);
+        int k = 4;
+        int[] score = {0, 300, 40, 300, 20, 70, 150, 50, 500, 1000};
+
+        solution(k, score);
     }
 
-    public static int solution(String s) {
+    public static int[] solution(int k, int[] score) {
 
-        int cnt1 = 0;          // x(첫글자)가 나온 횟수
-        int cnt2 = 0;          // x가 아닌 글자가 나온 횟수
-        int result = 0;        // 분해한 문자열의 개수
-        char x = s.charAt(0);  // x
+        List<Integer> hallOfFame = new ArrayList<>();   // 명예의 전당
+        int[] result = new int[score.length];           // 결과 리스트
 
-        for(int i = 0; i < s.length(); i ++) {
-            // 탐색 문자가 x와 같다면 cnt1 증가, 다르다면 cnt2 증가
-            if(x == s.charAt(i)) {
-                cnt1 ++;
-            } else {
-                cnt2 ++;
-            }
-
-            // cnt1과 cnt가 같을 때 result 증가 및 cnt 초기화
-            if(cnt1 == cnt2) {
-                result ++;
-                cnt1 = 0;
-                cnt2 = 0;
-                // i가 마지막이 아니라면 x값 수정
-                if(i != s.length() - 1) {
-                    x = s.charAt(i + 1);
+        for(int i = 0; i < score.length; i ++) {
+            if(hallOfFame.size() == k) {
+                int min = Collections.min(hallOfFame);
+                if(score[i] > min) {
+                    hallOfFame.remove(Integer.valueOf(min));
+                    hallOfFame.add(score[i]);
                 }
+            } else {
+                hallOfFame.add(score[i]);
             }
+            result[i] = Collections.min(hallOfFame);
         }
 
-        // cnt1과 cnt2가 초기화되지 않았다면 -> 잔여 문자열에 남은 상태이므로 result 증가
-        if(cnt1 != cnt2) result ++;
+        for(int i : result) {
+            System.out.println(i);
+        }
 
-        System.out.println(result);
-
-        int answer = result;
+        int[] answer = result;
         return answer;
     }
 }
