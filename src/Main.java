@@ -1,63 +1,62 @@
 // 문제
-// "명예의 전당"이라는 TV 프로그램에서는 매일 1명의 가수가 노래를 부르고,
-// 시청자들의 문자 투표수로 가수에게 점수를 부여합니다.
-// 매일 출연한 가수의 점수가 지금까지 출연 가수들의 점수 중 상위 k번째 이내이면 해당 가수의 점수를 명예의 전당이라는 목록에 올려 기념합니다.
-// 즉 프로그램 시작 이후 초기에 k일까지는 모든 출연 가수의 점수가 명예의 전당에 오르게 됩니다.
-// k일 다음부터는 출연 가수의 점수가 기존의 명예의 전당 목록의 k번째 순위의 가수 점수보다 더 높으면,
-// 출연 가수의 점수가 명예의 전당에 오르게 되고 기존의 k번째 순위의 점수는 명예의 전당에서 내려오게 됩니다.
+// 숫자나라 기사단의 각 기사에게는 1번부터 number까지 번호가 지정되어 있습니다.
+// 기사들은 무기점에서 무기를 구매하려고 합니다.
 //
-// 이 프로그램에서는 매일 "명예의 전당"의 최하위 점수를 발표합니다. 예를 들어, k = 3이고,
-// 7일 동안 진행된 가수의 점수가 [10, 100, 20, 150, 1, 100, 200]이라면,
-// 명예의 전당에서 발표된 점수는 아래의 그림과 같이 [10, 10, 10, 20, 20, 100, 100]입니다.
+// 각 기사는 자신의 기사 번호의 약수 개수에 해당하는 공격력을 가진 무기를 구매하려 합니다.
+// 단, 이웃나라와의 협약에 의해 공격력의 제한수치를 정하고,
+// 제한수치보다 큰 공격력을 가진 무기를 구매해야 하는 기사는 협약기관에서 정한 공격력을 가지는 무기를 구매해야 합니다.
 //
-// 명예의 전당 목록의 점수의 개수 k, 1일부터 마지막 날까지 출연한 가수들의 점수인 score가 주어졌을 때,
-// 매일 발표된 명예의 전당의 최하위 점수를 return하는 solution 함수를 완성해주세요.
+// 예를 들어, 15번으로 지정된 기사단원은 15의 약수가 1, 3, 5, 15로 4개 이므로, 공격력이 4인 무기를 구매합니다.
+// 만약, 이웃나라와의 협약으로 정해진 공격력의 제한수치가 3이고 제한수치를 초과한 기사가 사용할 무기의 공격력이 2라면,
+// 15번으로 지정된 기사단원은 무기점에서 공격력이 2인 무기를 구매합니다.
+// 무기를 만들 때, 무기의 공격력 1당 1kg의 철이 필요합니다.
+// 그래서 무기점에서 무기를 모두 만들기 위해 필요한 철의 무게를 미리 계산하려 합니다.
+//
+// 기사단원의 수를 나타내는 정수 number와
+// 이웃나라와 협약으로 정해진 공격력의 제한수치를 나타내는 정수 limit와
+// 제한수치를 초과한 기사가 사용할 무기의 공격력을 나타내는 정수 power가 주어졌을 때,
+// 무기점의 주인이 무기를 모두 만들기 위해 필요한 철의 무게를 return 하는 solution 함수를 완성하시오.
 //
 // 제한사항
-// 3 ≤ k ≤ 100
-// 7 ≤ score의 길이 ≤ 1,000
-// 0 ≤ score[i] ≤ 2,000
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+// 1 ≤ number ≤ 100,000
+// 2 ≤ limit ≤ 100
+// 1 ≤ power ≤ limit
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        int k = 3;
-//        int[] score = {10, 100, 20, 150, 1, 100, 200};
+//        int number = 5;
+//        int limit = 3;
+//        int power = 2;
 
-        int k = 4;
-        int[] score = {0, 300, 40, 300, 20, 70, 150, 50, 500, 1000};
+        int number = 10;
+        int limit = 3;
+        int power = 2;
 
-        solution(k, score);
+        solution(number, limit, power);
     }
 
-    public static int[] solution(int k, int[] score) {
+    public static int solution(int number, int limit, int power) {
 
-        List<Integer> hallOfFame = new ArrayList<>();   // 명예의 전당
-        int[] result = new int[score.length];           // 결과 리스트
+        int result = 0;     // 결과를 담을 변수
 
-        for(int i = 0; i < score.length; i ++) {
-            if(hallOfFame.size() == k) {
-                int min = Collections.min(hallOfFame);
-                if(score[i] > min) {
-                    hallOfFame.remove(Integer.valueOf(min));
-                    hallOfFame.add(score[i]);
-                }
-            } else {
-                hallOfFame.add(score[i]);
+        for(int i = 1; i <= number; i ++) {
+            int cnt = 0;    // 약수의 개수를 담을 변수
+            for(int j = 1; j * j <= i; j++) {
+                // 제곱근인 경우는 + 1
+                if(j * j == i) cnt++;
+                // i의 약수인 경우 + 2
+                else if (i % j == 0) cnt += 2;
             }
-            result[i] = Collections.min(hallOfFame);
+            // limit 초과 시 + power
+            if(cnt > limit) result += power;
+            else result += cnt;
         }
 
-        for(int i : result) {
-            System.out.println(i);
-        }
+        System.out.println(result);
 
-        int[] answer = result;
+        int answer = result;
         return answer;
     }
 }
