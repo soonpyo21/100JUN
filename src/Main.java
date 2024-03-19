@@ -1,57 +1,65 @@
 // 문제
-// 숫자나라 기사단의 각 기사에게는 1번부터 number까지 번호가 지정되어 있습니다.
-// 기사들은 무기점에서 무기를 구매하려고 합니다.
+// 과일 장수가 사과 상자를 포장하고 있습니다.
+// 사과는 상태에 따라 1점부터 k점까지의 점수로 분류하며, k점이 최상품의 사과이고 1점이 최하품의 사과입니다.
+// 사과 한 상자의 가격은 다음과 같이 결정됩니다.
 //
-// 각 기사는 자신의 기사 번호의 약수 개수에 해당하는 공격력을 가진 무기를 구매하려 합니다.
-// 단, 이웃나라와의 협약에 의해 공격력의 제한수치를 정하고,
-// 제한수치보다 큰 공격력을 가진 무기를 구매해야 하는 기사는 협약기관에서 정한 공격력을 가지는 무기를 구매해야 합니다.
+// 한 상자에 사과를 m개씩 담아 포장합니다.
+// 상자에 담긴 사과 중 가장 낮은 점수가 p (1 ≤ p ≤ k)점인 경우, 사과 한 상자의 가격은 p * m 입니다.
+// 과일 장수가 가능한 많은 사과를 팔았을 때, 얻을 수 있는 최대 이익을 계산하고자 합니다.(사과는 상자 단위로만 판매하며, 남는 사과는 버립니다)
 //
-// 예를 들어, 15번으로 지정된 기사단원은 15의 약수가 1, 3, 5, 15로 4개 이므로, 공격력이 4인 무기를 구매합니다.
-// 만약, 이웃나라와의 협약으로 정해진 공격력의 제한수치가 3이고 제한수치를 초과한 기사가 사용할 무기의 공격력이 2라면,
-// 15번으로 지정된 기사단원은 무기점에서 공격력이 2인 무기를 구매합니다.
-// 무기를 만들 때, 무기의 공격력 1당 1kg의 철이 필요합니다.
-// 그래서 무기점에서 무기를 모두 만들기 위해 필요한 철의 무게를 미리 계산하려 합니다.
+// 예를 들어, k = 3, m = 4, 사과 7개의 점수가 [1, 2, 3, 1, 2, 3, 1]이라면,
+// 다음과 같이 [2, 3, 2, 3]으로 구성된 사과 상자 1개를 만들어 판매하여 최대 이익을 얻을 수 있습니다.
 //
-// 기사단원의 수를 나타내는 정수 number와
-// 이웃나라와 협약으로 정해진 공격력의 제한수치를 나타내는 정수 limit와
-// 제한수치를 초과한 기사가 사용할 무기의 공격력을 나타내는 정수 power가 주어졌을 때,
-// 무기점의 주인이 무기를 모두 만들기 위해 필요한 철의 무게를 return 하는 solution 함수를 완성하시오.
+// (최저 사과 점수) x (한 상자에 담긴 사과 개수) x (상자의 개수) = 2 x 4 x 1 = 8
+// 사과의 최대 점수 k, 한 상자에 들어가는 사과의 수 m, 사과들의 점수 score가 주어졌을 때,
+// 과일 장수가 얻을 수 있는 최대 이익을 return하는 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 1 ≤ number ≤ 100,000
-// 2 ≤ limit ≤ 100
-// 1 ≤ power ≤ limit
+// 3 ≤ k ≤ 9
+// 3 ≤ m ≤ 10
+// 7 ≤ score의 길이 ≤ 1,000,000
+// 1 ≤ score[i] ≤ k
+// 이익이 발생하지 않는 경우에는 0을 return 해주세요.
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        int number = 5;
-//        int limit = 3;
-//        int power = 2;
+//        int k = 3;
+//        int m = 4;
+//        int[] score = {1, 2, 3, 1, 2, 3, 1};
 
-        int number = 10;
-        int limit = 3;
-        int power = 2;
+        int k = 4;
+        int m = 3;
+        int[] score = {4, 1, 2, 2, 4, 4, 4, 4, 1, 2, 4, 2};
 
-        solution(number, limit, power);
+        solution(k, m, score);
     }
 
-    public static int solution(int number, int limit, int power) {
+    public static int solution(int k, int m, int[] score) {
 
-        int result = 0;     // 결과를 담을 변수
+        int result = 0; // 결과값을 담을 변수
+        Integer[] wrapScore = new Integer[score.length]; // score 배열을 박싱할 래퍼 클래스 배열
 
-        for(int i = 1; i <= number; i ++) {
-            int cnt = 0;    // 약수의 개수를 담을 변수
-            for(int j = 1; j * j <= i; j++) {
-                // 제곱근인 경우는 + 1
-                if(j * j == i) cnt++;
-                // i의 약수인 경우 + 2
-                else if (i % j == 0) cnt += 2;
+        // 박싱 후, score를 내림차 순으로 정렬
+        for(int i = 0; i < score.length; i ++) {
+            wrapScore[i] = score[i];
+        }
+        Arrays.sort(wrapScore, Collections.reverseOrder());
+
+        int idx = 0;    // 1씩 증가할 인덱스
+        for(int i = 0; i < score.length / m; i ++) {
+            int[] box = new int[m];
+            for(int j = 0; j < m; j ++) {
+                box[j] = wrapScore[idx];
+                idx ++;
             }
-            // limit 초과 시 + power
-            if(cnt > limit) result += power;
-            else result += cnt;
+            Arrays.sort(box);
+            // result에 해당 상자의 최저 사과 점수 * 해당 상자의 사과 개수를 더해준다.
+            result += box[0] * m;
         }
 
         System.out.println(result);
