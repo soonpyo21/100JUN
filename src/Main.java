@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int[] ingredient = {2, 1, 1, 2, 3, 1, 2, 3, 1};
+        int[] ingredient = {1, 1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1};
 
         solution(ingredient);
     }
@@ -35,9 +35,9 @@ public class Main {
         str = Arrays.toString(ingredient).replaceAll("[^0-9]","");
 
         int result = 0;
-        for(int i = 0; i < str.length()/4; i ++) {
+        for(int i = str.length(); i >=0; i --) {
             if(str.contains("1231")) {
-                str.replace("1231", "");
+                str = str.replaceFirst("1231", "");
                 result ++;
             } else {
                 break;
