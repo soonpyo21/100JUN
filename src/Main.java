@@ -18,8 +18,6 @@
 // 1 ≤ ingredient의 길이 ≤ 1,000,000
 // ingredient의 원소는 1, 2, 3 중 하나의 값이며, 순서대로 빵, 야채, 고기를 의미합니다.
 
-import java.util.Arrays;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -31,16 +29,14 @@ public class Main {
 
     public static int solution(int[] ingredient) {
 
-        String str = "";
-        str = Arrays.toString(ingredient).replaceAll("[^0-9]","");
-
         int result = 0;
-        for(int i = str.length(); i >=0; i --) {
-            if(str.contains("1231")) {
-                str = str.replaceFirst("1231", "");
-                result ++;
-            } else {
-                break;
+        StringBuilder sb = new StringBuilder();
+
+        for (int j : ingredient) {
+            sb.append(j);
+            if (sb.length() > 3 && sb.subSequence(sb.length() - 4, sb.length()).equals("1231")) {
+                result++;
+                sb.delete(sb.length() - 4, sb.length());
             }
         }
 
