@@ -18,6 +18,8 @@
 // 1 ≤ ingredient의 길이 ≤ 1,000,000
 // ingredient의 원소는 1, 2, 3 중 하나의 값이며, 순서대로 빵, 야채, 고기를 의미합니다.
 
+import java.util.Stack;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -30,13 +32,22 @@ public class Main {
     public static int solution(int[] ingredient) {
 
         int result = 0;
-        StringBuilder sb = new StringBuilder();
+        Stack<Integer> stack = new Stack<>();
 
-        for (int j : ingredient) {
-            sb.append(j);
-            if (sb.length() > 3 && sb.subSequence(sb.length() - 4, sb.length()).equals("1231")) {
-                result++;
-                sb.delete(sb.length() - 4, sb.length());
+        for(int i = 0; i < ingredient.length; i ++) {
+            stack.push(ingredient[i]);
+
+            if(stack.size() >= 4) {
+                if(stack.get(stack.size()-4) == 1
+                && stack.get(stack.size()-3) == 2
+                && stack.get(stack.size()-2) == 3
+                && stack.get(stack.size()-1) == 1) {
+                    result ++;
+                    stack.pop();
+                    stack.pop();
+                    stack.pop();
+                    stack.pop();
+                }
             }
         }
 
