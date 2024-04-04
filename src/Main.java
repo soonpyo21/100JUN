@@ -23,19 +23,17 @@ public class Main {
     public static int solution(String[] babbling) {
 
         String[] word = {"aya", "ye", "woo", "ma"};
-        String temp = "";
         int result = 0;
 
         for(int i = 0; i < babbling.length; i ++) {
-            temp = babbling[i];
             for(int j = 0; j < word.length; j ++) {
 
-                if(babbling[i].contains(word[j])) {
-                    temp = temp.replaceFirst(word[j], "");
+                if(babbling[i].contains(word[j]) && !babbling[i].contains(word[j] + word[j])) {
+                    babbling[i] = babbling[i].replace(word[j], " ");
                 }
             }
 
-            if("".equals(temp)) result++;
+            if("".equals(babbling[i].replace(" ",""))) result++;
         }
 
         System.out.println(result);
