@@ -29,6 +29,7 @@ public class Main {
         int n = 20;
 
         solution(a, b, n);
+
     }
 
     public static int solution(int a, int b, int n) {
@@ -39,7 +40,7 @@ public class Main {
         while(n > a) {
             coke += n / a;
             remain += n % a;
-            n -= a * (n / a) + (n / a);
+            n = n - a * (n / a) + (n / a);
         }
 
         if(remain >= a) {
