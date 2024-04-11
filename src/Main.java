@@ -1,44 +1,54 @@
 // 문제
-// 머쓱이는 태어난 지 11개월 된 조카를 돌보고 있습니다.
-// 조카는 아직 "aya", "ye", "woo", "ma" 네 가지 발음과
-// 네 가지 발음을 조합해서 만들 수 있는 발음밖에 하지 못하고 연속해서 같은 발음을 하는 것을 어려워합니다.
-// 문자열 배열 babbling이 매개변수로 주어질 때,
-// 머쓱이의 조카가 발음할 수 있는 단어의 개수를 return하도록 solution 함수를 완성해주세요.
+// 오래전 유행했던 콜라 문제가 있습니다. 콜라 문제의 지문은 다음과 같습니다.
+// 정답은 아무에게도 말하지 마세요.
+// 콜라 빈 병 2개를 가져다주면 콜라 1병을 주는 마트가 있다. 빈 병 20개를 가져다주면 몇 병을 받을 수 있는가?
+// 단, 보유 중인 빈 병이 2개 미만이면, 콜라를 받을 수 없다.
+// 문제를 풀던 상빈이는 콜라 문제의 완벽한 해답을 찾았습니다.
+// 상빈이가 푼 방법은 아래 그림과 같습니다.
+// 우선 콜라 빈 병 20병을 가져가서 10병을 받습니다.
+// 받은 10병을 모두 마신 뒤, 가져가서 5병을 받습니다.
+// 5병 중 4병을 모두 마신 뒤 가져가서 2병을 받고, 또 2병을 모두 마신 뒤 가져가서 1병을 받습니다.
+// 받은 1병과 5병을 받았을 때 남은 1병을 모두 마신 뒤 가져가면 1병을 또 받을 수 있습니다.
+// 이 경우 상빈이는 총 10 + 5 + 2 + 1 + 1 = 19병의 콜라를 받을 수 있습니다.
+// 문제를 열심히 풀던 상빈이는 일반화된 콜라 문제를 생각했습니다. 이 문제는 빈 병 a개를 가져다주면 콜라 b병을 주는 마트가 있을 때, 빈 병 n개를 가져다주면 몇 병을 받을 수 있는지 계산하는 문제입니다. 기존 콜라 문제와 마찬가지로, 보유 중인 빈 병이 a개 미만이면, 추가적으로 빈 병을 받을 순 없습니다. 상빈이는 열심히 고심했지만, 일반화된 콜라 문제의 답을 찾을 수 없었습니다. 상빈이를 도와, 일반화된 콜라 문제를 해결하는 프로그램을 만들어 주세요.
+//
+// 콜라를 받기 위해 마트에 주어야 하는 병 수 a, 빈 병 a개를 가져다 주면 마트가 주는 콜라 병 수 b,
+// 상빈이가 가지고 있는 빈 병의 개수 n이 매개변수로 주어집니다.
+// 상빈이가 받을 수 있는 콜라의 병 수를 return 하도록 solution 함수를 작성해주세요.
 //
 // 제한사항
-// 1 ≤ babbling의 길이 ≤ 100
-// 1 ≤ babbling[i]의 길이 ≤ 30
-// 문자열은 알파벳 소문자로만 이루어져 있습니다.
+// 1 ≤ b < a ≤ n ≤ 1,000,000
+// 정답은 항상 int 범위를 넘지 않게 주어집니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        String[] babbling = {"aya", "yee", "u", "maa"};
-//        String[] babbling = {"ayaye", "uuu", "yeye", "yemawoo", "ayaayaa"};
-        String[] babbling = {"ayayeaya"};
-        solution(babbling);
+        int a = 3;
+        int b = 1;
+        int n = 20;
+
+        solution(a, b, n);
     }
 
-    public static int solution(String[] babbling) {
+    public static int solution(int a, int b, int n) {
 
-        String[] word = {"aya", "ye", "woo", "ma"};
-        int result = 0;
+        int coke = 0;
+        int remain = 0;
 
-        for(int i = 0; i < babbling.length; i ++) {
-            for(int j = 0; j < word.length; j ++) {
-
-                if(babbling[i].contains(word[j]) && !babbling[i].contains(word[j] + word[j])) {
-                    babbling[i] = babbling[i].replace(word[j], " ");
-                }
-            }
-
-            if("".equals(babbling[i].replace(" ",""))) result++;
+        while(n > a) {
+            coke += n / a;
+            remain += n % a;
+            n -= a * (n / a) + (n / a);
         }
 
-        System.out.println(result);
+        if(remain >= a) {
+            coke += a / remain;
+        }
 
-        int answer = result;
+        System.out.println(coke);
+
+        int answer = coke;
         return answer;
     }
 }
