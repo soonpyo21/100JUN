@@ -37,14 +37,14 @@ public class Main {
         int coke = 0;
         int remain = 0;
 
-        while(n > a) {
-            coke += n / a;
-            remain += n % a;
-            n = n - a * (n / a) + (n / a);
-        }
-
-        if(remain >= a) {
-            coke += a / remain;
+        while(n >= a) {
+            coke += b * (n / a);
+            if(n % a != 0) {
+                remain = n % a;
+                n = b * (n / a) + remain;
+            } else {
+                n = b * (n / a);
+            }
         }
 
         System.out.println(coke);
