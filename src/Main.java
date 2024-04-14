@@ -22,7 +22,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int[] number = {-2, 3, 0, 2, -5};
+//        int[] number = {-2, 3, 0, 2, -5};
+        int[] number = {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0};
 
         solution(number);
 
@@ -41,9 +42,10 @@ public class Main {
                     if(k == i || k == j) continue;
                     int third = number[k];
                     if(first + second + third == 0) {
-                        Integer[] iArr = {first, second, third};
+                        Integer[] iArr = {i, j, k};
                         Arrays.sort(iArr);
                         set.add("" + iArr[0] + iArr[1] + iArr[2]);
+                        System.out.println(first + "" + second + "" + third);
                     }
                 }
             }
@@ -51,7 +53,7 @@ public class Main {
 
         System.out.println(set.size());
 
-        int answer = set.size();
+        int answer = 0;
         return answer;
     }
 }
