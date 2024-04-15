@@ -56,6 +56,8 @@ public class Main {
         }
 
         for(int i = xList.size()-1; i >= 0; i --) {
+
+            /* step1. 테스트 케이스 11 ~ 15 시간 초과
             for(int j = yList.size()-1; j >= 0; j --) {
                 if(xList.get(i).equals(yList.get(j))) {
                     iList.add(Integer.parseInt(xList.get(i)));
@@ -63,6 +65,13 @@ public class Main {
                     yList.remove(j);
                     break;
                 }
+            }
+            */
+
+            if(yList.indexOf(xList.get(i)) > -1) {
+                iList.add(Integer.parseInt(xList.get(i)));
+                yList.remove(yList.indexOf(xList.get(i)));
+                xList.remove(i);
             }
         }
 
