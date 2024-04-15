@@ -19,9 +19,7 @@ temp
 // X, Y는 0으로 시작하지 않습니다.
 // X, Y의 짝꿍은 상당히 큰 정수일 수 있으므로, 문자열로 반환합니다.
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 public class Main {
 
@@ -42,54 +40,44 @@ public class Main {
 
     public static String solution(String X, String Y) {
 
+        StringBuffer sb = new StringBuffer();
         String result = "";
-        List<Integer> iList = new ArrayList<>();
-        List<String> xList = new ArrayList<>();
-        List<String> yList = new ArrayList<>();
 
-        for(int i = 0; i < X.length(); i++) {
-            xList.add(String.valueOf(X.charAt(i)));
+        String[] xSplit = X.split("");
+        String[] ySplit = Y.split("");
+
+        int[] xArr = new int[10];
+        int[] yArr = new int[10];
+
+        Arrays.fill(xArr, 0);
+        Arrays.fill(yArr, 0);
+
+        for(int i = 0; i < X.length(); i ++) {
+            xArr[Integer.parseInt(xSplit[i])] = ++ xArr[Integer.parseInt(xSplit[i])];
         }
 
-        for(int i = 0; i < Y.length(); i++) {
-            yList.add(String.valueOf(Y.charAt(i)));
+        for(int i = 0; i < Y.length(); i ++) {
+            yArr[Integer.parseInt(ySplit[i])] = ++ yArr[Integer.parseInt(ySplit[i])];
         }
 
-        for(int i = xList.size()-1; i >= 0; i --) {
-
-            /* step1. 테스트 케이스 11 ~ 15 시간 초과
-            for(int j = yList.size()-1; j >= 0; j --) {
-                if(xList.get(i).equals(yList.get(j))) {
-                    iList.add(Integer.parseInt(xList.get(i)));
-                    xList.remove(i);
-                    yList.remove(j);
-                    break;
+        for(int i = 9; i >= 0; i --) {
+            if(xArr[i] > 0 && yArr[i] > 0) {
+                int loop = xArr[i] > yArr[i] ? yArr[i] : xArr[i];
+                for(int j = 0; j < loop; j ++) {
+                    sb.append(i);
                 }
             }
-            */
-
-            if(yList.indexOf(xList.get(i)) > -1) {
-                iList.add(Integer.parseInt(xList.get(i)));
-                yList.remove(yList.indexOf(xList.get(i)));
-                xList.remove(i);
-            }
         }
 
-        Collections.sort(iList, Collections.reverseOrder());
-
-        if(iList.size() == 0) {
+        if(sb.length() == 0) {
             result = "-1";
         } else {
-            if(iList.get(0) == 0) {
+            if(sb.charAt(0) == '0') {
                 result = "0";
             } else {
-                for(Integer i : iList) {
-                    result += i + "";
-                }
+                result = sb.toString();
             }
         }
-
-        System.out.println(result);
 
         String answer = result;
         return answer;
