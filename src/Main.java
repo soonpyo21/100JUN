@@ -1,35 +1,58 @@
 // 문제
-// 새로 생긴 놀이기구는 인기가 매우 많아 줄이 끊이질 않습니다.
-// 이 놀이기구의 원래 이용료는 price원 인데, 놀이기구를 N 번 째 이용한다면 원래 이용료의 N배를 받기로 하였습니다.
-// 즉, 처음 이용료가 100이었다면 2번째에는 200, 3번째에는 300으로 요금이 인상됩니다.
-// 놀이기구를 count번 타게 되면 현재 자신이 가지고 있는 금액에서 얼마가 모자라는지를 return 하도록 solution 함수를 완성하세요.
-// 단, 금액이 부족하지 않으면 0을 return 하세요.
+// 네오와 프로도가 숫자놀이를 하고 있습니다.
+// 네오가 프로도에게 숫자를 건넬 때 일부 자릿수를 영단어로 바꾼 카드를 건네주면 프로도는 원래 숫자를 찾는 게임입니다.
+//
+// 다음은 숫자의 일부 자릿수를 영단어로 바꾸는 예시입니다.
+//
+// 1478 → "one4seveneight"
+// 234567 → "23four5six7"
+// 10203 → "1zerotwozero3"
+// 이렇게 숫자의 일부 자릿수가 영단어로 바뀌어졌거나, 혹은 바뀌지 않고 그대로인 문자열 s가 매개변수로 주어집니다.
+// s가 의미하는 원래 숫자를 return 하도록 solution 함수를 완성해주세요.
+//
+// 참고로 각 숫자에 대응되는 영단어는 다음 표와 같습니다.
+//
+// 숫자	영단어
+// 0	zero
+// 1	one
+// 2	two
+// 3	three
+// 4	four
+// 5	five
+// 6	six
+// 7	seven
+// 8	eight
+// 9	nine
 //
 // 제한사항
-// 놀이기구의 이용료 price : 1 ≤ price ≤ 2,500, price는 자연수
-// 처음 가지고 있던 금액 money : 1 ≤ money ≤ 1,000,000,000, money는 자연수
-// 놀이기구의 이용 횟수 count : 1 ≤ count ≤ 2,500, count는 자연수
+// 1 ≤ s의 길이 ≤ 50
+// s가 "zero" 또는 "0"으로 시작하는 경우는 주어지지 않습니다.
+// return 값이 1 이상 2,000,000,000 이하의 정수가 되는 올바른 입력만 s로 주어집니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int price = 3;
-        int money = 20;
-        int count = 4;
+        String s = "one4seveneight";
 
-        solution(price, money, count);
+        solution(s);
 
     }
 
-    public static long solution(int price, int money, int count) {
+    public static int solution(String s) {
 
-        long total = 0;
-        for(int i = 1; i <= count; i ++) {
-            total += price * i;
-        }
+        String replaceS = s.replace("zero", "0")
+                            .replace("one","1")
+                            .replace("two","2")
+                            .replace("three","3")
+                            .replace("four","4")
+                            .replace("five","5")
+                            .replace("six","6")
+                            .replace("seven","7")
+                            .replace("eight","8")
+                            .replace("nine","9");
 
-        long answer = money >= total ? 0 : total - money;
+        int answer = Integer.parseInt(replaceS);
         return answer;
     }
 }
