@@ -1,31 +1,29 @@
 // 문제
-// 어떤 정수들이 있습니다.
-// 이 정수들의 절댓값을 차례대로 담은 정수 배열 absolutes와 이 정수들의 부호를 차례대로 담은 불리언 배열 signs가 매개변수로 주어집니다.
-// 실제 정수들의 합을 구하여 return 하도록 solution 함수를 완성해주세요.
+// 길이가 같은 두 1차원 정수 배열 a, b가 매개변수로 주어집니다.
+// a와 b의 내적을 return 하도록 solution 함수를 완성해주세요.
+// 이때, a와 b의 내적은 a[0]*b[0] + a[1]*b[1] + ... + a[n-1]*b[n-1] 입니다. (n은 a, b의 길이)
 //
 // 제한사항
-// absolutes의 길이는 1 이상 1,000 이하입니다.
-// absolutes의 모든 수는 각각 1 이상 1,000 이하입니다.
-// signs의 길이는 absolutes의 길이와 같습니다.
-// signs[i] 가 참이면 absolutes[i] 의 실제 정수가 양수임을, 그렇지 않으면 음수임을 의미합니다.
+// a, b의 길이는 1 이상 1,000 이하입니다.
+// a, b의 모든 수는 -1,000 이상 1,000 이하입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int[] absolutes = {4,7,12};
-        boolean[] signs = {true,false,true};
+        int[] a = {1,2,3,4};
+        int[] b = {-3,-1,0,2};
 
-        solution(absolutes, signs);
+        solution(a, b);
 
     }
 
-    public static int solution(int[] absolutes, boolean[] signs) {
+    public static int solution(int[] a, int[] b) {
 
         int result = 0;
 
-        for(int i = 0; i < absolutes.length; i ++) {
-            result = signs[i] ? result + absolutes[i] : result - absolutes[i];
+        for(int i = 0; i < a.length; i ++) {
+            result += a[i] * b[i];
         }
 
         int answer = result;
