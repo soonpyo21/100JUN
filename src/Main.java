@@ -1,29 +1,34 @@
 // 문제
-// 길이가 같은 두 1차원 정수 배열 a, b가 매개변수로 주어집니다.
-// a와 b의 내적을 return 하도록 solution 함수를 완성해주세요.
-// 이때, a와 b의 내적은 a[0]*b[0] + a[1]*b[1] + ... + a[n-1]*b[n-1] 입니다. (n은 a, b의 길이)
+// 자연수 n이 매개변수로 주어집니다.
+// n을 3진법 상에서 앞뒤로 뒤집은 후, 이를 다시 10진법으로 표현한 수를 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한사항
-// a, b의 길이는 1 이상 1,000 이하입니다.
-// a, b의 모든 수는 -1,000 이상 1,000 이하입니다.
+// n은 1 이상 100,000,000 이하인 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int[] a = {1,2,3,4};
-        int[] b = {-3,-1,0,2};
+        int n = 45;
 
-        solution(a, b);
+        solution(n);
 
     }
 
-    public static int solution(int[] a, int[] b) {
+    public static int solution(int n) {
 
+        StringBuilder sb = new StringBuilder();
         int result = 0;
+        int num = 1;
 
-        for(int i = 0; i < a.length; i ++) {
-            result += a[i] * b[i];
+        while(n > 0) {
+            sb.append(n % 3);
+            n = n / 3;
+        }
+
+        for(int i = sb.length() - 1; i >= 0; i --) {
+            result += (sb.charAt(i) - '0') * num;
+            num *= 3;
         }
 
         int answer = result;
