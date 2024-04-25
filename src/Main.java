@@ -1,37 +1,49 @@
 // 문제
-// 자연수 n이 매개변수로 주어집니다.
-// n을 3진법 상에서 앞뒤로 뒤집은 후, 이를 다시 10진법으로 표현한 수를 return 하도록 solution 함수를 완성해주세요.
+// 정수 배열 numbers가 주어집니다.
+// numbers에서 서로 다른 인덱스에 있는 두 개의 수를 뽑아 더해서 만들 수 있는 모든 수를
+// 배열에 오름차순으로 담아 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한사항
-// n은 1 이상 100,000,000 이하인 자연수입니다.
+// numbers의 길이는 2 이상 100 이하입니다.
+// numbers의 모든 수는 0 이상 100 이하입니다.
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 45;
+        int[] numbers = {2,1,3,4,1};
 
-        solution(n);
-
+        solution(numbers);
     }
 
-    public static int solution(int n) {
+    public static int[] solution(int[] numbers) {
 
-        StringBuilder sb = new StringBuilder();
-        int result = 0;
-        int num = 1;
+        Set<Integer> set = new HashSet<>();
 
-        while(n > 0) {
-            sb.append(n % 3);
-            n = n / 3;
+        for(int i = 0; i < numbers.length; i ++) {
+            for(int j = 0; j < numbers.length; j ++) {
+                if(i != j) {
+                    set.add(numbers[i] + numbers[j]);
+                }
+            }
         }
 
-        for(int i = sb.length() - 1; i >= 0; i --) {
-            result += (sb.charAt(i) - '0') * num;
-            num *= 3;
+        int[] result = new int[set.size()];
+        int idx = 0;
+        Iterator<Integer> iterSet = set.iterator();
+        while(iterSet.hasNext()) {
+            result[idx] = iterSet.next();
+            idx ++;
         }
 
-        int answer = result;
+        Arrays.sort(result);
+
+        int[] answer = result;
         return answer;
     }
 }
