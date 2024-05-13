@@ -1,41 +1,22 @@
 // 문제
-// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수, solution을 완성해 보세요.
-// 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.
-// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.
+// 정수 num이 짝수일 경우 "Even"을 반환하고 홀수인 경우 "Odd"를 반환하는 함수, solution을 완성해주세요.
 //
 // 제한사항
-// 두 수는 1이상 1000000이하의 자연수입니다.
+// num은 int 범위의 정수입니다.
+// 0은 짝수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 3;
-        int m = 12;
+        int num = 3;
 
-        solution(n,m);
+        solution(num);
     }
 
-    public static int[] solution(int n, int m) {
+    public static String solution(int num) {
 
-        int[] answer = new int[2];
-        int max = Math.max(n, m);
-        int min = Math.min(n, m);
-        int remain = 0;
-
-        while(true) {
-            remain = max % min;
-            if(remain != 0) {
-                max = min;
-                min = remain;
-            } else {
-                break;
-            }
-        }
-
-        answer[0] = min;
-        answer[1] = n * m / min;
-
+        String answer = num % 2 == 0 ? "Even" : "Odd";
         return answer;
     }
 }
