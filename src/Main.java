@@ -1,43 +1,40 @@
 // 문제
-// 1937년 Collatz란 사람에 의해 제기된 이 추측은,
-// 주어진 수가 1이 될 때까지 다음 작업을 반복하면, 모든 수를 1로 만들 수 있다는 추측입니다.
-// 작업은 다음과 같습니다.
-//
-// 1-1. 입력된 수가 짝수라면 2로 나눕니다.
-// 1-2. 입력된 수가 홀수라면 3을 곱하고 1을 더합니다.
-// 2. 결과로 나온 수에 같은 작업을 1이 될 때까지 반복합니다.
-//
-// 예를 들어, 주어진 수가 6이라면 6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1 이 되어 총 8번 만에 1이 됩니다.
-// 위 작업을 몇 번이나 반복해야 하는지 반환하는 함수, solution을 완성해 주세요.
-// 단, 주어진 수가 1인 경우에는 0을,
-// 작업을 500번 반복할 때까지 1이 되지 않는다면 –1을 반환해 주세요.
+// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수, solution을 완성해 보세요.
+// 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.
+// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.
 //
 // 제한사항
-// 입력된 수, num은 1 이상 8,000,000 미만인 정수입니다.
+// 두 수는 1이상 1000000이하의 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int num = 626331;
+        int n = 3;
+        int m = 12;
 
-        solution(num);
+        solution(n,m);
     }
 
-    public static int solution(int num) {
+    public static int[] solution(int n, int m) {
 
-        int answer = 0;
-        long n = (long) num;
+        int[] answer = new int[2];
+        int max = Math.max(n, m);
+        int min = Math.min(n, m);
+        int remain = 0;
 
-        while(n > 1) {
-            n = n % 2 == 0 ? n / 2 : n * 3 + 1;
-            answer ++;
-
-            if(answer == 500) {
-                answer = -1;
+        while(true) {
+            remain = max % min;
+            if(remain != 0) {
+                max = min;
+                min = remain;
+            } else {
                 break;
             }
         }
+
+        answer[0] = min;
+        answer[1] = n * m / min;
 
         return answer;
     }
