@@ -1,35 +1,34 @@
 // 문제
-// 함수 solution은 정수 n을 매개변수로 입력받습니다.
-// n의 각 자릿수를 큰것부터 작은 순으로 정렬한 새로운 정수를 리턴해주세요.
-// 예를들어 n이 118372면 873211을 리턴하면 됩니다.
+// 자연수 n을 뒤집어 각 자리 숫자를 원소로 가지는 배열 형태로 리턴해주세요.
+// 예를들어 n이 12345이면 [5,4,3,2,1]을 리턴합니다.
 //
 // 제한사항
-// n은 1이상 8000000000 이하인 자연수입니다.
-
-import java.util.Arrays;
-import java.util.Collections;
+// n은 10,000,000,000이하인 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        long n = 118372;
+        long n = 12345;
 
         solution(n);
     }
 
-    public static long solution(long n) {
+    public static int[] solution(long n) {
 
-        String[] sArr = String.valueOf(n).split("");
-        String str = "";
+        StringBuilder sb = new StringBuilder();
+        int[] answer = new int[String.valueOf(n).length()];
 
-        Arrays.sort(sArr, Collections.reverseOrder());
-
-        for(String s : sArr) {
-            str += s;
+        for(int i = 0; i < String.valueOf(n).length(); i ++) {
+            sb.append(String.valueOf(n).charAt(i));
         }
 
-        long answer = Long.parseLong(str);
+        sb.reverse();
+
+        for(int i = 0; i < sb.length(); i ++) {
+            answer[i] = sb.charAt(i) - '0';
+        }
+
         return answer;
     }
 }
