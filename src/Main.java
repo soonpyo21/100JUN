@@ -1,25 +1,34 @@
 // 문제
-// 자연수 N이 주어지면, N의 각 자릿수의 합을 구해서 return 하는 solution 함수를 만들어 주세요.
-// 예를들어 N = 123이면 1 + 2 + 3 = 6을 return 하면 됩니다.
+// 문자열 s는 한 개 이상의 단어로 구성되어 있습니다. 각 단어는 하나 이상의 공백문자로 구분되어 있습니다.
+// 각 단어의 짝수번째 알파벳은 대문자로, 홀수번째 알파벳은 소문자로 바꾼 문자열을 리턴하는 함수, solution을 완성하세요.
 //
 // 제한사항
-// N의 범위 : 100,000,000 이하의 자연수
+// 문자열 전체의 짝/홀수 인덱스가 아니라, 단어(공백을 기준)별로 짝/홀수 인덱스를 판단해야합니다.
+// 첫 번째 글자는 0번째 인덱스로 보아 짝수번째 알파벳으로 처리해야 합니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 123;
+        String s = "try hello world";
 
-        solution(n);
+        solution(s);
     }
 
-    public static int solution(int n) {
+    public static String solution(String s) {
 
-        int answer = 0;
+        String[] sArr = s.split("");
+        String answer = "";
+        int idx = 0;
 
-        for(int i = 0; i < String.valueOf(n).length(); i ++) {
-            answer += String.valueOf(n).charAt(i) - '0';
+        for(String str : sArr) {
+            if(str.equals(" ")) {
+                answer += " ";
+                idx = 0;
+            } else {
+                answer += idx % 2 == 0 ? str.toUpperCase() : str.toLowerCase();
+                idx ++;
+            }
         }
 
         return answer;
