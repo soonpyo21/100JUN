@@ -1,27 +1,41 @@
 // 문제
-// 정수 n을 입력받아 n의 약수를 모두 더한 값을 리턴하는 함수, solution을 완성해주세요.
+// 어떤 문장의 각 알파벳을 일정한 거리만큼 밀어서 다른 알파벳으로 바꾸는 암호화 방식을 시저 암호라고 합니다.
+// 예를 들어 "AB"는 1만큼 밀면 "BC"가 되고, 3만큼 밀면 "DE"가 됩니다.
+// "z"는 1만큼 밀면 "a"가 됩니다. 문자열 s와 거리 n을 입력받아 s를 n만큼 민 암호문을 만드는 함수, solution을 완성해 보세요.
 //
 // 제한사항
-// n은 0 이상 3000이하인 정수입니다.
+// 공백은 아무리 밀어도 공백입니다.
+// s는 알파벳 소문자, 대문자, 공백으로만 이루어져 있습니다.
+// s의 길이는 8000이하입니다.
+// n은 1 이상, 25이하인 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 12;
+        String s = "AB";
+        int n = 1;
 
-        solution(n);
+        solution(s,n);
     }
 
-    public static int solution(int n) {
+    public static String solution(String s, int n) {
 
-        int answer = 0;
+        String answer = "";
 
-        for(int i = 1; i <= Math.sqrt(n); i ++) {
-            if(n % i == 0) {
-                answer += i;
-                if(n / i != i) answer += n / i;
+        for(int i = 0; i < s.length(); i ++) {
+            char word = s.charAt(i);
+            if(word == ' ') {
+                answer += " ";
+                continue;
             }
+
+            if(word <= 90) {
+                answer += s.charAt(i) + n <= 90 ? (char) (s.charAt(i) + n) : (char) (s.charAt(i) + n - 26);
+            } else {
+                answer += s.charAt(i) + n <= 122 ? (char) (s.charAt(i) + n) : (char) (s.charAt(i) + n - 26);
+            }
+
         }
 
         return answer;
