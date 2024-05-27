@@ -1,24 +1,35 @@
 // 문제
-// 길이가 n이고, "수박수박수박수...."와 같은 패턴을 유지하는 문자열을 리턴하는 함수,
-// solution을 완성하세요. 예를들어 n이 4이면 "수박수박"을 리턴하고 3이라면 "수박수"를 리턴하면 됩니다.
+// 1부터 입력받은 숫자 n 사이에 있는 소수의 개수를 반환하는 함수, solution을 만들어 보세요.
+// 소수는 1과 자기 자신으로만 나누어지는 수를 의미합니다.
+// (1은 소수가 아닙니다.)
 //
 // 제한사항
-// n은 길이 10,000이하인 자연수입니다.
+// n은 2이상 1000000이하의 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 3;
+        int n = 10;
 
         solution(n);
     }
 
-    public static String solution(int n) {
-        String answer = "";
+    public static int solution(int n) {
+        int answer = 0;
+        boolean[] arr = new boolean[n + 1];
+        arr[0] = arr[1] = true;
 
-        for(int i = 0; i < n; i ++) {
-            answer += i % 2 == 0 ? "수" : "박";
+        for(int i = 2; i <= Math.sqrt(n); i ++) {
+            if(arr[i] == true) continue;
+
+            for(int j = i * i; j < arr.length; j = j + i) {
+                arr[j] = true;
+            }
+        }
+
+        for(int i = 0; i < arr.length; i ++) {
+            if(arr[i] == false) answer ++;
         }
 
         return answer;
