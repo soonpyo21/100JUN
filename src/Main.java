@@ -1,35 +1,27 @@
 // 문제
-// 1부터 입력받은 숫자 n 사이에 있는 소수의 개수를 반환하는 함수, solution을 만들어 보세요.
-// 소수는 1과 자기 자신으로만 나누어지는 수를 의미합니다.
-// (1은 소수가 아닙니다.)
+// String형 배열 seoul의 element중 "Kim"의 위치 x를 찾아,
+// "김서방은 x에 있다"는 String을 반환하는 함수, solution을 완성하세요.
+// seoul에 "Kim"은 오직 한 번만 나타나며 잘못된 값이 입력되는 경우는 없습니다.
 //
 // 제한사항
-// n은 2이상 1000000이하의 자연수입니다.
+// seoul은 길이 1 이상, 1000 이하인 배열입니다.
+// seoul의 원소는 길이 1 이상, 20 이하인 문자열입니다.
+// "Kim"은 반드시 seoul 안에 포함되어 있습니다.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 10;
+        String[] seoul = {"Jane", "Kim"};
 
-        solution(n);
+        solution(seoul);
     }
 
-    public static int solution(int n) {
-        int answer = 0;
-        boolean[] arr = new boolean[n + 1];
-        arr[0] = arr[1] = true;
+    public static String solution(String[] seoul) {
+        String answer = "";
 
-        for(int i = 2; i <= Math.sqrt(n); i ++) {
-            if(arr[i] == true) continue;
-
-            for(int j = i * i; j < arr.length; j = j + i) {
-                arr[j] = true;
-            }
-        }
-
-        for(int i = 0; i < arr.length; i ++) {
-            if(arr[i] == false) answer ++;
+        for(int i = 0; i < seoul.length; i ++) {
+            if(seoul[i].equals("Kim")) answer = "김서방은 " + i + "에 있다";
         }
 
         return answer;
