@@ -1,36 +1,27 @@
 // 문제
-// 문자열 s의 길이가 4 혹은 6이고, 숫자로만 구성돼있는지 확인해주는 함수,
-// solution을 완성하세요.
-// 예를 들어 s가 "a234"이면 False를 리턴하고 "1234"라면 True를 리턴하면 됩니다.
+// 문자열 s에 나타나는 문자를 큰것부터 작은 순으로 정렬해 새로운 문자열을 리턴하는 함수, solution을 완성해주세요.
+// s는 영문 대소문자로만 구성되어 있으며, 대문자는 소문자보다 작은 것으로 간주합니다.
 //
 // 제한사항
-// s는 길이 1 이상, 길이 8 이하인 문자열입니다.
-// s는 영문 알파벳 대소문자 또는 0부터 9까지 숫자로 이루어져 있습니다.
+// str은 길이 1 이상인 문자열입니다.
+
+import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String s = "a234";
+        String s = "Zbcdefg";
 
         solution(s);
     }
 
-    public static boolean solution(String s) {
-        boolean answer = true;
+    public static String solution(String s) {
         char[] arr = s.toCharArray();
+        StringBuilder sb = new StringBuilder();
 
-        if(!(arr.length == 4 || arr.length == 6)) {
-            answer = false;
-            return answer;
-        }
-
-        for(char c : arr) {
-            if(!(c >= '0' && c <= '9')) {
-                answer = false;
-                break;
-            }
-        }
+        Arrays.sort(arr);
+        String answer = sb.append(arr).reverse().toString();
 
         return answer;
     }
