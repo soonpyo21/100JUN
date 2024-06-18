@@ -1,87 +1,42 @@
 // 문제
-// 카카오톡 게임별의 하반기 신규 서비스로 다트 게임을 출시하기로 했다.
-// 다트 게임은 다트판에 다트를 세 차례 던져 그 점수의 합계로 실력을 겨루는 게임으로, 모두가 간단히 즐길 수 있다.
-// 갓 입사한 무지는 코딩 실력을 인정받아 게임의 핵심 부분인 점수 계산 로직을 맡게 되었다. 다트 게임의 점수 계산 로직은 아래와 같다.
+// 수많은 마라톤 선수들이 마라톤에 참여하였습니다. 단 한 명의 선수를 제외하고는 모든 선수가 마라톤을 완주하였습니다.
+// 마라톤에 참여한 선수들의 이름이 담긴 배열 participant와 완주한 선수들의 이름이 담긴 배열 completion이 주어질 때,
+// 완주하지 못한 선수의 이름을 return 하도록 solution 함수를 작성해주세요.
 //
-// 다트 게임은 총 3번의 기회로 구성된다.
-// 각 기회마다 얻을 수 있는 점수는 0점에서 10점까지이다.
-// 점수와 함께 Single(S), Double(D), Triple(T) 영역이 존재하고 각 영역 당첨 시 점수에서 1제곱, 2제곱, 3제곱 (점수1 , 점수2 , 점수3 )으로 계산된다.
-// 옵션으로 스타상(*) , 아차상(#)이 존재하며 스타상(*) 당첨 시 해당 점수와 바로 전에 얻은 점수를 각 2배로 만든다. 아차상(#) 당첨 시 해당 점수는 마이너스된다.
-// 스타상(*)은 첫 번째 기회에서도 나올 수 있다. 이 경우 첫 번째 스타상(*)의 점수만 2배가 된다. (예제 4번 참고)
-// 스타상(*)의 효과는 다른 스타상(*)의 효과와 중첩될 수 있다. 이 경우 중첩된 스타상(*) 점수는 4배가 된다. (예제 4번 참고)
-// 스타상(*)의 효과는 아차상(#)의 효과와 중첩될 수 있다. 이 경우 중첩된 아차상(#)의 점수는 -2배가 된다. (예제 5번 참고)
-// Single(S), Double(D), Triple(T)은 점수마다 하나씩 존재한다.
-// 스타상(*), 아차상(#)은 점수마다 둘 중 하나만 존재할 수 있으며, 존재하지 않을 수도 있다.
-// 0~10의 정수와 문자 S, D, T, *, #로 구성된 문자열이 입력될 시 총점수를 반환하는 함수를 작성하라.
-//
-// 입력 형식
-// "점수|보너스|[옵션]"으로 이루어진 문자열 3세트.
-// 예) 1S2D*3T
-//
-// 점수는 0에서 10 사이의 정수이다.
-// 보너스는 S, D, T 중 하나이다.
-// 옵선은 *이나 # 중 하나이며, 없을 수도 있다.
-//
-// 출력 형식
-// 3번의 기회에서 얻은 점수 합계에 해당하는 정수값을 출력한다.
-// 예) 37
+// 제한사항
+// 마라톤 경기에 참여한 선수의 수는 1명 이상 100,000명 이하입니다.
+// completion의 길이는 participant의 길이보다 1 작습니다.
+// 참가자의 이름은 1개 이상 20개 이하의 알파벳 소문자로 이루어져 있습니다.
+// 참가자 중에는 동명이인이 있을 수 있습니다.
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String dartResult = "1S2D*3T";
-        solution(dartResult);
+        String[] participant = {"leo", "kiki", "eden"};
+        String[] completion = {"eden", "kiki"};
+        solution(participant, completion);
     }
 
-    public static int solution(String dartResult) {
+    public static String solution(String[] participant, String[] completion) {
 
-        int num = 0;
-        List<Integer> numList = new ArrayList<>();
-        int idx = 0;
+        Arrays.sort(participant);
+        Arrays.sort(completion);
 
-        for(int i = 0; i < dartResult.length(); i ++) {
-
-            if(dartResult.charAt(i) >= '0' && dartResult.charAt(i) <= '9') {
-                if(num == 0) {
-                    num = dartResult.charAt(i) - 48;
-                } else {
-                    num = 10;
-                }
-
-            } else if (dartResult.charAt(i) == 'S') {
-                numList.add(num);
-                idx ++;
-                num = 0;
-            } else if (dartResult.charAt(i) == 'D') {
-                numList.add(num * num);
-                idx ++;
-                num = 0;
-            } else if (dartResult.charAt(i) == 'T') {
-                numList.add(num * num * num);
-                idx ++;
-                num = 0;
-            } else if (dartResult.charAt(i) == '*') {
-                if(idx > 1) {
-                    numList.set(idx-1, numList.get(idx-1) * 2);
-                    numList.set(idx-2, numList.get(idx-2) * 2);
-                } else {
-                    numList.set(idx-1, numList.get(idx-1) * 2);
-                }
-                num = 0;
-            } else if (dartResult.charAt(i) == '#') {
-                numList.set(idx-1, numList.get(idx-1) * -1);
+        String answer = "";
+        for(int i = 0; i < completion.length; i ++) {
+            if(!completion[i].equals(participant[i])) {
+                answer = participant[i];
+                break;
+            }
+            if(i == completion.length - 1 && answer.equals("")) {
+                answer = participant[i + 1];
             }
         }
 
-        int answer = 0;
-        for(int i : numList) {
-            answer += i;
-        }
-
+        answer = completion.length == 0 ? participant[0] : answer;
         return answer;
     }
 }
