@@ -1,13 +1,18 @@
 // 문제
-// 수많은 마라톤 선수들이 마라톤에 참여하였습니다. 단 한 명의 선수를 제외하고는 모든 선수가 마라톤을 완주하였습니다.
-// 마라톤에 참여한 선수들의 이름이 담긴 배열 participant와 완주한 선수들의 이름이 담긴 배열 completion이 주어질 때,
-// 완주하지 못한 선수의 이름을 return 하도록 solution 함수를 작성해주세요.
+// 배열 array의 i번째 숫자부터 j번째 숫자까지 자르고 정렬했을 때, k번째에 있는 수를 구하려 합니다.
+// 예를 들어 array가 [1, 5, 2, 6, 3, 7, 4], i = 2, j = 5, k = 3이라면
+//
+// array의 2번째부터 5번째까지 자르면 [5, 2, 6, 3]입니다.
+// 1에서 나온 배열을 정렬하면 [2, 3, 5, 6]입니다.
+// 2에서 나온 배열의 3번째 숫자는 5입니다.
+// 배열 array, [i, j, k]를 원소로 가진 2차원 배열 commands가 매개변수로 주어질 때,
+// commands의 모든 원소에 대해 앞서 설명한 연산을 적용했을 때 나온 결과를 배열에 담아 return 하도록 solution 함수를 작성해주세요.
 //
 // 제한사항
-// 마라톤 경기에 참여한 선수의 수는 1명 이상 100,000명 이하입니다.
-// completion의 길이는 participant의 길이보다 1 작습니다.
-// 참가자의 이름은 1개 이상 20개 이하의 알파벳 소문자로 이루어져 있습니다.
-// 참가자 중에는 동명이인이 있을 수 있습니다.
+// array의 길이는 1 이상 100 이하입니다.
+// array의 각 원소는 1 이상 100 이하입니다.
+// commands의 길이는 1 이상 50 이하입니다.
+// commands의 각 원소는 길이가 3입니다.
 
 import java.util.Arrays;
 
@@ -15,28 +20,25 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String[] participant = {"leo", "kiki", "eden"};
-        String[] completion = {"eden", "kiki"};
-        solution(participant, completion);
+        int[] array = {1, 5, 2, 6, 3, 7, 4};
+        int[][] commands = {{2, 5, 3}, {4, 4, 1}, {1, 7, 3}};
+        solution(array, commands);
     }
 
-    public static String solution(String[] participant, String[] completion) {
+    public static int[] solution(int[] array, int[][] commands) {
+        int[] answer = new int[commands.length];
 
-        Arrays.sort(participant);
-        Arrays.sort(completion);
-
-        String answer = "";
-        for(int i = 0; i < completion.length; i ++) {
-            if(!completion[i].equals(participant[i])) {
-                answer = participant[i];
-                break;
+        for(int i = 0; i < commands.length; i ++) {
+            int[] temp = new int[commands[i][1] - commands[i][0] + 1];
+            int idx = 0;
+            for(int j = commands[i][0]; j <= commands[i][1]; j ++) {
+                temp[idx] = array[j - 1];
+                idx ++;
             }
-            if(i == completion.length - 1 && answer.equals("")) {
-                answer = participant[i + 1];
-            }
+            Arrays.sort(temp);
+            answer[i] = temp[commands[i][2] - 1];
         }
 
-        answer = completion.length == 0 ? participant[0] : answer;
         return answer;
     }
 }
