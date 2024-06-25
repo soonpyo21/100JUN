@@ -24,15 +24,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int n = 5;
-        int[] lost = {2,4};
-        int[] reserve = {1,3,5};
+        int n = 4;
+        int[] lost = {2,3};
+        int[] reserve = {3,4};
         solution(n, lost, reserve);
     }
 
     public static int solution(int n, int[] lost, int[] reserve) {
         Arrays.sort(lost);
         Arrays.sort(reserve);
+
+        // 여벌 체육복을 가져온 학생이 체육복을 도난당한 경우 다른 학생에게는 체육복을 빌려줄 수 없음
+        for(int i = 0; i < reserve.length; i ++) {
+            for(int j = 0; j < lost.length; j ++) {
+                if(reserve[i] == lost[j]) {
+                    reserve[i] = -1;
+                }
+            }
+        }
 
         for(int i = 0; i < lost.length; i ++) {
             int lNum = lost[i];
@@ -50,6 +59,7 @@ public class Main {
         }
 
         int answer = n;
+        System.out.println(answer);
         return answer;
     }
 }
