@@ -38,6 +38,7 @@ public class Main {
         for(int i = 0; i < reserve.length; i ++) {
             for(int j = 0; j < lost.length; j ++) {
                 if(reserve[i] == lost[j]) {
+                    lost[j] = -1;
                     reserve[i] = -1;
                 }
             }
@@ -59,7 +60,6 @@ public class Main {
         }
 
         int answer = n;
-        System.out.println(answer);
         return answer;
     }
 }
