@@ -1,65 +1,70 @@
 // 문제
-// 점심시간에 도둑이 들어, 일부 학생이 체육복을 도난당했습니다.
-// 다행히 여벌 체육복이 있는 학생이 이들에게 체육복을 빌려주려 합니다.
-// 학생들의 번호는 체격 순으로 매겨져 있어, 바로 앞번호의 학생이나 바로 뒷번호의 학생에게만 체육복을 빌려줄 수 있습니다.
-// 예를 들어, 4번 학생은 3번 학생이나 5번 학생에게만 체육복을 빌려줄 수 있습니다.
-// 체육복이 없으면 수업을 들을 수 없기 때문에 체육복을 적절히 빌려 최대한 많은 학생이 체육수업을 들어야 합니다.
+// 슈퍼 게임 개발자 오렐리는 큰 고민에 빠졌다.
+// 그녀가 만든 프랜즈 오천성이 대성공을 거뒀지만, 요즘 신규 사용자의 수가 급감한 것이다.
+// 원인은 신규 사용자와 기존 사용자 사이에 스테이지 차이가 너무 큰 것이 문제였다.
 //
-// 전체 학생의 수 n, 체육복을 도난당한 학생들의 번호가 담긴 배열 lost,
-// 여벌의 체육복을 가져온 학생들의 번호가 담긴 배열 reserve가 매개변수로 주어질 때,
-// 체육수업을 들을 수 있는 학생의 최댓값을 return 하도록 solution 함수를 작성해주세요.
+// 이 문제를 어떻게 할까 고민 한 그녀는 동적으로 게임 시간을 늘려서 난이도를 조절하기로 했다.
+// 역시 슈퍼 개발자라 대부분의 로직은 쉽게 구현했지만, 실패율을 구하는 부분에서 위기에 빠지고 말았다.
+// 오렐리를 위해 실패율을 구하는 코드를 완성하라.
+//
+// 실패율은 다음과 같이 정의한다.
+// 스테이지에 도달했으나 아직 클리어하지 못한 플레이어의 수 / 스테이지에 도달한 플레이어 수
+// 전체 스테이지의 개수 N, 게임을 이용하는 사용자가 현재 멈춰있는 스테이지의 번호가 담긴 배열 stages가 매개변수로 주어질 때,
+// 실패율이 높은 스테이지부터 내림차순으로 스테이지의 번호가 담겨있는 배열을 return 하도록 solution 함수를 완성하라.
 //
 // 제한사항
-// 전체 학생의 수는 2명 이상 30명 이하입니다.
-// 체육복을 도난당한 학생의 수는 1명 이상 n명 이하이고 중복되는 번호는 없습니다.
-// 여벌의 체육복을 가져온 학생의 수는 1명 이상 n명 이하이고 중복되는 번호는 없습니다.
-// 여벌 체육복이 있는 학생만 다른 학생에게 체육복을 빌려줄 수 있습니다.
-// 여벌 체육복을 가져온 학생이 체육복을 도난당했을 수 있습니다.
-// 이때 이 학생은 체육복을 하나만 도난당했다고 가정하며,
-// 남은 체육복이 하나이기에 다른 학생에게는 체육복을 빌려줄 수 없습니다.
+// 스테이지의 개수 N은 1 이상 500 이하의 자연수이다.
+// stages의 길이는 1 이상 200,000 이하이다.
+// stages에는 1 이상 N + 1 이하의 자연수가 담겨있다.
+//      각 자연수는 사용자가 현재 도전 중인 스테이지의 번호를 나타낸다.
+//      단, N + 1 은 마지막 스테이지(N 번째 스테이지) 까지 클리어 한 사용자를 나타낸다.
+// 만약 실패율이 같은 스테이지가 있다면 작은 번호의 스테이지가 먼저 오도록 하면 된다.
+// 스테이지에 도달한 유저가 없는 경우 해당 스테이지의 실패율은 0 으로 정의한다.
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int n = 4;
-        int[] lost = {2,3};
-        int[] reserve = {3,4};
-        solution(n, lost, reserve);
+        int n = 5;
+        int[] stages = {2, 1, 2, 6, 2, 4, 3, 3};
+        solution(n, stages);
     }
 
-    public static int solution(int n, int[] lost, int[] reserve) {
-        Arrays.sort(lost);
-        Arrays.sort(reserve);
+    public static int[] solution(int n, int[] stages) {
+        double[] clearUsers = new double[n+1];
+        double[] tryUsers = new double[n+1];
 
-        // 여벌 체육복을 가져온 학생이 체육복을 도난당한 경우 다른 학생에게는 체육복을 빌려줄 수 없음
-        for(int i = 0; i < reserve.length; i ++) {
-            for(int j = 0; j < lost.length; j ++) {
-                if(reserve[i] == lost[j]) {
-                    lost[j] = -1;
-                    reserve[i] = -1;
-                }
+        Map<Integer, Double> failRateMap = new HashMap<>();
+
+        for(int i : stages) {
+            // 도전한 사용자 추가
+            for(int j = 1; j <= n; j ++) {
+                if(i >= j) tryUsers[j] ++;
             }
+            // 클리어한 사용자 추가
+            if(i <= n) clearUsers[i] ++;
         }
 
-        for(int i = 0; i < lost.length; i ++) {
-            int lNum = lost[i];
-
-            for(int j = 0; j < reserve.length; j ++) {
-                int rNum = reserve[j];
-
-                if(rNum - 1 <= lNum && rNum + 1 >= lNum) {
-                    reserve[j] = -1;
-                    break;
-                }
-
-                if(j == reserve.length - 1) n --;
+        for(int i = 1; i <= n; i ++) {
+            if(tryUsers[i] == 0) {
+                tryUsers[i] = 1;
             }
+            failRateMap.put(i, clearUsers[i] / tryUsers[i]);
         }
 
-        int answer = n;
+        List<Integer> keySet = new ArrayList<>(failRateMap.keySet());
+        keySet.sort((o1,o2) -> failRateMap.get(o2).compareTo(failRateMap.get(o1)));
+
+        int[] answer = new int[n];
+        for(int i = 0; i < keySet.size(); i ++) {
+            answer[i] = keySet.get(i);
+        }
+
         return answer;
     }
 }
