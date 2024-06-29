@@ -1,71 +1,77 @@
 // 문제
-// 슈퍼 게임 개발자 오렐리는 큰 고민에 빠졌다.
-// 그녀가 만든 프랜즈 오천성이 대성공을 거뒀지만, 요즘 신규 사용자의 수가 급감한 것이다.
-// 원인은 신규 사용자와 기존 사용자 사이에 스테이지 차이가 너무 큰 것이 문제였다.
+// 게임개발자인 "죠르디"는 크레인 인형뽑기 기계를 모바일 게임으로 만들려고 합니다.
+// "죠르디"는 게임의 재미를 높이기 위해 화면 구성과 규칙을 다음과 같이 게임 로직에 반영하려고 합니다.
 //
-// 이 문제를 어떻게 할까 고민 한 그녀는 동적으로 게임 시간을 늘려서 난이도를 조절하기로 했다.
-// 역시 슈퍼 개발자라 대부분의 로직은 쉽게 구현했지만, 실패율을 구하는 부분에서 위기에 빠지고 말았다.
-// 오렐리를 위해 실패율을 구하는 코드를 완성하라.
+// 게임 화면은 "1 x 1" 크기의 칸들로 이루어진 "N x N" 크기의 정사각 격자이며 위쪽에는 크레인이 있고 오른쪽에는 바구니가 있습니다.
+// (위 그림은 "5 x 5" 크기의 예시입니다). 각 격자 칸에는 다양한 인형이 들어 있으며 인형이 없는 칸은 빈칸입니다.
+// 모든 인형은 "1 x 1" 크기의 격자 한 칸을 차지하며 격자의 가장 아래 칸부터 차곡차곡 쌓여 있습니다.
+// 게임 사용자는 크레인을 좌우로 움직여서 멈춘 위치에서 가장 위에 있는 인형을 집어 올릴 수 있습니다.
+// 집어 올린 인형은 바구니에 쌓이게 되는 데, 이때 바구니의 가장 아래 칸부터 인형이 순서대로 쌓이게 됩니다.
+// 다음 그림은 [1번, 5번, 3번] 위치에서 순서대로 인형을 집어 올려 바구니에 담은 모습입니다.
 //
-// 실패율은 다음과 같이 정의한다.
-// 스테이지에 도달했으나 아직 클리어하지 못한 플레이어의 수 / 스테이지에 도달한 플레이어 수
-// 전체 스테이지의 개수 N, 게임을 이용하는 사용자가 현재 멈춰있는 스테이지의 번호가 담긴 배열 stages가 매개변수로 주어질 때,
-// 실패율이 높은 스테이지부터 내림차순으로 스테이지의 번호가 담겨있는 배열을 return 하도록 solution 함수를 완성하라.
+// 만약 같은 모양의 인형 두 개가 바구니에 연속해서 쌓이게 되면 두 인형은 터뜨려지면서 바구니에서 사라지게 됩니다.
+// 위 상태에서 이어서 [5번] 위치에서 인형을 집어 바구니에 쌓으면 같은 모양 인형 두 개가 없어집니다.
+//
+// 크레인 작동 시 인형이 집어지지 않는 경우는 없으나 만약 인형이 없는 곳에서 크레인을 작동시키는 경우에는 아무런 일도 일어나지 않습니다.
+// 또한 바구니는 모든 인형이 들어갈 수 있을 만큼 충분히 크다고 가정합니다. (그림에서는 화면표시 제약으로 5칸만으로 표현하였음)
+//
+// 게임 화면의 격자의 상태가 담긴 2차원 배열 board와 인형을 집기 위해 크레인을 작동시킨 위치가 담긴 배열 moves가 매개변수로 주어질 때,
+// 크레인을 모두 작동시킨 후 터트려져 사라진 인형의 개수를 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 스테이지의 개수 N은 1 이상 500 이하의 자연수이다.
-// stages의 길이는 1 이상 200,000 이하이다.
-// stages에는 1 이상 N + 1 이하의 자연수가 담겨있다.
-//      각 자연수는 사용자가 현재 도전 중인 스테이지의 번호를 나타낸다.
-//      단, N + 1 은 마지막 스테이지(N 번째 스테이지) 까지 클리어 한 사용자를 나타낸다.
-// 만약 실패율이 같은 스테이지가 있다면 작은 번호의 스테이지가 먼저 오도록 하면 된다.
-// 스테이지에 도달한 유저가 없는 경우 해당 스테이지의 실패율은 0 으로 정의한다.
+// board 배열은 2차원 배열로 크기는 "5 x 5" 이상 "30 x 30" 이하입니다.
+// board의 각 칸에는 0 이상 100 이하인 정수가 담겨있습니다.
+// 0은 빈 칸을 나타냅니다.
+// 1 ~ 100의 각 숫자는 각기 다른 인형의 모양을 의미하며 같은 숫자는 같은 모양의 인형을 나타냅니다.
+// moves 배열의 크기는 1 이상 1,000 이하입니다.
+// moves 배열 각 원소들의 값은 1 이상이며 board 배열의 가로 크기 이하인 자연수입니다.
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
 
+    private static int del = 0;
+
     public static void main(String[] args) {
 
-        int n = 5;
-        int[] stages = {2, 1, 2, 6, 2, 4, 3, 3};
-        solution(n, stages);
+        int[][] board = {{0,0,0,0,0}, {0,0,1,0,3}, {0,2,5,0,1}};
+        int[] moves = {1,5,3,5,1,2,1,4};
+        solution(board, moves);
     }
 
-    public static int[] solution(int n, int[] stages) {
-        double[] clearUsers = new double[n+1];
-        double[] tryUsers = new double[n+1];
-
-        Map<Integer, Double> failRateMap = new HashMap<>();
-
-        for(int i : stages) {
-            // 도전한 사용자 추가
-            for(int j = 1; j <= n; j ++) {
-                if(i >= j) tryUsers[j] ++;
+    public static int solution(int[][] board, int[] moves) {
+        List<Integer> basket = new ArrayList<>();
+        for(int i = 0; i < moves.length; i ++) {
+            for(int j = 0; j < board.length; j ++) {
+                if(board[j][moves[i]-1] != 0) {
+                    basket.add(board[j][moves[i]-1]);
+                    board[j][moves[i]-1] = 0;
+                    break;
+                }
             }
-            // 클리어한 사용자 추가
-            if(i <= n) clearUsers[i] ++;
         }
 
-        for(int i = 1; i <= n; i ++) {
-            if(tryUsers[i] == 0) {
-                tryUsers[i] = 1;
-            }
-            failRateMap.put(i, clearUsers[i] / tryUsers[i]);
-        }
-
-        List<Integer> keySet = new ArrayList<>(failRateMap.keySet());
-        keySet.sort((o1,o2) -> failRateMap.get(o2).compareTo(failRateMap.get(o1)));
-
-        int[] answer = new int[n];
-        for(int i = 0; i < keySet.size(); i ++) {
-            answer[i] = keySet.get(i);
-        }
-
+        int answer = deDuplication(basket);
         return answer;
+    }
+
+    public static int deDuplication(List<Integer> list) {
+        int temp = 0;
+        boolean isDup = false;
+        for(int i = 0; i < list.size(); i ++) {
+            if(list.get(i) == temp) {
+                list.remove(i);
+                list.remove(i-1);
+                del += 2;
+                isDup = true;
+                break;
+            }
+            temp = list.get(i);
+        }
+
+        if(isDup) deDuplication(list);
+        return del;
     }
 }
 
