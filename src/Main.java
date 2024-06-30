@@ -1,90 +1,95 @@
 // 문제
-// 스마트폰 전화 키패드의 각 칸에 다음과 같이 숫자들이 적혀 있습니다.
-// 이 전화 키패드에서 왼손과 오른손의 엄지손가락만을 이용해서 숫자만을 입력하려고 합니다.
-// 맨 처음 왼손 엄지손가락은 * 키패드에 오른손 엄지손가락은 # 키패드 위치에서 시작하며, 엄지손가락을 사용하는 규칙은 다음과 같습니다.
+// 카카오에 입사한 신입 개발자 네오는 "카카오계정개발팀"에 배치되어, 카카오 서비스에 가입하는 유저들의 아이디를 생성하는 업무를 담당하게 되었습니다.
+// "네오"에게 주어진 첫 업무는 새로 가입하는 유저들이 카카오 아이디 규칙에 맞지 않는 아이디를 입력했을 때,
+// 입력된 아이디와 유사하면서 규칙에 맞는 아이디를 추천해주는 프로그램을 개발하는 것입니다.
+// 다음은 카카오 아이디의 규칙입니다.
 //
-// 1. 엄지손가락은 상하좌우 4가지 방향으로만 이동할 수 있으며 키패드 이동 한 칸은 거리로 1에 해당합니다.
-// 2. 왼쪽 열의 3개의 숫자 1, 4, 7을 입력할 때는 왼손 엄지손가락을 사용합니다.
-// 3. 오른쪽 열의 3개의 숫자 3, 6, 9를 입력할 때는 오른손 엄지손가락을 사용합니다.
-// 4. 가운데 열의 4개의 숫자 2, 5, 8, 0을 입력할 때는 두 엄지손가락의 현재 키패드의 위치에서 더 가까운 엄지손가락을 사용합니다.
-// 4-1. 만약 두 엄지손가락의 거리가 같다면, 오른손잡이는 오른손 엄지손가락, 왼손잡이는 왼손 엄지손가락을 사용합니다.
-// 순서대로 누를 번호가 담긴 배열 numbers, 왼손잡이인지 오른손잡이인 지를 나타내는 문자열 hand가 매개변수로 주어질 때, 각 번호를 누른 엄지손가락이 왼손인 지 오른손인 지를 나타내는 연속된 문자열 형태로 return 하도록 solution 함수를 완성해주세요.
+// 아이디의 길이는 3자 이상 15자 이하여야 합니다.
+// 아이디는 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.) 문자만 사용할 수 있습니다.
+// 단, 마침표(.)는 처음과 끝에 사용할 수 없으며 또한 연속으로 사용할 수 없습니다.
+// "네오"는 다음과 같이 7단계의 순차적인 처리 과정을 통해 신규 유저가 입력한 아이디가 카카오 아이디 규칙에 맞는 지 검사하고 규칙에 맞지 않은 경우 규칙에 맞는 새로운 아이디를 추천해 주려고 합니다.
+// 신규 유저가 입력한 아이디가 new_id 라고 한다면,
 //
+// 1단계 new_id의 모든 대문자를 대응되는 소문자로 치환합니다.
+// 2단계 new_id에서 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자를 제거합니다.
+// 3단계 new_id에서 마침표(.)가 2번 이상 연속된 부분을 하나의 마침표(.)로 치환합니다.
+// 4단계 new_id에서 마침표(.)가 처음이나 끝에 위치한다면 제거합니다.
+// 5단계 new_id가 빈 문자열이라면, new_id에 "a"를 대입합니다.
+// 6단계 new_id의 길이가 16자 이상이면, new_id의 첫 15개의 문자를 제외한 나머지 문자들을 모두 제거합니다.
+//     만약 제거 후 마침표(.)가 new_id의 끝에 위치한다면 끝에 위치한 마침표(.) 문자를 제거합니다.
+// 7단계 new_id의 길이가 2자 이하라면, new_id의 마지막 문자를 new_id의 길이가 3이 될 때까지 반복해서 끝에 붙입니다.
+// 예를 들어, new_id 값이 "...!@BaT#*..y.abcdefghijklm" 라면, 위 7단계를 거치고 나면 new_id는 아래와 같이 변경됩니다.
+//
+// 1단계 대문자 'B'와 'T'가 소문자 'b'와 't'로 바뀌었습니다.
+// "...!@BaT#*..y.abcdefghijklm" → "...!@bat#*..y.abcdefghijklm"
+//
+// 2단계 '!', '@', '#', '*' 문자가 제거되었습니다.
+// "...!@bat#*..y.abcdefghijklm" → "...bat..y.abcdefghijklm"
+//
+// 3단계 '...'와 '..' 가 '.'로 바뀌었습니다.
+// "...bat..y.abcdefghijklm" → ".bat.y.abcdefghijklm"
+//
+// 4단계 아이디의 처음에 위치한 '.'가 제거되었습니다.
+// ".bat.y.abcdefghijklm" → "bat.y.abcdefghijklm"
+//
+// 5단계 아이디가 빈 문자열이 아니므로 변화가 없습니다.
+// "bat.y.abcdefghijklm" → "bat.y.abcdefghijklm"
+//
+// 6단계 아이디의 길이가 16자 이상이므로, 처음 15자를 제외한 나머지 문자들이 제거되었습니다.
+// "bat.y.abcdefghijklm" → "bat.y.abcdefghi"
+//
+// 7단계 아이디의 길이가 2자 이하가 아니므로 변화가 없습니다.
+// "bat.y.abcdefghi" → "bat.y.abcdefghi"
+//
+// 따라서 신규 유저가 입력한 new_id가 "...!@BaT#*..y.abcdefghijklm"일 때, 네오의 프로그램이 추천하는 새로운 아이디는 "bat.y.abcdefghi" 입니다.
+//
+// 신규 유저가 입력한 아이디를 나타내는 new_id가 매개변수로 주어질 때,
+// "네오"가 설계한 7단계의 처리 과정을 거친 후의 추천 아이디를 return 하도록 solution 함수를 완성해 주세요.
 //
 // 제한사항
-// numbers 배열의 크기는 1 이상 1,000 이하입니다.
-// numbers 배열 원소의 값은 0 이상 9 이하인 정수입니다.
-// hand는 "left" 또는 "right" 입니다.
-// "left"는 왼손잡이, "right"는 오른손잡이를 의미합니다.
-// 왼손 엄지손가락을 사용한 경우는 L, 오른손 엄지손가락을 사용한 경우는 R을 순서대로 이어붙여 문자열 형태로 return 해주세요.
+// new_id는 길이 1 이상 1,000 이하인 문자열입니다.
+// new_id는 알파벳 대문자, 알파벳 소문자, 숫자, 특수문자로 구성되어 있습니다.
+// new_id에 나타날 수 있는 특수문자는 -_.~!@#$%^&*()=+[{]}:?,<>/ 로 한정됩니다.
 
 public class Main {
 
-    private static int del = 0;
-
     public static void main(String[] args) {
 
-        int[] numbers = {1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5};
-        String hand = "right";
-        solution(numbers, hand);
+        String new_id = "...!@BaT#*..y.abcdefghijklm";
+        solution(new_id);
     }
 
-    public static String solution(int[] numbers, String hand) {
-        StringBuilder sb = new StringBuilder();
-        // 시작점인 *과 #은 10과 12로 계산
-        int lastL = 10;
-        int lastR = 12;
+    public static String solution(String new_id) {
+        // 1단계 대문자 -> 소문자 치환
+        new_id = new_id.toLowerCase();
 
-        for(int i = 0; i < numbers.length; i ++) {
+        // 2단계 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자 제거
+        new_id = new_id.replaceAll("[^a-z0-9\\-_.]", "");
 
-            int num = numbers[i];
+        // 3단계 마침표(.) 두번 이상 한번으로 치환
+        while(new_id.contains("..")) new_id = new_id.replace("..",".");
 
-            // 입력값 0은 11로 계산
-            if(num == 0) num = 11;
+        // 4단계 마침표(.)가 처음과 끝에 위치한다면 제거
+        if(!new_id.equals("") && new_id.charAt(0) == '.') new_id = new_id.substring(1, new_id.length());
+        if(!new_id.equals("") && new_id.charAt(new_id.length()-1) == '.') new_id = new_id.substring(0, new_id.length()-1);
 
-            if(num == 1 || num == 4 || num == 7) {
-                sb.append("L");
-                lastL = num;
-            } else if (num == 3 || num == 6 || num == 9) {
-                sb.append("R");
-                lastR = num;
-            } else {
+        // 5단계 아이디가 빈 문자열이라면 "a" 대입
+        if(new_id.equals("")) new_id = "a";
 
-                int distanceLeft = distance(lastL, num);
-                int distanceRight = distance(lastR, num);
+        // 6단계 아이디가 16자 이상일 경우 첫 15개를 제외한 문자 제거 (제거 후 마지막에 마침표(.)가 존재한다면 제거)
+        if(new_id.length() >= 16) new_id = new_id.substring(0, 15);
+        if(new_id.charAt(new_id.length()-1) == '.') new_id = new_id.substring(0, new_id.length()-1);
 
-                if(distanceLeft < distanceRight) {
-                    sb.append("L");
-                    lastL = num;
-                } else if (distanceLeft > distanceRight) {
-                    sb.append("R");
-                    lastR = num;
-                } else {
-                    if(hand.equals("left")) {
-                        sb.append("L");
-                        lastL = num;
-                    } else {
-                        sb.append("R");
-                        lastR = num;
-                    }
-                }
+        // 7단계 아이디가 2자 이하라면 아이디의 마지막 문자를 길이가 3이 될 때까지 반복해서 붙임
+        if(new_id.length() <= 2) {
+            while(new_id.length() <= 2) {
+                new_id += new_id.charAt(new_id.length()-1);
             }
         }
 
-        String answer = sb.toString();
+        String answer = new_id;
         return answer;
     }
 
-    public static int distance(int start, int end) {
-
-        int distance = 0;
-
-        // 수평 이동
-        if(start != 2 && start != 5 && start != 8 && start != 11) distance ++;
-        // 수직 이동
-        distance += (Math.abs(end - start) + 1) / 3;
-
-        return distance;
-    }
 }
 
