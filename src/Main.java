@@ -1,136 +1,128 @@
 // 문제
-// 신입사원 무지는 게시판 불량 이용자를 신고하고 처리 결과를 메일로 발송하는 시스템을 개발하려 합니다. 무지가 개발하려는 시스템은 다음과 같습니다.
+// 나만의 카카오 성격 유형 검사지를 만들려고 합니다.
+// 성격 유형 검사는 다음과 같은 4개 지표로 성격 유형을 구분합니다. 성격은 각 지표에서 두 유형 중 하나로 결정됩니다.
 //
-// 각 유저는 한 번에 한 명의 유저를 신고할 수 있습니다.
-// 신고 횟수에 제한은 없습니다. 서로 다른 유저를 계속해서 신고할 수 있습니다.
-// 한 유저를 여러 번 신고할 수도 있지만, 동일한 유저에 대한 신고 횟수는 1회로 처리됩니다.
-// k번 이상 신고된 유저는 게시판 이용이 정지되며, 해당 유저를 신고한 모든 유저에게 정지 사실을 메일로 발송합니다.
-// 유저가 신고한 모든 내용을 취합하여 마지막에 한꺼번에 게시판 이용 정지를 시키면서 정지 메일을 발송합니다.
-// 다음은 전체 유저 목록이 ["muzi", "frodo", "apeach", "neo"]이고, k = 2(즉, 2번 이상 신고당하면 이용 정지)인 경우의 예시입니다.
+// 지표 번호	성격 유형
+// 1번 지표	라이언형(R), 튜브형(T)
+// 2번 지표	콘형(C), 프로도형(F)
+// 3번 지표	제이지형(J), 무지형(M)
+// 4번 지표	어피치형(A), 네오형(N)
+// 4개의 지표가 있으므로 성격 유형은 총 16(=2 x 2 x 2 x 2)가지가 나올 수 있습니다. 예를 들어, "RFMN"이나 "TCMA"와 같은 성격 유형이 있습니다.
 //
-// 유저 ID	유저가 신고한 ID	설명
-// "muzi"	"frodo"	"muzi"가 "frodo"를 신고했습니다.
-// "apeach"	"frodo"	"apeach"가 "frodo"를 신고했습니다.
-// "frodo"	"neo"	"frodo"가 "neo"를 신고했습니다.
-// "muzi"	"neo"	"muzi"가 "neo"를 신고했습니다.
-// "apeach"	"muzi"	"apeach"가 "muzi"를 신고했습니다.
-// 각 유저별로 신고당한 횟수는 다음과 같습니다.
+// 검사지에는 총 n개의 질문이 있고, 각 질문에는 아래와 같은 7개의 선택지가 있습니다.
 //
-// 유저 ID	신고당한 횟수
-// "muzi"	1
-// "frodo"	2
-// "apeach"	0
-// "neo"	2
-// 위 예시에서는 2번 이상 신고당한 "frodo"와 "neo"의 게시판 이용이 정지됩니다. 이때, 각 유저별로 신고한 아이디와 정지된 아이디를 정리하면 다음과 같습니다.
+// 매우 비동의
+// 비동의
+// 약간 비동의
+// 모르겠음
+// 약간 동의
+// 동의
+// 매우 동의
+// 각 질문은 1가지 지표로 성격 유형 점수를 판단합니다.
 //
-// 유저 ID	유저가 신고한 ID	정지된 ID
-// "muzi"	["frodo", "neo"]	["frodo", "neo"]
-// "frodo"	["neo"]	["neo"]
-// "apeach"	["muzi", "frodo"]	["frodo"]
-// "neo"	없음	없음
-// 따라서 "muzi"는 처리 결과 메일을 2회, "frodo"와 "apeach"는 각각 처리 결과 메일을 1회 받게 됩니다.
+// 예를 들어, 어떤 한 질문에서 4번 지표로 아래 표처럼 점수를 매길 수 있습니다.
 //
-// 이용자의 ID가 담긴 문자열 배열 id_list, 각 이용자가 신고한 이용자의 ID 정보가 담긴 문자열 배열 report, 정지 기준이 되는 신고 횟수 k가 매개변수로 주어질 때,
-// 각 유저별로 처리 결과 메일을 받은 횟수를 배열에 담아 return 하도록 solution 함수를 완성해주세요.
+// 선택지	성격 유형 점수
+// 매우 비동의	네오형 3점
+// 비동의	네오형 2점
+// 약간 비동의	네오형 1점
+// 모르겠음	어떤 성격 유형도 점수를 얻지 않습니다
+// 약간 동의	어피치형 1점
+// 동의	어피치형 2점
+// 매우 동의	어피치형 3점
+// 이때 검사자가 질문에서 약간 동의 선택지를 선택할 경우 어피치형(A) 성격 유형 1점을 받게 됩니다.
+// 만약 검사자가 매우 비동의 선택지를 선택할 경우 네오형(N) 성격 유형 3점을 받게 됩니다.
+//
+// 위 예시처럼 네오형이 비동의, 어피치형이 동의인 경우만 주어지지 않고, 질문에 따라 네오형이 동의, 어피치형이 비동의인 경우도 주어질 수 있습니다.
+// 하지만 각 선택지는 고정적인 크기의 점수를 가지고 있습니다.
+//
+// 매우 동의나 매우 비동의 선택지를 선택하면 3점을 얻습니다.
+// 동의나 비동의 선택지를 선택하면 2점을 얻습니다.
+// 약간 동의나 약간 비동의 선택지를 선택하면 1점을 얻습니다.
+// 모르겠음 선택지를 선택하면 점수를 얻지 않습니다.
+// 검사 결과는 모든 질문의 성격 유형 점수를 더하여 각 지표에서 더 높은 점수를 받은 성격 유형이 검사자의 성격 유형이라고 판단합니다.
+// 단, 하나의 지표에서 각 성격 유형 점수가 같으면, 두 성격 유형 중 사전 순으로 빠른 성격 유형을 검사자의 성격 유형이라고 판단합니다.
+//
+// 질문마다 판단하는 지표를 담은 1차원 문자열 배열 survey와 검사자가 각 질문마다 선택한 선택지를 담은 1차원 정수 배열 choices가 매개변수로 주어집니다.
+// 이때, 검사자의 성격 유형 검사 결과를 지표 번호 순서대로 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한사항
-// 2 ≤ id_list의 길이 ≤ 1,000
-// 1 ≤ id_list의 원소 길이 ≤ 10
-// id_list의 원소는 이용자의 id를 나타내는 문자열이며 알파벳 소문자로만 이루어져 있습니다.
-// id_list에는 같은 아이디가 중복해서 들어있지 않습니다.
-// 1 ≤ report의 길이 ≤ 200,000
-// 3 ≤ report의 원소 길이 ≤ 21
-// report의 원소는 "이용자id 신고한id"형태의 문자열입니다.
-// 예를 들어 "muzi frodo"의 경우 "muzi"가 "frodo"를 신고했다는 의미입니다.
-// id는 알파벳 소문자로만 이루어져 있습니다.
-// 이용자id와 신고한id는 공백(스페이스)하나로 구분되어 있습니다.
-// 자기 자신을 신고하는 경우는 없습니다.
-// 1 ≤ k ≤ 200, k는 자연수입니다.
-// return 하는 배열은 id_list에 담긴 id 순서대로 각 유저가 받은 결과 메일 수를 담으면 됩니다.
+// 1 ≤ survey의 길이 ( = n) ≤ 1,000
+// survey의 원소는 "RT", "TR", "FC", "CF", "MJ", "JM", "AN", "NA" 중 하나입니다.
+// survey[i]의 첫 번째 캐릭터는 i+1번 질문의 비동의 관련 선택지를 선택하면 받는 성격 유형을 의미합니다.
+// survey[i]의 두 번째 캐릭터는 i+1번 질문의 동의 관련 선택지를 선택하면 받는 성격 유형을 의미합니다.
+// choices의 길이 = survey의 길이
+//
+// choices[i]는 검사자가 선택한 i+1번째 질문의 선택지를 의미합니다.
+// 1 ≤ choices의 원소 ≤ 7
+// choices	뜻
+// 1	매우 비동의
+// 2	비동의
+// 3	약간 비동의
+// 4	모르겠음
+// 5	약간 동의
+// 6	동의
+// 7	매우 동의
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
-    private static String getReportedUser = "";
+    private static Map<String, Integer> map = new HashMap<String, Integer>() {{
+        put("A",0);
+        put("N",0);
+        put("C",0);
+        put("F",0);
+        put("M",0);
+        put("J",0);
+        put("R",0);
+        put("T",0);
+    }};
 
     public static void main(String[] args) {
-        String[] id_list = {"muzi", "frodo", "apeach", "neo"};
-        String[] report = {"muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"};
-        int k = 2;
+        String[] survey = {"AN", "CF", "MJ", "RT", "NA"};
+        int[] choices = {5, 3, 2, 7, 5};
 
-        solution(id_list, report, k);
+        solution(survey, choices);
     }
 
-    public static int[] solution(String[] id_list, String[] report, int k) {
+    public static String solution(String[] survey, int[] choices) {
+        int num = 0;
+        String word = "";
 
-        // 0. report 배열 안의 중복 신고 제거
-        Set<String> reportSet = new HashSet<>();
-        for(String s : report) {
-            reportSet.add(s);
-        }
+        for(int i = 0; i < choices.length; i ++) {
+            num = choices[i];
 
-        Iterator<String> iterSet = reportSet.iterator();
-        String[] report_ = new String[reportSet.size()];
-        int idx = 0;
-        while(iterSet.hasNext()) {
-            report_[idx] = iterSet.next();
-            idx ++;
-        }
-
-        // 1. 신고 from-to 배열 생성
-        int userTotal = id_list.length;
-        int reportTotal = report_.length;
-
-        String[] reportUsers = new String[reportTotal];
-        String[] getReportedUsers = new String[reportTotal];
-        for(int i = 0; i < report_.length; i ++) {
-            reportUsers[i] = report_[i].split(" ")[0];
-            getReportedUsers[i] = report_[i].split(" ")[1];
-        }
-
-        // 2. 각 유저들의 신고 당한 횟수 조회
-        int[] reportCntArr = new int[userTotal];
-        for(int i = 0; i < reportTotal; i ++) {
-            getReportedUser = getReportedUsers[i];
-
-            for(int j = 0; j < userTotal; j ++) {
-                if(id_list[j].equals(getReportedUser)) {
-                    reportCntArr[j] ++;
-                    break;
-                }
+            if(num - 4 < 0) {
+                word = String.valueOf(survey[i].charAt(0));
+                map.put(word, map.get(word) + Math.abs(num - 4));
+            } else if (num - 4 > 0) {
+                word = String.valueOf(survey[i].charAt(1));
+                map.put(word, map.get(word) + Math.abs(num - 4));
             }
         }
 
-        // 3. 정지 안내 메일을 전송할 from 유저 조회
-        List<String> mailList = new ArrayList<>();
-        for(int i = 0; i < userTotal; i ++) {
-            if(reportCntArr[i] >= k) {
-                for(int j = 0; j < reportTotal; j ++) {
-                    getReportedUser = getReportedUsers[j];
-                    if(id_list[i].equals(getReportedUser)) {
-                        mailList.add(reportUsers[j]);
-                    }
-                }
-            }
-        }
-
-        // 4. 각 유저별 정지 안내 메일 횟수 조회
-        int[] answer = new int[userTotal];
-        for(int i = 0; i < userTotal; i ++) {
-            for(int j = 0; j < mailList.size(); j ++) {
-                if(id_list[i].equals(mailList.get(j))) {
-                    answer[i] ++;
-                }
-            }
-        }
-
+        String answer = getCategory("R","T")
+                + getCategory("C","F")
+                + getCategory("J","M")
+                + getCategory("A","N");
         return answer;
     }
 
+    private static String getCategory(String s1, String s2) {
+        String category = "";
+
+        if(map.get(s1) > map.get(s2)) {
+            category = s1;
+        } else if (map.get(s1) < map.get(s2)) {
+            category = s2;
+        } else {
+            int comp = s1.compareTo(s2);
+            category = comp > 0 ? s2 : s1;
+        }
+
+        return category;
+    }
 }
 
