@@ -1,128 +1,112 @@
 // 문제
-// 나만의 카카오 성격 유형 검사지를 만들려고 합니다.
-// 성격 유형 검사는 다음과 같은 4개 지표로 성격 유형을 구분합니다. 성격은 각 지표에서 두 유형 중 하나로 결정됩니다.
+// AI 엔지니어인 현식이는 데이터를 분석하는 작업을 진행하고 있습니다.
+// 데이터는 ["코드 번호(code)", "제조일(date)", "최대 수량(maximum)", "현재 수량(remain)"]으로 구성되어 있으며
+// 현식이는 이 데이터들 중 조건을 만족하는 데이터만 뽑아서 정렬하려 합니다.
 //
-// 지표 번호	성격 유형
-// 1번 지표	라이언형(R), 튜브형(T)
-// 2번 지표	콘형(C), 프로도형(F)
-// 3번 지표	제이지형(J), 무지형(M)
-// 4번 지표	어피치형(A), 네오형(N)
-// 4개의 지표가 있으므로 성격 유형은 총 16(=2 x 2 x 2 x 2)가지가 나올 수 있습니다. 예를 들어, "RFMN"이나 "TCMA"와 같은 성격 유형이 있습니다.
+// 예를 들어 다음과 같이 데이터가 주어진다면
 //
-// 검사지에는 총 n개의 질문이 있고, 각 질문에는 아래와 같은 7개의 선택지가 있습니다.
+// data = [[1, 20300104, 100, 80], [2, 20300804, 847, 37], [3, 20300401, 10, 8]]
+// 이 데이터는 다음 표처럼 나타낼 수 있습니다.
 //
-// 매우 비동의
-// 비동의
-// 약간 비동의
-// 모르겠음
-// 약간 동의
-// 동의
-// 매우 동의
-// 각 질문은 1가지 지표로 성격 유형 점수를 판단합니다.
+// code	date	maximum	remain
+// 1	20300104	100	80
+// 2	20300804	847	37
+// 3	20300401	10	8
+// 주어진 데이터 중 "제조일이 20300501 이전인 물건들을 현재 수량이 적은 순서"로 정렬해야 한다면 조건에 맞게 가공된 데이터는 다음과 같습니다.
 //
-// 예를 들어, 어떤 한 질문에서 4번 지표로 아래 표처럼 점수를 매길 수 있습니다.
+// data = [[3,20300401,10,8],[1,20300104,100,80]]
+// 정렬한 데이터들이 담긴 이차원 정수 리스트 data와 어떤 정보를 기준으로 데이터를 뽑아낼지를 의미하는 문자열 ext,
+// 뽑아낼 정보의 기준값을 나타내는 정수 val_ext, 정보를 정렬할 기준이 되는 문자열 sort_by가 주어집니다.
 //
-// 선택지	성격 유형 점수
-// 매우 비동의	네오형 3점
-// 비동의	네오형 2점
-// 약간 비동의	네오형 1점
-// 모르겠음	어떤 성격 유형도 점수를 얻지 않습니다
-// 약간 동의	어피치형 1점
-// 동의	어피치형 2점
-// 매우 동의	어피치형 3점
-// 이때 검사자가 질문에서 약간 동의 선택지를 선택할 경우 어피치형(A) 성격 유형 1점을 받게 됩니다.
-// 만약 검사자가 매우 비동의 선택지를 선택할 경우 네오형(N) 성격 유형 3점을 받게 됩니다.
-//
-// 위 예시처럼 네오형이 비동의, 어피치형이 동의인 경우만 주어지지 않고, 질문에 따라 네오형이 동의, 어피치형이 비동의인 경우도 주어질 수 있습니다.
-// 하지만 각 선택지는 고정적인 크기의 점수를 가지고 있습니다.
-//
-// 매우 동의나 매우 비동의 선택지를 선택하면 3점을 얻습니다.
-// 동의나 비동의 선택지를 선택하면 2점을 얻습니다.
-// 약간 동의나 약간 비동의 선택지를 선택하면 1점을 얻습니다.
-// 모르겠음 선택지를 선택하면 점수를 얻지 않습니다.
-// 검사 결과는 모든 질문의 성격 유형 점수를 더하여 각 지표에서 더 높은 점수를 받은 성격 유형이 검사자의 성격 유형이라고 판단합니다.
-// 단, 하나의 지표에서 각 성격 유형 점수가 같으면, 두 성격 유형 중 사전 순으로 빠른 성격 유형을 검사자의 성격 유형이라고 판단합니다.
-//
-// 질문마다 판단하는 지표를 담은 1차원 문자열 배열 survey와 검사자가 각 질문마다 선택한 선택지를 담은 1차원 정수 배열 choices가 매개변수로 주어집니다.
-// 이때, 검사자의 성격 유형 검사 결과를 지표 번호 순서대로 return 하도록 solution 함수를 완성해주세요.
+// data에서 ext 값이 val_ext보다 작은 데이터만 뽑은 후,
+// sort_by에 해당하는 값을 기준으로 오름차순으로 정렬하여 return 하도록 solution 함수를 완성해 주세요.
+// 단, 조건을 만족하는 데이터는 항상 한 개 이상 존재합니다.
 //
 // 제한사항
-// 1 ≤ survey의 길이 ( = n) ≤ 1,000
-// survey의 원소는 "RT", "TR", "FC", "CF", "MJ", "JM", "AN", "NA" 중 하나입니다.
-// survey[i]의 첫 번째 캐릭터는 i+1번 질문의 비동의 관련 선택지를 선택하면 받는 성격 유형을 의미합니다.
-// survey[i]의 두 번째 캐릭터는 i+1번 질문의 동의 관련 선택지를 선택하면 받는 성격 유형을 의미합니다.
-// choices의 길이 = survey의 길이
-//
-// choices[i]는 검사자가 선택한 i+1번째 질문의 선택지를 의미합니다.
-// 1 ≤ choices의 원소 ≤ 7
-// choices	뜻
-// 1	매우 비동의
-// 2	비동의
-// 3	약간 비동의
-// 4	모르겠음
-// 5	약간 동의
-// 6	동의
-// 7	매우 동의
+// 1 ≤ data의 길이 ≤ 500
+// data[i]의 원소는 [코드 번호(code), 제조일(date), 최대 수량(maximum), 현재 수량(remain)] 형태입니다.
+// 1 ≤ 코드 번호≤ 100,000
+// 20000101 ≤ 제조일≤ 29991231
+// data[i][1]은 yyyymmdd 형태의 값을 가지며, 올바른 날짜만 주어집니다. (yyyy : 연도, mm : 월, dd : 일)
+// 1 ≤ 최대 수량≤ 10,000
+// 1 ≤ 현재 수량≤ 최대 수량
+// ext와 sort_by의 값은 다음 중 한 가지를 가집니다.
+// "code", "date", "maximum", "remain"
+// 순서대로 코드 번호, 제조일, 최대 수량, 현재 수량을 의미합니다.
+// val_ext는 ext에 따라 올바른 범위의 숫자로 주어집니다.
+// 정렬 기준에 해당하는 값이 서로 같은 경우는 없습니다.
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
 
 public class Main {
 
-    private static Map<String, Integer> map = new HashMap<String, Integer>() {{
-        put("A",0);
-        put("N",0);
-        put("C",0);
-        put("F",0);
-        put("M",0);
-        put("J",0);
-        put("R",0);
-        put("T",0);
-    }};
-
     public static void main(String[] args) {
-        String[] survey = {"AN", "CF", "MJ", "RT", "NA"};
-        int[] choices = {5, 3, 2, 7, 5};
+        int[][] data = { {1, 20300104, 100, 80} , {2, 20300804, 847, 37} , {3, 20300401, 10, 8} };
+        String ext = "date";
+        int val_ext = 20300501;
+        String sort_by = "remain";
 
-        solution(survey, choices);
+        solution(data, ext, val_ext, sort_by);
     }
 
-    public static String solution(String[] survey, int[] choices) {
-        int num = 0;
-        String word = "";
+    public static int[][] solution(int[][] data, String ext, int val_ext, String sort_by) {
+        List<List<Integer>> list = new ArrayList<>();
+        for(int[] row : data) {
+            List<Integer> listRow = new ArrayList<>();
+            for(int element : row) {
+                listRow.add(element);
+            }
+            list.add(listRow);
+        }
 
-        for(int i = 0; i < choices.length; i ++) {
-            num = choices[i];
+        list = getData(list, ext, val_ext);
+        list = sortData(list, sort_by);
 
-            if(num - 4 < 0) {
-                word = String.valueOf(survey[i].charAt(0));
-                map.put(word, map.get(word) + Math.abs(num - 4));
-            } else if (num - 4 > 0) {
-                word = String.valueOf(survey[i].charAt(1));
-                map.put(word, map.get(word) + Math.abs(num - 4));
+        int[][] answer = new int[list.size()][list.get(0).size()];
+        for(int i = 0; i < list.size(); i ++) {
+            for(int j = 0; j < list.get(0).size(); j ++) {
+                answer[i][j] = list.get(i).get(j);
             }
         }
 
-        String answer = getCategory("R","T")
-                + getCategory("C","F")
-                + getCategory("J","M")
-                + getCategory("A","N");
         return answer;
     }
 
-    private static String getCategory(String s1, String s2) {
-        String category = "";
+    private static List<List<Integer>> getData(List<List<Integer>> list, String ext, int val_ext) {
 
-        if(map.get(s1) > map.get(s2)) {
-            category = s1;
-        } else if (map.get(s1) < map.get(s2)) {
-            category = s2;
-        } else {
-            int comp = s1.compareTo(s2);
-            category = comp > 0 ? s2 : s1;
+        int j = 0;
+        switch(ext) {
+            case "code" : j = 0; break;
+            case "date" : j = 1; break;
+            case "maximum" : j = 2; break;
+            case "remain" : j = 3; break;
         }
 
-        return category;
+        for(int i = list.size() - 1; i > -1; i --) {
+            if(list.get(i).get(j) >= val_ext) {
+                list.remove(i);
+            }
+        }
+
+        return list;
+    }
+
+    private static List<List<Integer>> sortData(List<List<Integer>> list, String sort_by) {
+
+        int j = 0;
+        switch(sort_by) {
+            case "code" : j = 0; break;
+            case "date" : j = 1; break;
+            case "maximum" : j = 2; break;
+            case "remain" : j = 3; break;
+        }
+
+        final int index = j;
+        list.sort(Comparator.comparingInt(o -> o.get(index)));
+
+        return list;
     }
 }
 
