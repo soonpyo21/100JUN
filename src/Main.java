@@ -1,112 +1,57 @@
 // 문제
-// AI 엔지니어인 현식이는 데이터를 분석하는 작업을 진행하고 있습니다.
-// 데이터는 ["코드 번호(code)", "제조일(date)", "최대 수량(maximum)", "현재 수량(remain)"]으로 구성되어 있으며
-// 현식이는 이 데이터들 중 조건을 만족하는 데이터만 뽑아서 정렬하려 합니다.
+// 각 칸마다 색이 칠해진 2차원 격자 보드판이 있습니다.
+// 그중 한 칸을 골랐을 때, 위, 아래, 왼쪽, 오른쪽 칸 중 같은 색깔로 칠해진 칸의 개수를 구하려고 합니다.
 //
-// 예를 들어 다음과 같이 데이터가 주어진다면
+// 보드의 각 칸에 칠해진 색깔 이름이 담긴 이차원 문자열 리스트 board와 고른 칸의 위치를 나타내는 두 정수 h, w가 주어질 때
+// board[h][w]와 이웃한 칸들 중 같은 색으로 칠해져 있는 칸의 개수를 return 하도록 solution 함수를 완성해 주세요.
 //
-// data = [[1, 20300104, 100, 80], [2, 20300804, 847, 37], [3, 20300401, 10, 8]]
-// 이 데이터는 다음 표처럼 나타낼 수 있습니다.
+// 이웃한 칸들 중 몇 개의 칸이 같은 색으로 색칠되어 있는지 확인하는 과정은 다음과 같습니다.
 //
-// code	date	maximum	remain
-// 1	20300104	100	80
-// 2	20300804	847	37
-// 3	20300401	10	8
-// 주어진 데이터 중 "제조일이 20300501 이전인 물건들을 현재 수량이 적은 순서"로 정렬해야 한다면 조건에 맞게 가공된 데이터는 다음과 같습니다.
-//
-// data = [[3,20300401,10,8],[1,20300104,100,80]]
-// 정렬한 데이터들이 담긴 이차원 정수 리스트 data와 어떤 정보를 기준으로 데이터를 뽑아낼지를 의미하는 문자열 ext,
-// 뽑아낼 정보의 기준값을 나타내는 정수 val_ext, 정보를 정렬할 기준이 되는 문자열 sort_by가 주어집니다.
-//
-// data에서 ext 값이 val_ext보다 작은 데이터만 뽑은 후,
-// sort_by에 해당하는 값을 기준으로 오름차순으로 정렬하여 return 하도록 solution 함수를 완성해 주세요.
-// 단, 조건을 만족하는 데이터는 항상 한 개 이상 존재합니다.
+// 1. 정수를 저장할 변수 n을 만들고 board의 길이를 저장합니다.
+// 2. 같은 색으로 색칠된 칸의 개수를 저장할 변수 count를 만들고 0을 저장합니다.
+// 3. h와 w의 변화량을 저장할 정수 리스트 dh, dw를 만들고 각각 [0, 1, -1, 0], [1, 0, 0, -1]을 저장합니다.
+// 4. 반복문을 이용해 i 값을 0부터 3까지 1 씩 증가시키며 아래 작업을 반복합니다.
+//    4-1. 체크할 칸의 h, w 좌표를 나타내는 변수 h_check, w_check를 만들고 각각 h + dh[i], w + dw[i]를 저장합니다.
+//    4-2. h_check가 0 이상 n 미만이고 w_check가 0 이상 n 미만이라면 다음을 수행합니다.
+//        4-2-a. board[h][w]와 board[h_check][w_check]의 값이 동일하다면 count의 값을 1 증가시킵니다.
+// 5. count의 값을 return합니다.
+// 위의 의사코드와 작동방식이 다른 코드를 작성해도 상관없습니다.
 //
 // 제한사항
-// 1 ≤ data의 길이 ≤ 500
-// data[i]의 원소는 [코드 번호(code), 제조일(date), 최대 수량(maximum), 현재 수량(remain)] 형태입니다.
-// 1 ≤ 코드 번호≤ 100,000
-// 20000101 ≤ 제조일≤ 29991231
-// data[i][1]은 yyyymmdd 형태의 값을 가지며, 올바른 날짜만 주어집니다. (yyyy : 연도, mm : 월, dd : 일)
-// 1 ≤ 최대 수량≤ 10,000
-// 1 ≤ 현재 수량≤ 최대 수량
-// ext와 sort_by의 값은 다음 중 한 가지를 가집니다.
-// "code", "date", "maximum", "remain"
-// 순서대로 코드 번호, 제조일, 최대 수량, 현재 수량을 의미합니다.
-// val_ext는 ext에 따라 올바른 범위의 숫자로 주어집니다.
-// 정렬 기준에 해당하는 값이 서로 같은 경우는 없습니다.
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Comparator;
+// 1 ≤ board의 길이 ≤ 7
+// board의 길이와 board[n]의 길이는 동일합니다.
+// 0 ≤ h, w < board의 길이
+// 1 ≤ board[h][w]의 길이 ≤ 10
+// board[h][w]는 영어 소문자로만 이루어져 있습니다.
 
 public class Main {
 
     public static void main(String[] args) {
-        int[][] data = { {1, 20300104, 100, 80} , {2, 20300804, 847, 37} , {3, 20300401, 10, 8} };
-        String ext = "date";
-        int val_ext = 20300501;
-        String sort_by = "remain";
+        String[][] board = {{"blue", "red", "orange", "red"} , {"red", "red", "blue", "orange"} , {"blue", "orange", "red", "red"}, {"orange", "orange", "red", "blue"}};
+        int h = 1;
+        int w = 1;
 
-        solution(data, ext, val_ext, sort_by);
+        solution(board, h, w);
     }
 
-    public static int[][] solution(int[][] data, String ext, int val_ext, String sort_by) {
-        List<List<Integer>> list = new ArrayList<>();
-        for(int[] row : data) {
-            List<Integer> listRow = new ArrayList<>();
-            for(int element : row) {
-                listRow.add(element);
-            }
-            list.add(listRow);
-        }
+    public static int solution(String[][] board, int h, int w) {
+        int n = board.length;
+        int count = 0;
+        int[] dh = {0, 1, -1, 0};
+        int[] dw = {1, 0, 0, -1};
 
-        list = getData(list, ext, val_ext);
-        list = sortData(list, sort_by);
+        for(int i = 0; i < 4; i ++) {
+            int h_check = h + dh[i];
+            int w_check = w + dw[i];
 
-        int[][] answer = new int[list.size()][list.get(0).size()];
-        for(int i = 0; i < list.size(); i ++) {
-            for(int j = 0; j < list.get(0).size(); j ++) {
-                answer[i][j] = list.get(i).get(j);
+            if(h_check >= 0 && h_check < n && w_check >= 0 && w_check < n) {
+                if(board[h][w].equals(board[h_check][w_check])) count ++;
             }
         }
 
+        int answer = count;
         return answer;
     }
 
-    private static List<List<Integer>> getData(List<List<Integer>> list, String ext, int val_ext) {
-
-        int j = 0;
-        switch(ext) {
-            case "code" : j = 0; break;
-            case "date" : j = 1; break;
-            case "maximum" : j = 2; break;
-            case "remain" : j = 3; break;
-        }
-
-        for(int i = list.size() - 1; i > -1; i --) {
-            if(list.get(i).get(j) >= val_ext) {
-                list.remove(i);
-            }
-        }
-
-        return list;
-    }
-
-    private static List<List<Integer>> sortData(List<List<Integer>> list, String sort_by) {
-
-        int j = 0;
-        switch(sort_by) {
-            case "code" : j = 0; break;
-            case "date" : j = 1; break;
-            case "maximum" : j = 2; break;
-            case "remain" : j = 3; break;
-        }
-
-        final int index = j;
-        list.sort(Comparator.comparingInt(o -> o.get(index)));
-
-        return list;
-    }
 }
 
