@@ -1,49 +1,39 @@
 // 문제
-// 자연수 n이 주어졌을 때, n의 다음 큰 숫자는 다음과 같이 정의 합니다.
+// 피보나치 수는 F(0) = 0, F(1) = 1일 때, 1 이상의 n에 대하여 F(n) = F(n-1) + F(n-2) 가 적용되는 수 입니다.
 //
-// 조건 1. n의 다음 큰 숫자는 n보다 큰 자연수 입니다.
-// 조건 2. n의 다음 큰 숫자와 n은 2진수로 변환했을 때 1의 갯수가 같습니다.
-// 조건 3. n의 다음 큰 숫자는 조건 1, 2를 만족하는 수 중 가장 작은 수 입니다.
-// 예를 들어서 78(1001110)의 다음 큰 숫자는 83(1010011)입니다.
+// 예를들어
 //
-// 자연수 n이 매개변수로 주어질 때, n의 다음 큰 숫자를 return 하는 solution 함수를 완성해주세요.
+// F(2) = F(0) + F(1) = 0 + 1 = 1
+// F(3) = F(1) + F(2) = 1 + 1 = 2
+// F(4) = F(2) + F(3) = 1 + 2 = 3
+// F(5) = F(3) + F(4) = 2 + 3 = 5
+// 와 같이 이어집니다.
+//
+// 2 이상의 n이 입력되었을 때, n번째 피보나치 수를 1234567으로 나눈 나머지를 리턴하는 함수, solution을 완성해 주세요.
 //
 // 제한사항
-// n은 1,000,000 이하의 자연수 입니다.
+// n은 2 이상 100,000 이하인 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
-        int n = 78;
+        int n = 3;
 
         solution(n);
     }
 
     public static int solution(int n) {
 
-        String binaryN = Integer.toBinaryString(n);
-        int nCnt = 0;
-        for(int i = 0; i < binaryN.length(); i ++) {
-            if(binaryN.charAt(i) == '1') nCnt ++;
+        int prev1 = 0; //f(0)
+        int prev2 = 1; //f(1)
+        int answer = 0;
+
+        for(int i = 2; i <= n; i ++) {
+            answer = (prev1 % 1234567 + prev2 % 1234567) % 1234567;
+            prev1 = prev2;
+            prev2 = answer;
         }
 
-        int num = n + 1;
-        while(true) {
-
-            int numCnt = 0;
-            String binaryNum = Integer.toBinaryString(num);
-            for(int i = 0; i < binaryNum.length(); i ++) {
-                if(binaryNum.charAt(i) == '1') numCnt ++;
-            }
-
-            if(nCnt == numCnt) {
-                break;
-            } else {
-                num ++;
-            }
-        }
-
-        int answer = num;
         return answer;
     }
 
