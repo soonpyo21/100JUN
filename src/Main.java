@@ -1,41 +1,43 @@
 // 문제
-// 효진이는 멀리 뛰기를 연습하고 있습니다. 효진이는 한번에 1칸, 또는 2칸을 뛸 수 있습니다.
-// 칸이 총 4개 있을 때, 효진이는
-// (1칸, 1칸, 1칸, 1칸)
-// (1칸, 2칸, 1칸)
-// (1칸, 1칸, 2칸)
-// (2칸, 1칸, 1칸)
-// (2칸, 2칸)
-// 의 5가지 방법으로 맨 끝 칸에 도달할 수 있습니다.
-// 멀리뛰기에 사용될 칸의 수 n이 주어질 때, 효진이가 끝에 도달하는 방법이 몇 가지인지 알아내,
-// 여기에 1234567를 나눈 나머지를 리턴하는 함수, solution을 완성하세요.
-// 예를 들어 4가 입력된다면, 5를 return하면 됩니다.
+// 두 수의 최소공배수(Least Common Multiple)란 입력된 두 수의 배수 중 공통이 되는 가장 작은 숫자를 의미합니다.
+// 예를 들어 2와 7의 최소공배수는 14가 됩니다.
+// 정의를 확장해서, n개의 수의 최소공배수는 n 개의 수들의 배수 중 공통이 되는 가장 작은 숫자가 됩니다.
+// n개의 숫자를 담은 배열 arr이 입력되었을 때 이 수들의 최소공배수를 반환하는 함수, solution을 완성해 주세요.
 //
 // 제한 사항
-// n은 1 이상, 2000 이하인 정수입니다.
+// arr은 길이 1이상, 15이하인 배열입니다.
+// arr의 원소는 100 이하인 자연수입니다.
 
 public class Main {
 
     public static void main(String[] args) {
-        int n = 4;
+        int[] arr = {2,6,8,14};
 
-        solution(n);
+        solution(arr);
     }
 
-    public static long solution(int n) {
+    public static int solution(int[] arr) {
 
-        if(n == 1) return 1;
-        if(n == 2) return 2;
+        int answer = arr[0];
 
-        int[] dp = new int[n];
-        dp[1] = 1;
-        dp[2] = 2;
+         for(int i = 1; i < arr.length; i ++) {
+             answer = lcm(answer, arr[i]);
+         }
 
-        for(int i = 3; i <= n; i ++) {
-            dp[i] = (dp[i - 1] + dp[i - 2]) % 1234567;
+        System.out.println(answer);
+        return answer;
+    }
+
+    private static int lcm(int a, int b) {
+        return a * b / gcd(a,b);
+    }
+
+    private static int gcd(int a, int b) {
+        if(a % b == 0) {
+            return b;
+        } else {
+            return gcd(b, a % b);
         }
-
-        return dp[n];
     }
 
 }
