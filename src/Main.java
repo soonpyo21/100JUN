@@ -1,42 +1,55 @@
 // 문제
-// △△ 게임대회가 개최되었습니다. 이 대회는 N명이 참가하고, 토너먼트 형식으로 진행됩니다.
-// N명의 참가자는 각각 1부터 N번을 차례대로 배정받습니다. 그리고, 1번↔2번, 3번↔4번, ... , N-1번↔N번의 참가자끼리 게임을 진행합니다.
-// 각 게임에서 이긴 사람은 다음 라운드에 진출할 수 있습니다.
-// 이때, 다음 라운드에 진출할 참가자의 번호는 다시 1번부터 N/2번을 차례대로 배정받습니다.
-// 만약 1번↔2번 끼리 겨루는 게임에서 2번이 승리했다면 다음 라운드에서 1번을 부여받고,
-// 3번↔4번에서 겨루는 게임에서 3번이 승리했다면 다음 라운드에서 2번을 부여받게 됩니다.
-// 게임은 최종 한 명이 남을 때까지 진행됩니다.
+// 경화는 과수원에서 귤을 수확했습니다. 경화는 수확한 귤 중 'k'개를 골라 상자 하나에 담아 판매하려고 합니다.
+// 그런데 수확한 귤의 크기가 일정하지 않아 보기에 좋지 않다고 생각한 경화는 귤을 크기별로 분류했을 때 서로 다른 종류의 수를 최소화하고 싶습니다.
 //
-// 이때, 처음 라운드에서 A번을 가진 참가자는 경쟁자로 생각하는 B번 참가자와 몇 번째 라운드에서 만나는지 궁금해졌습니다.
-// 게임 참가자 수 N, 참가자 번호 A, 경쟁자 번호 B가 함수 solution의 매개변수로 주어질 때,
-// 처음 라운드에서 A번을 가진 참가자는 경쟁자로 생각하는 B번 참가자와 몇 번째 라운드에서 만나는지 return 하는 solution 함수를 완성해 주세요.
-// 단, A번 참가자와 B번 참가자는 서로 붙게 되기 전까지 항상 이긴다고 가정합니다.
+// 예를 들어, 경화가 수확한 귤 8개의 크기가 [1, 3, 2, 5, 4, 5, 2, 3] 이라고 합시다.
+// 경화가 귤 6개를 판매하고 싶다면, 크기가 1, 4인 귤을 제외한 여섯 개의 귤을 상자에 담으면,
+// 귤의 크기의 종류가 2, 3, 5로 총 3가지가 되며 이때가 서로 다른 종류가 최소일 때입니다.
+//
+// 경화가 한 상자에 담으려는 귤의 개수 k와 귤의 크기를 담은 배열 tangerine이 매개변수로 주어집니다.
+// 경화가 귤 k개를 고를 때 크기가 서로 다른 종류의 수의 최솟값을 return 하도록 solution 함수를 작성해주세요.
 //
 // 제한 사항
-// N : 21 이상 220 이하인 자연수 (2의 지수 승으로 주어지므로 부전승은 발생하지 않습니다.)
-// A, B : N 이하인 자연수 (단, A ≠ B 입니다.)
+// 1 ≤ k ≤ tangerine의 길이 ≤ 100,000
+// 1 ≤ tangerine의 원소 ≤ 10,000,000
+
+import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
-        int n = 8;
-        int a = 4;
-        int b = 7;
+        int k = 3;
+        int[] tangerine = {1, 1,2,2, 10000000};
 
-        int answer = solution(n, a, b);
+        int answer = solution(k, tangerine);
     }
 
-    public static int solution(int n, int a, int b) {
+    public static int solution(int k, int[] tangerine) {
 
-        int cnt = 0;
-        while(a != b) {
-            a = a / 2 + a % 2;
-            b = b / 2 + b % 2;
-            cnt ++;
+        int[] arr = new int[Arrays.stream(tangerine).max().getAsInt()+1];      // 각 크기의 귤 갯수를 정리할 배열
+        for(int i = 0; i < tangerine.length; i ++) {
+            arr[tangerine[i]] ++;
         }
 
-        System.out.println(cnt);
-        return cnt;
+        Arrays.sort(arr);   // 배열 오름차순 정렬
+
+        // 가장 많은 귤의 개수가 k를 초과한다면 1 return
+        if(arr[arr.length-1] >= k) {
+            return 1;
+        }
+
+        // 초과하지 않는다면 가장 많은 귤의 개수부터 감소 처리
+        int cnt = 0;
+        for(int i = arr.length-1; i > 0; i --) {
+            int dec = arr[i];
+            k -= dec;
+            cnt ++;
+            if(k <= 0) {
+                return cnt;
+            }
+        }
+
+        return 0;
     }
 
 }
