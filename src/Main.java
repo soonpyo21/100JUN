@@ -1,85 +1,42 @@
-// 240923 문제
-// 1부터 n까지 번호가 붙어있는 n명의 사람이 영어 끝말잇기를 하고 있습니다. 영어 끝말잇기는 다음과 같은 규칙으로 진행됩니다.
+// 문제
+// △△ 게임대회가 개최되었습니다. 이 대회는 N명이 참가하고, 토너먼트 형식으로 진행됩니다.
+// N명의 참가자는 각각 1부터 N번을 차례대로 배정받습니다. 그리고, 1번↔2번, 3번↔4번, ... , N-1번↔N번의 참가자끼리 게임을 진행합니다.
+// 각 게임에서 이긴 사람은 다음 라운드에 진출할 수 있습니다.
+// 이때, 다음 라운드에 진출할 참가자의 번호는 다시 1번부터 N/2번을 차례대로 배정받습니다.
+// 만약 1번↔2번 끼리 겨루는 게임에서 2번이 승리했다면 다음 라운드에서 1번을 부여받고,
+// 3번↔4번에서 겨루는 게임에서 3번이 승리했다면 다음 라운드에서 2번을 부여받게 됩니다.
+// 게임은 최종 한 명이 남을 때까지 진행됩니다.
 //
-// 1번부터 번호 순서대로 한 사람씩 차례대로 단어를 말합니다.
-// 마지막 사람이 단어를 말한 다음에는 다시 1번부터 시작합니다.
-// 앞사람이 말한 단어의 마지막 문자로 시작하는 단어를 말해야 합니다.
-// 이전에 등장했던 단어는 사용할 수 없습니다.
-// 한 글자인 단어는 인정되지 않습니다.
-// 다음은 3명이 끝말잇기를 하는 상황을 나타냅니다.
-//
-// tank → kick → know → wheel → land → dream → mother → robot → tank
-//
-// 위 끝말잇기는 다음과 같이 진행됩니다.
-//
-// 1번 사람이 자신의 첫 번째 차례에 tank를 말합니다.
-// 2번 사람이 자신의 첫 번째 차례에 kick을 말합니다.
-// 3번 사람이 자신의 첫 번째 차례에 know를 말합니다.
-// 1번 사람이 자신의 두 번째 차례에 wheel을 말합니다.
-// (계속 진행)
-// 끝말잇기를 계속 진행해 나가다 보면, 3번 사람이 자신의 세 번째 차례에 말한 tank 라는 단어는 이전에 등장했던 단어이므로 탈락하게 됩니다.
-//
-// 사람의 수 n과 사람들이 순서대로 말한 단어 words 가 매개변수로 주어질 때,
-// 가장 먼저 탈락하는 사람의 번호와 그 사람이 자신의 몇 번째 차례에 탈락하는지를 구해서 return 하도록 solution 함수를 완성해주세요.
+// 이때, 처음 라운드에서 A번을 가진 참가자는 경쟁자로 생각하는 B번 참가자와 몇 번째 라운드에서 만나는지 궁금해졌습니다.
+// 게임 참가자 수 N, 참가자 번호 A, 경쟁자 번호 B가 함수 solution의 매개변수로 주어질 때,
+// 처음 라운드에서 A번을 가진 참가자는 경쟁자로 생각하는 B번 참가자와 몇 번째 라운드에서 만나는지 return 하는 solution 함수를 완성해 주세요.
+// 단, A번 참가자와 B번 참가자는 서로 붙게 되기 전까지 항상 이긴다고 가정합니다.
 //
 // 제한 사항
-// 끝말잇기에 참여하는 사람의 수 n은 2 이상 10 이하의 자연수입니다.
-// words는 끝말잇기에 사용한 단어들이 순서대로 들어있는 배열이며, 길이는 n 이상 100 이하입니다.
-// 단어의 길이는 2 이상 50 이하입니다.
-// 모든 단어는 알파벳 소문자로만 이루어져 있습니다.
-// 끝말잇기에 사용되는 단어의 뜻(의미)은 신경 쓰지 않으셔도 됩니다.
-// 정답은 [ 번호, 차례 ] 형태로 return 해주세요.
-// 만약 주어진 단어들로 탈락자가 생기지 않는다면, [0, 0]을 return 해주세요.
-
-import java.util.ArrayList;
-import java.util.List;
+// N : 21 이상 220 이하인 자연수 (2의 지수 승으로 주어지므로 부전승은 발생하지 않습니다.)
+// A, B : N 이하인 자연수 (단, A ≠ B 입니다.)
 
 public class Main {
 
     public static void main(String[] args) {
-        int n = 3;
-        String[] words = {"tank", "kick", "know", "wheel", "land", "dream", "mother", "robot", "tank"};
+        int n = 8;
+        int a = 4;
+        int b = 7;
 
-        int[] answer = solution(n, words);
+        int answer = solution(n, a, b);
     }
 
-    public static int[] solution(int n, String[] words) {
+    public static int solution(int n, int a, int b) {
 
-        List<String> useList = new ArrayList<>();   // 사용된 단어 리스트
-        useList.add(words[0]);
-
-        for(int i = 1; i < words.length; i ++) {
-
-            String curWord = words[i];  // 현재 단어
-
-            // 1. 한 글자인 단어인지 체크
-            if(curWord.length() == 1) {
-                return new int[]{(i % n) + 1, (i / n) + 1};
-            }
-
-            // 2.이전 단어의 끝말인지 체크
-            String lastWord = words[i-1];   // 이전 단어
-
-            String lastSpel = String.valueOf(lastWord.charAt(lastWord.length()-1)); // 이전 단어의 마지막 스펠링
-            String curSpel = String.valueOf(curWord.charAt(0));                     // 현재 단어의 첫번째 스펠링
-
-            if(!lastSpel.equals(curSpel)) {
-                return new int[]{(i % n) + 1, (i / n) + 1};
-            }
-
-            // 3. 사용된 단어인지 체크
-            for(int j = 0; j < useList.size(); j ++) {
-                if(curWord.equals(useList.get(j))) {
-                    return new int[]{(i % n) + 1, (i / n) + 1};
-                }
-            }
-
-            // 사용되지 않았다면 사용 단어 리스트에 add
-            useList.add(curWord);
+        int cnt = 0;
+        while(a != b) {
+            a = a / 2 + a % 2;
+            b = b / 2 + b % 2;
+            cnt ++;
         }
 
-        // 탈락자가 발생하지 않는 경우 0,0 return
-        return new int[]{0, 0};
+        System.out.println(cnt);
+        return cnt;
     }
 
 }
