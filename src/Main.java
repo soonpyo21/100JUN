@@ -1,55 +1,49 @@
 // 문제
-// 경화는 과수원에서 귤을 수확했습니다. 경화는 수확한 귤 중 'k'개를 골라 상자 하나에 담아 판매하려고 합니다.
-// 그런데 수확한 귤의 크기가 일정하지 않아 보기에 좋지 않다고 생각한 경화는 귤을 크기별로 분류했을 때 서로 다른 종류의 수를 최소화하고 싶습니다.
 //
-// 예를 들어, 경화가 수확한 귤 8개의 크기가 [1, 3, 2, 5, 4, 5, 2, 3] 이라고 합시다.
-// 경화가 귤 6개를 판매하고 싶다면, 크기가 1, 4인 귤을 제외한 여섯 개의 귤을 상자에 담으면,
-// 귤의 크기의 종류가 2, 3, 5로 총 3가지가 되며 이때가 서로 다른 종류가 최소일 때입니다.
-//
-// 경화가 한 상자에 담으려는 귤의 개수 k와 귤의 크기를 담은 배열 tangerine이 매개변수로 주어집니다.
-// 경화가 귤 k개를 고를 때 크기가 서로 다른 종류의 수의 최솟값을 return 하도록 solution 함수를 작성해주세요.
+// 철호는 수열을 가지고 놀기 좋아합니다.
+// 어느 날 철호는 어떤 자연수로 이루어진 원형 수열의 연속하는 부분 수열의 합으로 만들 수 있는 수가 모두 몇 가지인지 알아보고 싶어졌습니다.
+// 원형 수열이란 일반적인 수열에서 처음과 끝이 연결된 형태의 수열을 말합니다.
+// 예를 들어 수열 [7, 9, 1, 1, 4] 로 원형 수열을 만들면 다음과 같습니다.
+// 원형 수열은 처음과 끝이 연결되어 끊기는 부분이 없기 때문에 연속하는 부분 수열도 일반적인 수열보다 많아집니다.
+// 원형 수열의 모든 원소 elements가 순서대로 주어질 때,
+// 원형 수열의 연속 부분 수열 합으로 만들 수 있는 수의 개수를 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한 사항
-// 1 ≤ k ≤ tangerine의 길이 ≤ 100,000
-// 1 ≤ tangerine의 원소 ≤ 10,000,000
+// 3 ≤ elements의 길이 ≤ 1,000
+// 1 ≤ elements의 원소 ≤ 1,000
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        int k = 3;
-        int[] tangerine = {1, 1,2,2, 10000000};
+        int[] elements = {7,9,1,1,4};
 
-        int answer = solution(k, tangerine);
+        solution(elements);
     }
 
-    public static int solution(int k, int[] tangerine) {
+    public static int solution(int[] elements) {
 
-        int[] arr = new int[Arrays.stream(tangerine).max().getAsInt()+1];      // 각 크기의 귤 갯수를 정리할 배열
-        for(int i = 0; i < tangerine.length; i ++) {
-            arr[tangerine[i]] ++;
-        }
+        Set<Integer> set = new HashSet<>();
+        int len = elements.length;
 
-        Arrays.sort(arr);   // 배열 오름차순 정렬
+        // 길이 1부터 len까지 구간별 합산 구하기
+        for(int i = 1; i <= len; i ++) {
 
-        // 가장 많은 귤의 개수가 k를 초과한다면 1 return
-        if(arr[arr.length-1] >= k) {
-            return 1;
-        }
+            // j : 구간합을 하는 시작점(시작 인덱스)
+            for(int j = 0; j < len; j ++) {
+                int num = 0;
 
-        // 초과하지 않는다면 가장 많은 귤의 개수부터 감소 처리
-        int cnt = 0;
-        for(int i = arr.length-1; i > 0; i --) {
-            int dec = arr[i];
-            k -= dec;
-            cnt ++;
-            if(k <= 0) {
-                return cnt;
+                // 현재 구간의 길이만큼 값 합산
+                for(int k = 0; k < i; k ++) {
+                    num += elements[(j + k) % len]; // 인덱스 초과 오류를 모듈러 연산으로 처리
+                }
+
+                set.add(num);
             }
         }
 
-        return 0;
+        return set.size();
     }
-
 }
