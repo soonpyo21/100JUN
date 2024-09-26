@@ -1,49 +1,68 @@
 // 문제
 //
-// 철호는 수열을 가지고 놀기 좋아합니다.
-// 어느 날 철호는 어떤 자연수로 이루어진 원형 수열의 연속하는 부분 수열의 합으로 만들 수 있는 수가 모두 몇 가지인지 알아보고 싶어졌습니다.
-// 원형 수열이란 일반적인 수열에서 처음과 끝이 연결된 형태의 수열을 말합니다.
-// 예를 들어 수열 [7, 9, 1, 1, 4] 로 원형 수열을 만들면 다음과 같습니다.
-// 원형 수열은 처음과 끝이 연결되어 끊기는 부분이 없기 때문에 연속하는 부분 수열도 일반적인 수열보다 많아집니다.
-// 원형 수열의 모든 원소 elements가 순서대로 주어질 때,
-// 원형 수열의 연속 부분 수열 합으로 만들 수 있는 수의 개수를 return 하도록 solution 함수를 완성해주세요.
+// 다음 규칙을 지키는 문자열을 올바른 괄호 문자열이라고 정의합니다.
+//
+// (), [], {} 는 모두 올바른 괄호 문자열입니다.
+// 만약 A가 올바른 괄호 문자열이라면, (A), [A], {A} 도 올바른 괄호 문자열입니다. 예를 들어, [] 가 올바른 괄호 문자열이므로, ([]) 도 올바른 괄호 문자열입니다.
+// 만약 A, B가 올바른 괄호 문자열이라면, AB 도 올바른 괄호 문자열입니다.
+// 예를 들어, {} 와 ([]) 가 올바른 괄호 문자열이므로, {}([]) 도 올바른 괄호 문자열입니다.
+// 대괄호, 중괄호, 그리고 소괄호로 이루어진 문자열 s가 매개변수로 주어집니다.
+// 이 s를 왼쪽으로 x (0 ≤ x < (s의 길이)) 칸만큼 회전시켰을 때 s가 올바른 괄호 문자열이 되게 하는 x의 개수를 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한 사항
-// 3 ≤ elements의 길이 ≤ 1,000
-// 1 ≤ elements의 원소 ≤ 1,000
+// s의 길이는 1 이상 1,000 이하입니다.
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Stack;
 
 public class Main {
 
     public static void main(String[] args) {
-        int[] elements = {7,9,1,1,4};
+        String str = "[](){}";
 
-        solution(elements);
+        solution(str);
     }
 
-    public static int solution(int[] elements) {
+    public static int solution(String str) {
 
-        Set<Integer> set = new HashSet<>();
-        int len = elements.length;
+        int len = str.length();
+        int answer = 0;
 
-        // 길이 1부터 len까지 구간별 합산 구하기
-        for(int i = 1; i <= len; i ++) {
+        // str의 길이만큼 회전
+        for(int i = 0; i < len; i ++) {
+            String s = "";  // 회전된 문자열
 
-            // j : 구간합을 하는 시작점(시작 인덱스)
-            for(int j = 0; j < len; j ++) {
-                int num = 0;
-
-                // 현재 구간의 길이만큼 값 합산
-                for(int k = 0; k < i; k ++) {
-                    num += elements[(j + k) % len]; // 인덱스 초과 오류를 모듈러 연산으로 처리
-                }
-
-                set.add(num);
+            // s에 회전되지 않은 문자열 채우기
+            for(int j = 0; j < len - i; j ++) {
+                s += String.valueOf(str.charAt(j+i));
             }
+
+            // s에 회전된 문자열 채우기
+            int num = len - s.length();
+            for(int k = 0; k < num; k ++) {
+                s += String.valueOf(str.charAt(k));
+            }
+
+            // s의 요소를 stack에 주입하며 올바른 괄호 문자열인지 체크
+            Stack<Character> stack = new Stack<>();
+
+            for(int l = 0; l < s.length(); l ++) {
+                if(stack.size() == 0) {
+                    stack.push(s.charAt(l));
+                } else {
+                    Character c = stack.peek();
+                    if((c == '[' && s.charAt(l) == ']') ||
+                            (c == '{' && s.charAt(l) == '}') ||
+                            (c == '(' && s.charAt(l) == ')')) {
+                        stack.pop();
+                    } else {
+                        stack.push(s.charAt(l));
+                    }
+                }
+            }
+
+            if(stack.size() == 0) answer ++;
         }
 
-        return set.size();
+        return answer;
     }
 }
