@@ -1,66 +1,77 @@
 // 문제
 //
-// 다음 규칙을 지키는 문자열을 올바른 괄호 문자열이라고 정의합니다.
+// XYZ 마트는 일정한 금액을 지불하면 10일 동안 회원 자격을 부여합니다.
+// XYZ 마트에서는 회원을 대상으로 매일 한 가지 제품을 할인하는 행사를 합니다.
+// 할인하는 제품은 하루에 하나씩만 구매할 수 있습니다.
+// 알뜰한 정현이는 자신이 원하는 제품과 수량이 할인하는 날짜와 10일 연속으로 일치할 경우에 맞춰서 회원가입을 하려 합니다.
 //
-// (), [], {} 는 모두 올바른 괄호 문자열입니다.
-// 만약 A가 올바른 괄호 문자열이라면, (A), [A], {A} 도 올바른 괄호 문자열입니다. 예를 들어, [] 가 올바른 괄호 문자열이므로, ([]) 도 올바른 괄호 문자열입니다.
-// 만약 A, B가 올바른 괄호 문자열이라면, AB 도 올바른 괄호 문자열입니다.
-// 예를 들어, {} 와 ([]) 가 올바른 괄호 문자열이므로, {}([]) 도 올바른 괄호 문자열입니다.
-// 대괄호, 중괄호, 그리고 소괄호로 이루어진 문자열 s가 매개변수로 주어집니다.
-// 이 s를 왼쪽으로 x (0 ≤ x < (s의 길이)) 칸만큼 회전시켰을 때 s가 올바른 괄호 문자열이 되게 하는 x의 개수를 return 하도록 solution 함수를 완성해주세요.
+// 예를 들어, 정현이가 원하는 제품이 바나나 3개, 사과 2개, 쌀 2개, 돼지고기 2개, 냄비 1개이며,
+// XYZ 마트에서 14일간 회원을 대상으로 할인하는 제품이 날짜 순서대로
+// 치킨, 사과, 사과, 바나나, 쌀, 사과, 돼지고기, 바나나, 돼지고기, 쌀, 냄비, 바나나, 사과, 바나나인 경우에 대해 알아봅시다.
+// 첫째 날부터 열흘 간에는 냄비가 할인하지 않기 때문에 첫째 날에는 회원가입을 하지 않습니다.
+// 둘째 날부터 열흘 간에는 바나나를 원하는 만큼 할인구매할 수 없기 때문에 둘째 날에도 회원가입을 하지 않습니다.
+// 셋째 날, 넷째 날, 다섯째 날부터 각각 열흘은 원하는 제품과 수량이 일치하기 때문에 셋 중 하루에 회원가입을 하려 합니다.
+//
+// 정현이가 원하는 제품을 나타내는 문자열 배열 want와 정현이가 원하는 제품의 수량을 나타내는 정수 배열 number,
+// XYZ 마트에서 할인하는 제품을 나타내는 문자열 배열 discount가 주어졌을 때,
+// 회원등록시 정현이가 원하는 제품을 모두 할인 받을 수 있는 회원등록 날짜의 총 일수를 return 하는 solution 함수를 완성하시오.
+// 가능한 날이 없으면 0을 return 합니다.
 //
 // 제한 사항
-// s의 길이는 1 이상 1,000 이하입니다.
+// 1 ≤ want의 길이 = number의 길이 ≤ 10
+// 1 ≤ number의 원소 ≤ 10
+// number[i]는 want[i]의 수량을 의미하며, number의 원소의 합은 10입니다.
+// 10 ≤ discount의 길이 ≤ 100,000
+// want와 discount의 원소들은 알파벳 소문자로 이루어진 문자열입니다.
+// 1 ≤ want의 원소의 길이, discount의 원소의 길이 ≤ 12
 
-import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-        String str = "[](){}";
+        String[] want = {"banana", "apple", "rice", "pork", "pot"};
+        int[] number = {3, 2, 2, 2, 1};
+        String[] discount = {"chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana"};
 
-        solution(str);
+        solution(want, number, discount);
     }
 
-    public static int solution(String str) {
+    public static int solution(String[] want, int[] number, String[] discount) {
 
-        int len = str.length();
+        Map<String, Integer> wantMap = new HashMap<>();
+
+        for(int i = 0; i < want.length; i ++) {
+            wantMap.put(want[i], number[i]);
+        }
+
+        Map<String, Integer> discountMap = new HashMap<>();
+        int len = discount.length;
         int answer = 0;
 
-        // str의 길이만큼 회전
         for(int i = 0; i < len; i ++) {
-            String s = "";  // 회전된 문자열
 
-            // s에 회전되지 않은 문자열 채우기
-            for(int j = 0; j < len - i; j ++) {
-                s += String.valueOf(str.charAt(j+i));
-            }
+            if(i + 10 <= len) {
 
-            // s에 회전된 문자열 채우기
-            int num = len - s.length();
-            for(int k = 0; k < num; k ++) {
-                s += String.valueOf(str.charAt(k));
-            }
+                for(int j = i; j < i + 10; j ++) {
+                    discountMap.put(discount[j], discountMap.getOrDefault(discount[j], 0) + 1);
+                }
 
-            // s의 요소를 stack에 주입하며 올바른 괄호 문자열인지 체크
-            Stack<Character> stack = new Stack<>();
+                boolean allDiscount = true;
+                for(int k = 0; k < want.length; k ++) {
+                    int discountCnt = discountMap.getOrDefault(want[k],0);
+                    int wantCnt = wantMap.get(want[k]);
 
-            for(int l = 0; l < s.length(); l ++) {
-                if(stack.size() == 0) {
-                    stack.push(s.charAt(l));
-                } else {
-                    Character c = stack.peek();
-                    if((c == '[' && s.charAt(l) == ']') ||
-                            (c == '{' && s.charAt(l) == '}') ||
-                            (c == '(' && s.charAt(l) == ')')) {
-                        stack.pop();
-                    } else {
-                        stack.push(s.charAt(l));
+                    if(discountCnt < wantCnt) {
+                        allDiscount = false;
+                        break;
                     }
                 }
-            }
 
-            if(stack.size() == 0) answer ++;
+                discountMap.clear();
+                if(allDiscount) answer ++;
+            }
         }
 
         return answer;
