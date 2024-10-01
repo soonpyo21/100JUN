@@ -1,77 +1,40 @@
 // 문제
 //
-// XYZ 마트는 일정한 금액을 지불하면 10일 동안 회원 자격을 부여합니다.
-// XYZ 마트에서는 회원을 대상으로 매일 한 가지 제품을 할인하는 행사를 합니다.
-// 할인하는 제품은 하루에 하나씩만 구매할 수 있습니다.
-// 알뜰한 정현이는 자신이 원하는 제품과 수량이 할인하는 날짜와 10일 연속으로 일치할 경우에 맞춰서 회원가입을 하려 합니다.
+// 정수 n, left, right가 주어집니다. 다음 과정을 거쳐서 1차원 배열을 만들고자 합니다.
 //
-// 예를 들어, 정현이가 원하는 제품이 바나나 3개, 사과 2개, 쌀 2개, 돼지고기 2개, 냄비 1개이며,
-// XYZ 마트에서 14일간 회원을 대상으로 할인하는 제품이 날짜 순서대로
-// 치킨, 사과, 사과, 바나나, 쌀, 사과, 돼지고기, 바나나, 돼지고기, 쌀, 냄비, 바나나, 사과, 바나나인 경우에 대해 알아봅시다.
-// 첫째 날부터 열흘 간에는 냄비가 할인하지 않기 때문에 첫째 날에는 회원가입을 하지 않습니다.
-// 둘째 날부터 열흘 간에는 바나나를 원하는 만큼 할인구매할 수 없기 때문에 둘째 날에도 회원가입을 하지 않습니다.
-// 셋째 날, 넷째 날, 다섯째 날부터 각각 열흘은 원하는 제품과 수량이 일치하기 때문에 셋 중 하루에 회원가입을 하려 합니다.
-//
-// 정현이가 원하는 제품을 나타내는 문자열 배열 want와 정현이가 원하는 제품의 수량을 나타내는 정수 배열 number,
-// XYZ 마트에서 할인하는 제품을 나타내는 문자열 배열 discount가 주어졌을 때,
-// 회원등록시 정현이가 원하는 제품을 모두 할인 받을 수 있는 회원등록 날짜의 총 일수를 return 하는 solution 함수를 완성하시오.
-// 가능한 날이 없으면 0을 return 합니다.
+// n행 n열 크기의 비어있는 2차원 배열을 만듭니다.
+// i = 1, 2, 3, ..., n에 대해서, 다음 과정을 반복합니다.
+// 1행 1열부터 i행 i열까지의 영역 내의 모든 빈 칸을 숫자 i로 채웁니다.
+// 1행, 2행, ..., n행을 잘라내어 모두 이어붙인 새로운 1차원 배열을 만듭니다.
+// 새로운 1차원 배열을 arr이라 할 때, arr[left], arr[left+1], ..., arr[right]만 남기고 나머지는 지웁니다.
+// 정수 n, left, right가 매개변수로 주어집니다. 주어진 과정대로 만들어진 1차원 배열을 return 하도록 solution 함수를 완성해주세요.
 //
 // 제한 사항
-// 1 ≤ want의 길이 = number의 길이 ≤ 10
-// 1 ≤ number의 원소 ≤ 10
-// number[i]는 want[i]의 수량을 의미하며, number의 원소의 합은 10입니다.
-// 10 ≤ discount의 길이 ≤ 100,000
-// want와 discount의 원소들은 알파벳 소문자로 이루어진 문자열입니다.
-// 1 ≤ want의 원소의 길이, discount의 원소의 길이 ≤ 12
-
-import java.util.HashMap;
-import java.util.Map;
+// 1 ≤ n ≤ 107
+// 0 ≤ left ≤ right < n2
+// right - left < 105
 
 public class Main {
 
     public static void main(String[] args) {
-        String[] want = {"banana", "apple", "rice", "pork", "pot"};
-        int[] number = {3, 2, 2, 2, 1};
-        String[] discount = {"chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana"};
+        int n = 3;
+        long left = 2;
+        long right = 5;
 
-        solution(want, number, discount);
+        solution(n, left, right);
     }
 
-    public static int solution(String[] want, int[] number, String[] discount) {
+    public static int[] solution(int n, long left, long right) {
 
-        Map<String, Integer> wantMap = new HashMap<>();
+        int[] answer = new int[(int) (right - left + 1)];
+        int idx = 0;
 
-        for(int i = 0; i < want.length; i ++) {
-            wantMap.put(want[i], number[i]);
-        }
+        for(long i = left; i <= right; i ++) {
+            long row = i / n + 1;
+            long col = i % n + 1;
 
-        Map<String, Integer> discountMap = new HashMap<>();
-        int len = discount.length;
-        int answer = 0;
-
-        for(int i = 0; i < len; i ++) {
-
-            if(i + 10 <= len) {
-
-                for(int j = i; j < i + 10; j ++) {
-                    discountMap.put(discount[j], discountMap.getOrDefault(discount[j], 0) + 1);
-                }
-
-                boolean allDiscount = true;
-                for(int k = 0; k < want.length; k ++) {
-                    int discountCnt = discountMap.getOrDefault(want[k],0);
-                    int wantCnt = wantMap.get(want[k]);
-
-                    if(discountCnt < wantCnt) {
-                        allDiscount = false;
-                        break;
-                    }
-                }
-
-                discountMap.clear();
-                if(allDiscount) answer ++;
-            }
+            answer[idx] = (int) Math.max(row, col);
+            idx ++;
         }
 
         return answer;
