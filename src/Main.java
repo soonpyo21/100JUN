@@ -1,31 +1,44 @@
 // 문제
+// H-Index는 과학자의 생산성과 영향력을 나타내는 지표입니다. 어느 과학자의 H-Index를 나타내는 값인 h를 구하려고 합니다.
+// 위키백과1에 따르면, H-Index는 다음과 같이 구합니다.
 //
-// 2차원 행렬 arr1과 arr2를 입력받아, arr1에 arr2를 곱한 결과를 반환하는 함수, solution을 완성해주세요.
+// 어떤 과학자가 발표한 논문 n편 중, h번 이상 인용된 논문이 h편 이상이고 나머지 논문이 h번 이하 인용되었다면 h의 최댓값이 이 과학자의 H-Index입니다.
+//
+// 어떤 과학자가 발표한 논문의 인용 횟수를 담은 배열 citations가 매개변수로 주어질 때,
+// 이 과학자의 H-Index를 return 하도록 solution 함수를 작성해주세요.
 //
 // 제한 조건
-// 행렬 arr1, arr2의 행과 열의 길이는 2 이상 100 이하입니다.
-// 행렬 arr1, arr2의 원소는 -10 이상 20 이하인 자연수입니다.
-// 곱할 수 있는 배열만 주어집니다.
+// 과학자가 발표한 논문의 수는 1편 이상 1,000편 이하입니다.
+// 논문별 인용 횟수는 0회 이상 10,000회 이하입니다.
+
+import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
-        int[][] arr1 = {{1,4}, {3,2}, {4,1}};
-        int[][] arr2 = {{3,3}, {3,3}};
+        int[] citations = {3, 0, 6, 1, 5};
 
-        solution(arr1, arr2);
+        solution(citations);
     }
 
-    public static int[][] solution(int[][] arr1, int[][] arr2) {
+    public static int solution(int[] citations) {
 
-        int[][] answer = new int[arr1.length][arr2[0].length];
+        Arrays.sort(citations);
+        int answer = 0;
 
-        for(int i = 0; i < arr1.length; i ++) {
-            for(int j = 0; j < arr2[0].length; j ++) {
-                for(int k = 0; k < arr1[0].length; k ++) {
-                    answer[i][j] += arr1[i][k] * arr2[k][j];
-                }
+        for(int i = citations.length; i > 0; i --) {    // h의 최댓값 -> 논문의 총 갯수
+
+            int cnt = 0;    // j번째 논문의 인용 수
+            for(int j = citations.length - 1; j >= 0; j --) {
+                if(citations[j] >= i) cnt ++;
+                if(cnt >= i) break;
             }
+
+            if(cnt >= i) {
+                answer = cnt;
+                break;
+            }
+
         }
 
         return answer;
