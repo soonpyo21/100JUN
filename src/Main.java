@@ -1,46 +1,59 @@
 // 문제
-// H-Index는 과학자의 생산성과 영향력을 나타내는 지표입니다. 어느 과학자의 H-Index를 나타내는 값인 h를 구하려고 합니다.
-// 위키백과1에 따르면, H-Index는 다음과 같이 구합니다.
+// 코니는 매일 다른 옷을 조합하여 입는것을 좋아합니다.
+// 예를 들어 코니가 가진 옷이 아래와 같고, 오늘 코니가 동그란 안경, 긴 코트, 파란색 티셔츠를 입었다면
+// 다음날은 청바지를 추가로 입거나 동그란 안경 대신 검정 선글라스를 착용하거나 해야합니다.
 //
-// 어떤 과학자가 발표한 논문 n편 중, h번 이상 인용된 논문이 h편 이상이고 나머지 논문이 h번 이하 인용되었다면 h의 최댓값이 이 과학자의 H-Index입니다.
-//
-// 어떤 과학자가 발표한 논문의 인용 횟수를 담은 배열 citations가 매개변수로 주어질 때,
-// 이 과학자의 H-Index를 return 하도록 solution 함수를 작성해주세요.
+// 종류	이름
+// 얼굴	동그란 안경, 검정 선글라스
+// 상의	파란색 티셔츠
+// 하의	청바지
+// 겉옷	긴 코트
+// 코니는 각 종류별로 최대 1가지 의상만 착용할 수 있습니다. 예를 들어 위 예시의 경우 동그란 안경과 검정 선글라스를 동시에 착용할 수는 없습니다.
+// 착용한 의상의 일부가 겹치더라도, 다른 의상이 겹치지 않거나, 혹은 의상을 추가로 더 착용한 경우에는 서로 다른 방법으로 옷을 착용한 것으로 계산합니다.
+// 코니는 하루에 최소 한 개의 의상은 입습니다.
+// 코니가 가진 의상들이 담긴 2차원 배열 clothes가 주어질 때 서로 다른 옷의 조합의 수를 return 하도록 solution 함수를 작성해주세요.
 //
 // 제한 조건
-// 과학자가 발표한 논문의 수는 1편 이상 1,000편 이하입니다.
-// 논문별 인용 횟수는 0회 이상 10,000회 이하입니다.
+// clothes의 각 행은 [의상의 이름, 의상의 종류]로 이루어져 있습니다.
+// 코니가 가진 의상의 수는 1개 이상 30개 이하입니다.
+// 같은 이름을 가진 의상은 존재하지 않습니다.
+// clothes의 모든 원소는 문자열로 이루어져 있습니다.
+// 모든 문자열의 길이는 1 이상 20 이하인 자연수이고 알파벳 소문자 또는 '_' 로만 이루어져 있습니다.
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-        int[] citations = {3, 0, 6, 1, 5};
 
-        solution(citations);
+        String[][] clothes = {{"yellow_hat", "headgear"}, {"blue_sunglasses", "eyewear"},{"green_turban", "headgear"}};
+
+        solution(clothes);
     }
 
-    public static int solution(int[] citations) {
+    private static int solution(String[][] clothes) {
 
-        Arrays.sort(citations);
-        int answer = 0;
-
-        for(int i = citations.length; i > 0; i --) {    // h의 최댓값 -> 논문의 총 갯수
-
-            int cnt = 0;    // j번째 논문의 인용 수
-            for(int j = citations.length - 1; j >= 0; j --) {
-                if(citations[j] >= i) cnt ++;
-                if(cnt >= i) break;
-            }
-
-            if(cnt >= i) {
-                answer = cnt;
-                break;
-            }
-
+        Map<String, Integer> map = new HashMap<>();
+        Set<String> set = new HashSet<>();
+        for(int i = 0; i < clothes.length; i ++) {
+            map.put(clothes[i][1], map.getOrDefault(clothes[i][1], 1) + 1);
+            set.add(clothes[i][1]);
         }
 
-        return answer;
+        int answer = 0;
+
+        for(String s : set) {
+            if(answer == 0) {
+                answer = map.get(s);
+            } else {
+                answer *= map.get(s);
+            }
+        }
+
+        return answer-1;
+
     }
 }
