@@ -1,59 +1,72 @@
 // 문제
-// 코니는 매일 다른 옷을 조합하여 입는것을 좋아합니다.
-// 예를 들어 코니가 가진 옷이 아래와 같고, 오늘 코니가 동그란 안경, 긴 코트, 파란색 티셔츠를 입었다면
-// 다음날은 청바지를 추가로 입거나 동그란 안경 대신 검정 선글라스를 착용하거나 해야합니다.
+// 프로그래머스 팀에서는 기능 개선 작업을 수행 중입니다. 각 기능은 진도가 100%일 때 서비스에 반영할 수 있습니다.
+// 또, 각 기능의 개발속도는 모두 다르기 때문에 뒤에 있는 기능이 앞에 있는 기능보다 먼저 개발될 수 있고,
+// 이때 뒤에 있는 기능은 앞에 있는 기능이 배포될 때 함께 배포됩니다.
 //
-// 종류	이름
-// 얼굴	동그란 안경, 검정 선글라스
-// 상의	파란색 티셔츠
-// 하의	청바지
-// 겉옷	긴 코트
-// 코니는 각 종류별로 최대 1가지 의상만 착용할 수 있습니다. 예를 들어 위 예시의 경우 동그란 안경과 검정 선글라스를 동시에 착용할 수는 없습니다.
-// 착용한 의상의 일부가 겹치더라도, 다른 의상이 겹치지 않거나, 혹은 의상을 추가로 더 착용한 경우에는 서로 다른 방법으로 옷을 착용한 것으로 계산합니다.
-// 코니는 하루에 최소 한 개의 의상은 입습니다.
-// 코니가 가진 의상들이 담긴 2차원 배열 clothes가 주어질 때 서로 다른 옷의 조합의 수를 return 하도록 solution 함수를 작성해주세요.
+// 먼저 배포되어야 하는 순서대로 작업의 진도가 적힌 정수 배열 progresses와 각 작업의 개발 속도가 적힌 정수 배열 speeds가 주어질 때
+// 각 배포마다 몇 개의 기능이 배포되는지를 return 하도록 solution 함수를 완성하세요.
 //
 // 제한 조건
-// clothes의 각 행은 [의상의 이름, 의상의 종류]로 이루어져 있습니다.
-// 코니가 가진 의상의 수는 1개 이상 30개 이하입니다.
-// 같은 이름을 가진 의상은 존재하지 않습니다.
-// clothes의 모든 원소는 문자열로 이루어져 있습니다.
-// 모든 문자열의 길이는 1 이상 20 이하인 자연수이고 알파벳 소문자 또는 '_' 로만 이루어져 있습니다.
+// 작업의 개수(progresses, speeds배열의 길이)는 100개 이하입니다.
+// 작업 진도는 100 미만의 자연수입니다.
+// 작업 속도는 100 이하의 자연수입니다.
+// 배포는 하루에 한 번만 할 수 있으며, 하루의 끝에 이루어진다고 가정합니다.
+// 예를 들어 진도율이 95%인 작업의 개발 속도가 하루에 4%라면 배포는 2일 뒤에 이루어집니다.
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String[][] clothes = {{"yellow_hat", "headgear"}, {"blue_sunglasses", "eyewear"},{"green_turban", "headgear"}};
+        int[] progresses = {93, 30, 55};
+        int[] speeds = {1, 30, 5};
 
-        solution(clothes);
+        solution(progresses, speeds);
     }
 
-    private static int solution(String[][] clothes) {
+    private static int[] solution(int[] progresses, int[] speeds) {
 
-        Map<String, Integer> map = new HashMap<>();
-        Set<String> set = new HashSet<>();
-        for(int i = 0; i < clothes.length; i ++) {
-            map.put(clothes[i][1], map.getOrDefault(clothes[i][1], 1) + 1);
-            set.add(clothes[i][1]);
+        Queue<Integer> progressQ = new LinkedList<>();
+        Queue<Integer> speedQ = new LinkedList<>();
+        List<Integer> cntList = new ArrayList<>();
+
+        for(int i = 0; i < progresses.length; i ++) {
+            progressQ.add(progresses[i]);
+            speedQ.add(speeds[i]);
         }
 
-        int answer = 0;
+        int cnt = 0;
+        while(progressQ.size() != 0) {
 
-        for(String s : set) {
-            if(answer == 0) {
-                answer = map.get(s);
-            } else {
-                answer *= map.get(s);
+            if(progressQ.peek() >= 100) {
+                progressQ.poll();
+                speedQ.poll();
+                cnt ++;
+                continue;
             }
+
+            if(cnt > 0) {
+                cntList.add(cnt);
+                cnt = 0;
+            }
+
+            for (int i = 0; i < progressQ.size(); i++) {
+                int progress = progressQ.poll();
+                int speed = speedQ.poll();
+
+                progressQ.add(progress + speed);
+                speedQ.add(speed);
+            }
+
         }
 
-        return answer-1;
+        if(cnt > 0) {
+            cntList.add(cnt);
+        }
 
+        int[] answer = cntList.stream().mapToInt(Integer::intValue).toArray();
+
+        return answer;
     }
 }
