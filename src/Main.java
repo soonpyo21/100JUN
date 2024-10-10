@@ -1,17 +1,26 @@
 // 문제
-// 프로그래머스 팀에서는 기능 개선 작업을 수행 중입니다. 각 기능은 진도가 100%일 때 서비스에 반영할 수 있습니다.
-// 또, 각 기능의 개발속도는 모두 다르기 때문에 뒤에 있는 기능이 앞에 있는 기능보다 먼저 개발될 수 있고,
-// 이때 뒤에 있는 기능은 앞에 있는 기능이 배포될 때 함께 배포됩니다.
+// 지도개발팀에서 근무하는 제이지는 지도에서 도시 이름을 검색하면
+// 해당 도시와 관련된 맛집 게시물들을 데이터베이스에서 읽어 보여주는 서비스를 개발하고 있다.
+// 이 프로그램의 테스팅 업무를 담당하고 있는 어피치는 서비스를 오픈하기 전 각 로직에 대한 성능 측정을 수행하였는데,
+// 제이지가 작성한 부분 중 데이터베이스에서 게시물을 가져오는 부분의 실행시간이 너무 오래 걸린다는 것을 알게 되었다.
+// 어피치는 제이지에게 해당 로직을 개선하라고 닦달하기 시작하였고,
+// 제이지는 DB 캐시를 적용하여 성능 개선을 시도하고 있지만 캐시 크기를 얼마로 해야 효율적인지 몰라 난감한 상황이다.
 //
-// 먼저 배포되어야 하는 순서대로 작업의 진도가 적힌 정수 배열 progresses와 각 작업의 개발 속도가 적힌 정수 배열 speeds가 주어질 때
-// 각 배포마다 몇 개의 기능이 배포되는지를 return 하도록 solution 함수를 완성하세요.
+// 어피치에게 시달리는 제이지를 도와, DB 캐시를 적용할 때 캐시 크기에 따른 실행시간 측정 프로그램을 작성하시오.
+//
+// 입력 형식
+// 캐시 크기(cacheSize)와 도시이름 배열(cities)을 입력받는다.
+// cacheSize는 정수이며, 범위는 0 ≦ cacheSize ≦ 30 이다.
+// cities는 도시 이름으로 이뤄진 문자열 배열로, 최대 도시 수는 100,000개이다.
+// 각 도시 이름은 공백, 숫자, 특수문자 등이 없는 영문자로 구성되며, 대소문자 구분을 하지 않는다. 도시 이름은 최대 20자로 이루어져 있다.
+//
+// 출력 형식
+// 입력된 도시이름 배열을 순서대로 처리할 때, "총 실행시간"을 출력한다.
 //
 // 제한 조건
-// 작업의 개수(progresses, speeds배열의 길이)는 100개 이하입니다.
-// 작업 진도는 100 미만의 자연수입니다.
-// 작업 속도는 100 이하의 자연수입니다.
-// 배포는 하루에 한 번만 할 수 있으며, 하루의 끝에 이루어진다고 가정합니다.
-// 예를 들어 진도율이 95%인 작업의 개발 속도가 하루에 4%라면 배포는 2일 뒤에 이루어집니다.
+// 캐시 교체 알고리즘은 LRU(Least Recently Used)를 사용한다.
+// cache hit일 경우 실행시간은 1이다.
+// cache miss일 경우 실행시간은 5이다.
 
 import java.util.*;
 
@@ -19,53 +28,41 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int[] progresses = {93, 30, 55};
-        int[] speeds = {1, 30, 5};
+        int cacheSize = 3;
+        String[] cities = {"Jeju", "Pangyo", "Seoul", "NewYork", "LA", "Jeju", "Pangyo", "Seoul", "NewYork", "LA"};
 
-        solution(progresses, speeds);
+        solution(cacheSize, cities);
     }
 
-    private static int[] solution(int[] progresses, int[] speeds) {
+    private static int solution(int cacheSize, String[] cities) {
 
-        Queue<Integer> progressQ = new LinkedList<>();
-        Queue<Integer> speedQ = new LinkedList<>();
-        List<Integer> cntList = new ArrayList<>();
+        List<String> list = new ArrayList<>(); // 가상의 메모리 공간
+        int answer = 0;                        // 실행 시간
 
-        for(int i = 0; i < progresses.length; i ++) {
-            progressQ.add(progresses[i]);
-            speedQ.add(speeds[i]);
-        }
+        // 저장 공간이 0일 경우 모든 케이스가 cache miss
+        if(cacheSize == 0) return cities.length * 5;
 
-        int cnt = 0;
-        while(progressQ.size() != 0) {
+        for(int i = 0; i < cities.length; i ++) {
+            String city = cities[i].toLowerCase();  // 대소문자 구분이 없으므로 도시명 통일
 
-            if(progressQ.peek() >= 100) {
-                progressQ.poll();
-                speedQ.poll();
-                cnt ++;
-                continue;
+            if(list.contains(city)) {   // cache hit
+                // 해당 요소를 삭제 후 다시 추가
+                for(int j = 0; j < list.size(); j ++) {
+                    if(list.get(j).equals(city)) {
+                        list.remove(j);
+                        list.add(city);
+                        answer += 1;
+                        break;
+                    }
+                }
+
+            } else {    // cache miss
+                // 저장 공간이 full일 경우 첫번째 요소 삭제 후 추가
+                if(list.size() >= cacheSize) list.remove(0);
+                list.add(city);
+                answer += 5;
             }
-
-            if(cnt > 0) {
-                cntList.add(cnt);
-                cnt = 0;
-            }
-
-            for (int i = 0; i < progressQ.size(); i++) {
-                int progress = progressQ.poll();
-                int speed = speedQ.poll();
-
-                progressQ.add(progress + speed);
-                speedQ.add(speed);
-            }
-
         }
-
-        if(cnt > 0) {
-            cntList.add(cnt);
-        }
-
-        int[] answer = cntList.stream().mapToInt(Integer::intValue).toArray();
 
         return answer;
     }
