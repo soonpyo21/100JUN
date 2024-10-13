@@ -1,69 +1,117 @@
-// 문제
-// 셀수있는 수량의 순서있는 열거 또는 어떤 순서를 따르는 요소들의 모음을 튜플(tuple)이라고 합니다.
-// n개의 요소를 가진 튜플을 n-튜플(n-tuple)이라고 하며, 다음과 같이 표현할 수 있습니다.
+// 문제 (백준-DFS와 BFS)
+// 그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하는 프로그램을 작성하시오.
+// 단, 방문할 수 있는 정점이 여러 개인 경우에는 정점 번호가 작은 것을 먼저 방문하고,
+// 더 이상 방문할 수 있는 점이 없는 경우 종료한다.
+// 정점 번호는 1번부터 N번까지이다.
 //
-// (a1, a2, a3, ..., an)
-// 튜플은 다음과 같은 성질을 가지고 있습니다.
+// 입력
+// 첫째 줄에 정점의 개수 N(1 ≤ N ≤ 1,000), 간선의 개수 M(1 ≤ M ≤ 10,000), 탐색을 시작할 정점의 번호 V가 주어진다.
+// 다음 M개의 줄에는 간선이 연결하는 두 정점의 번호가 주어진다. 어떤 두 정점 사이에 여러 개의 간선이 있을 수 있다.
+// 입력으로 주어지는 간선은 양방향이다.
 //
-// 중복된 원소가 있을 수 있습니다. ex : (2, 3, 1, 2)
-// 원소에 정해진 순서가 있으며, 원소의 순서가 다르면 서로 다른 튜플입니다. ex : (1, 2, 3) ≠ (1, 3, 2)
-// 튜플의 원소 개수는 유한합니다.
-// 원소의 개수가 n개이고, 중복되는 원소가 없는 튜플 (a1, a2, a3, ..., an)이 주어질 때(단, a1, a2, ..., an은 자연수),
-// 이는 다음과 같이 집합 기호 '{', '}'를 이용해 표현할 수 있습니다.
-//
-// {{a1}, {a1, a2}, {a1, a2, a3}, {a1, a2, a3, a4}, ... {a1, a2, a3, a4, ..., an}}
-// 예를 들어 튜플이 (2, 1, 3, 4)인 경우 이는
-// {{2}, {2, 1}, {2, 1, 3}, {2, 1, 3, 4}}
-// 와 같이 표현할 수 있습니다. 이때, 집합은 원소의 순서가 바뀌어도 상관없으므로
-//
-// {{2}, {2, 1}, {2, 1, 3}, {2, 1, 3, 4}}
-// {{2, 1, 3, 4}, {2}, {2, 1, 3}, {2, 1}}
-// {{1, 2, 3}, {2, 1}, {1, 2, 4, 3}, {2}}
-// 는 모두 같은 튜플 (2, 1, 3, 4)를 나타냅니다.
-//
-// 특정 튜플을 표현하는 집합이 담긴 문자열 s가 매개변수로 주어질 때,
-// s가 표현하는 튜플을 배열에 담아 return 하도록 solution 함수를 완성해주세요.
-//
-// 제한 조건
-// s의 길이는 5 이상 1,000,000 이하입니다.
-// s는 숫자와 '{', '}', ',' 로만 이루어져 있습니다.
-// 숫자가 0으로 시작하는 경우는 없습니다.
-// s는 항상 중복되는 원소가 없는 튜플을 올바르게 표현하고 있습니다.
-// s가 표현하는 튜플의 원소는 1 이상 100,000 이하인 자연수입니다.
-// return 하는 배열의 길이가 1 이상 500 이하인 경우만 입력으로 주어집니다.
+// 출력
+// 첫째 줄에 DFS를 수행한 결과를, 그 다음 줄에는 BFS를 수행한 결과를 출력한다. V부터 방문된 점을 순서대로 출력하면 된다.
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        String s = "{{2},{2,1},{2,1,3},{2,1,3,4}}";
-
-        solution(s);
+        solution();
     }
 
-    private static int[] solution(String s) {
-        String str = s.substring(2, s.length()-2);
-        String[] sArr = str.split("\\},\\{");
+    private static void solution() {
 
-        Arrays.sort(sArr, (a,b) -> a.length() - b.length());
+        Scanner sc = new Scanner(System.in);
 
-        List<Integer> list = new ArrayList<>();
-        list.add(Integer.parseInt(sArr[0]));
+        String[] str = sc.nextLine().split(" ");
+        int N = Integer.parseInt(str[0]);   // 정점의 개수
+        int M = Integer.parseInt(str[1]);   // 간선의 개수
+        int V = Integer.parseInt(str[2]);   // 탐색을 시작할 정점의 번호
 
-        for(int i = 1; i < sArr.length; i ++) {
-            String[] arr = sArr[i].split(",");
-            for(int j = 0; j < arr.length; j ++) {
-                if(!list.contains(Integer.parseInt(arr[j]))) {
-                    list.add(Integer.parseInt(arr[j]));
-                }
+        List<ArrayList<Integer>> list = new ArrayList<>();  // 간선을 입력받을 이차원 list
+        for(int i = 0; i <= N; i ++) {
+            // 정점의 개수만큼 기본값 입력
+            list.add(i, new ArrayList<>());
+        }
+
+        for(int i = 1; i <= M; i ++) {
+            String[] input = sc.nextLine().split(" ");
+            int s = Integer.parseInt(input[0]);
+            int e = Integer.parseInt(input[1]);
+
+            list.get(s).add(e);
+            list.get(e).add(s); // 양방향 입력 고려
+        }
+
+        // list 오름차순 정렬
+        for(int i = 1; i < list.size(); i ++) {
+            Collections.sort(list.get(i));
+        }
+
+        /* 현재까지 list 출력
+        for(int i = 0; i < list.size(); i ++) {
+            for(int j = 0; j < list.get(i).size(); j ++) {
+                System.out.print(list.get(i).get(j));
+            }
+            System.out.println();
+        }
+        */
+
+        boolean[] visit_dfs = new boolean[N+1];
+        List<Integer> answer_dfs = new ArrayList<>();
+        answer_dfs = dfs(list, visit_dfs, answer_dfs, V);
+
+        boolean[] visit_bfs = new boolean[N+1];
+        List<Integer> answer_bfs = new ArrayList<>();
+        answer_bfs = bfs(list, visit_bfs, answer_bfs, V);
+
+        for(int i = 0; i < answer_dfs.size(); i ++) {
+            System.out.print(answer_dfs.get(i));
+            if(i != answer_dfs.size()-1) System.out.print(" ");
+        }
+
+        System.out.println();
+
+        for(int i = 0; i < answer_bfs.size(); i ++) {
+            System.out.print(answer_bfs.get(i));
+            if(i != answer_bfs.size()-1) System.out.print(" ");
+        }
+    }
+
+    private static List<Integer> dfs(List<ArrayList<Integer>> list, boolean[] visit_dfs, List<Integer> answer_dfs, int V) {
+        answer_dfs.add(V);      // 방문 노드 추가
+        visit_dfs[V] = true;    // 방문 표시
+
+        for(int i = 0; i < list.get(V).size(); i ++) {
+            if(visit_dfs[list.get(V).get(i)] != true) { // 방문하지 않은 노드인 경우
+                dfs(list, visit_dfs, answer_dfs, list.get(V).get(i));
             }
         }
 
-        int[] answer = list.stream().mapToInt(Integer::intValue).toArray();
-
-        return answer;
+        return answer_dfs;
     }
+
+    private static List<Integer> bfs(List<ArrayList<Integer>> list, boolean[] visit_bfs, List<Integer> answer_bfs, int V) {
+        Queue<Integer> q = new LinkedList<>();
+
+        q.offer(V); // 큐에 초기데이터(들) 삽입
+        answer_bfs.add(V);
+        visit_bfs[V] = true;
+
+        while(q.size() != 0) {
+            int cur = q.poll();
+            for(int i = 0; i < list.get(cur).size(); i ++) {
+                if(visit_bfs[list.get(cur).get(i)] != true) {   // 방문하지 않은 노드 -> 큐 삽입
+                    q.offer(list.get(cur).get(i));
+                    answer_bfs.add(list.get(cur).get(i));
+                    visit_bfs[list.get(cur).get(i)] = true;
+                }
+            }
+
+        }
+
+        return answer_bfs;
+    }
+
 }
