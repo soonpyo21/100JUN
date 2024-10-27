@@ -1,20 +1,34 @@
-// 문제 (백준-DFS와 BFS)
-// 그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하는 프로그램을 작성하시오.
-// 단, 방문할 수 있는 정점이 여러 개인 경우에는 정점 번호가 작은 것을 먼저 방문하고,
-// 더 이상 방문할 수 있는 점이 없는 경우 종료한다.
-// 정점 번호는 1번부터 N번까지이다.
+// 문제 (백준-미로 탐색)
+// N×M크기의 배열로 표현되는 미로가 있다.
+//
+// 1	0	1	1	1	1
+// 1	0	1	0	1	0
+// 1	0	1	0	1	1
+// 1	1	1	0	1	1
+// 미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다.
+// 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오.
+// 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.
+//
+// 위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.
 //
 // 입력
-// 첫째 줄에 정점의 개수 N(1 ≤ N ≤ 1,000), 간선의 개수 M(1 ≤ M ≤ 10,000), 탐색을 시작할 정점의 번호 V가 주어진다.
-// 다음 M개의 줄에는 간선이 연결하는 두 정점의 번호가 주어진다. 어떤 두 정점 사이에 여러 개의 간선이 있을 수 있다.
-// 입력으로 주어지는 간선은 양방향이다.
+// 첫째 줄에 두 정수 N, M(2 ≤ N, M ≤ 100)이 주어진다. 다음 N개의 줄에는 M개의 정수로 미로가 주어진다.
+// 각각의 수들은 붙어서 입력으로 주어진다.
 //
 // 출력
-// 첫째 줄에 DFS를 수행한 결과를, 그 다음 줄에는 BFS를 수행한 결과를 출력한다. V부터 방문된 점을 순서대로 출력하면 된다.
+// 첫째 줄에 지나야 하는 최소의 칸 수를 출력한다. 항상 도착위치로 이동할 수 있는 경우만 입력으로 주어진다.
 
 import java.util.*;
+import java.awt.Point;
 
 public class Main {
+
+    // 이동할 네가지 방향 정의 (상, 하, 좌, 우)
+    public static int dx[] = {-1,1,0,0};
+    public static int dy[] = {0,0,-1,1};
+
+    public static int N,M;                                              // 입력값 N(행), M(열)
+    public static List<ArrayList<Integer>> list = new ArrayList<>();    // 미로를 표현할 2차원 list
 
     public static void main(String[] args) {
         solution();
@@ -25,93 +39,62 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         String[] str = sc.nextLine().split(" ");
-        int N = Integer.parseInt(str[0]);   // 정점의 개수
-        int M = Integer.parseInt(str[1]);   // 간선의 개수
-        int V = Integer.parseInt(str[2]);   // 탐색을 시작할 정점의 번호
+        N = Integer.parseInt(str[0]);
+        M = Integer.parseInt(str[1]);
 
-        List<ArrayList<Integer>> list = new ArrayList<>();  // 간선을 입력받을 이차원 list
-        for(int i = 0; i <= N; i ++) {
-            // 정점의 개수만큼 기본값 입력
+        // 행의 크기만큼 기본값 입력
+        for(int i = 0; i < N; i ++) {
             list.add(i, new ArrayList<>());
         }
 
-        for(int i = 1; i <= M; i ++) {
-            String[] input = sc.nextLine().split(" ");
-            int s = Integer.parseInt(input[0]);
-            int e = Integer.parseInt(input[1]);
-
-            list.get(s).add(e);
-            list.get(e).add(s); // 양방향 입력 고려
-        }
-
-        // list 오름차순 정렬
-        for(int i = 1; i < list.size(); i ++) {
-            Collections.sort(list.get(i));
-        }
-
-        /* 현재까지 list 출력
-        for(int i = 0; i < list.size(); i ++) {
-            for(int j = 0; j < list.get(i).size(); j ++) {
-                System.out.print(list.get(i).get(j));
-            }
-            System.out.println();
-        }
-        */
-
-        boolean[] visit_dfs = new boolean[N+1];
-        List<Integer> answer_dfs = new ArrayList<>();
-        answer_dfs = dfs(list, visit_dfs, answer_dfs, V);
-
-        boolean[] visit_bfs = new boolean[N+1];
-        List<Integer> answer_bfs = new ArrayList<>();
-        answer_bfs = bfs(list, visit_bfs, answer_bfs, V);
-
-        for(int i = 0; i < answer_dfs.size(); i ++) {
-            System.out.print(answer_dfs.get(i));
-            if(i != answer_dfs.size()-1) System.out.print(" ");
-        }
-
-        System.out.println();
-
-        for(int i = 0; i < answer_bfs.size(); i ++) {
-            System.out.print(answer_bfs.get(i));
-            if(i != answer_bfs.size()-1) System.out.print(" ");
-        }
-    }
-
-    private static List<Integer> dfs(List<ArrayList<Integer>> list, boolean[] visit_dfs, List<Integer> answer_dfs, int V) {
-        answer_dfs.add(V);      // 방문 노드 추가
-        visit_dfs[V] = true;    // 방문 표시
-
-        for(int i = 0; i < list.get(V).size(); i ++) {
-            if(visit_dfs[list.get(V).get(i)] != true) { // 방문하지 않은 노드인 경우
-                dfs(list, visit_dfs, answer_dfs, list.get(V).get(i));
+        // 미로를 list에 입력
+        for(int i = 0; i < N; i ++) {
+            String[] input = sc.nextLine().split("");
+            for(int j = 0; j < M; j ++) {
+                list.get(i).add(Integer.parseInt(input[j]));
             }
         }
 
-        return answer_dfs;
+        int answer = bfs(0,0);
+        System.out.println(answer);
     }
 
-    private static List<Integer> bfs(List<ArrayList<Integer>> list, boolean[] visit_bfs, List<Integer> answer_bfs, int V) {
-        Queue<Integer> q = new LinkedList<>();
+    private static int bfs(int x, int y) {
+        Queue<Point> q = new LinkedList<>();    // bfs 구현을 위해 Queue 자료형 사용
+        q.offer(new Point(x, y));               // 초기값 (0,0) 입력
 
-        q.offer(V); // 큐에 초기데이터(들) 삽입
-        answer_bfs.add(V);
-        visit_bfs[V] = true;
+        while(!q.isEmpty()) {
+            Point p = q.poll();
+            x = p.x;
+            y = p.y;
 
-        while(q.size() != 0) {
-            int cur = q.poll();
-            for(int i = 0; i < list.get(cur).size(); i ++) {
-                if(visit_bfs[list.get(cur).get(i)] != true) {   // 방문하지 않은 노드 -> 큐 삽입
-                    q.offer(list.get(cur).get(i));
-                    answer_bfs.add(list.get(cur).get(i));
-                    visit_bfs[list.get(cur).get(i)] = true;
+            if(x == N-1 && y == M-1) return list.get(x).get(y); // 현재 좌표가 최우측 하단일 경우 탐색하지 않고 return
+
+            // 현재 위치에서 4가지 방향으로 위치 이동 (상, 하, 좌, 우)
+            for(int i = 0; i < 4; i ++) {
+                int ni = x + dx[i];
+                int nj = y + dy[i];
+
+                if(ni < 0 || ni >= N || nj < 0 || nj >= M) continue;    // 현재 좌표가 정해진 미로의 공간을 벗어난 경우 무시
+                if(list.get(ni).get(nj) == 0) continue;                 // 통과할 수 없는 공간(0)인 경우 무시
+                if(list.get(ni).get(nj) == 1) {                         // 해당 노드를 처음 방문하는 경우 최단 거리 + 1 기록
+                    list.get(ni).set(nj, list.get(x).get(y) + 1);
+                    q.offer(new Point(ni, nj));
+
+                    /* 바뀐 미로 형태 확인
+                    for(int k = 0; k < N; k ++) {
+                        for(int l = 0; l < M; l ++) {
+                            System.out.print(list.get(k).get(l) + " ");
+                        }
+                        System.out.println();
+                    }
+                    System.out.println();
+                    */
                 }
             }
-
         }
-
-        return answer_bfs;
+        // 최우측 하단까지의 최단 거리 반환
+        return list.get(x).get(y);
     }
 
 }
