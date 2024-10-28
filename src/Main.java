@@ -1,100 +1,75 @@
-// 문제 (백준-미로 탐색)
-// N×M크기의 배열로 표현되는 미로가 있다.
-//
-// 1	0	1	1	1	1
-// 1	0	1	0	1	0
-// 1	0	1	0	1	1
-// 1	1	1	0	1	1
-// 미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다.
-// 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오.
-// 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.
-//
-// 위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.
+// 문제 (백준-바이러스)
+// 신종 바이러스인 웜 바이러스는 네트워크를 통해 전파된다. 한 컴퓨터가 웜 바이러스에 걸리면 그 컴퓨터와 네트워크 상에서 연결되어 있는 모든 컴퓨터는 웜 바이러스에 걸리게 된다.
+// 예를 들어 7대의 컴퓨터가 <그림 1>과 같이 네트워크 상에서 연결되어 있다고 하자.
+// 1번 컴퓨터가 웜 바이러스에 걸리면 웜 바이러스는 2번과 5번 컴퓨터를 거쳐 3번과 6번 컴퓨터까지 전파되어 2, 3, 5, 6 네 대의 컴퓨터는 웜 바이러스에 걸리게 된다.
+// 하지만 4번과 7번 컴퓨터는 1번 컴퓨터와 네트워크상에서 연결되어 있지 않기 때문에 영향을 받지 않는다.
+// 어느 날 1번 컴퓨터가 웜 바이러스에 걸렸다. 컴퓨터의 수와 네트워크 상에서 서로 연결되어 있는 정보가 주어질 때,
+// 1번 컴퓨터를 통해 웜 바이러스에 걸리게 되는 컴퓨터의 수를 출력하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄에 두 정수 N, M(2 ≤ N, M ≤ 100)이 주어진다. 다음 N개의 줄에는 M개의 정수로 미로가 주어진다.
-// 각각의 수들은 붙어서 입력으로 주어진다.
+// 첫째 줄에는 컴퓨터의 수가 주어진다. 컴퓨터의 수는 100 이하인 양의 정수이고 각 컴퓨터에는 1번 부터 차례대로 번호가 매겨진다.
+// 둘째 줄에는 네트워크 상에서 직접 연결되어 있는 컴퓨터 쌍의 수가 주어진다.
+// 이어서 그 수만큼 한 줄에 한 쌍씩 네트워크 상에서 직접 연결되어 있는 컴퓨터의 번호 쌍이 주어진다.
 //
 // 출력
-// 첫째 줄에 지나야 하는 최소의 칸 수를 출력한다. 항상 도착위치로 이동할 수 있는 경우만 입력으로 주어진다.
+// 1번 컴퓨터가 웜 바이러스에 걸렸을 때, 1번 컴퓨터를 통해 웜 바이러스에 걸리게 되는 컴퓨터의 수를 첫째 줄에 출력한다
 
 import java.util.*;
-import java.awt.Point;
 
 public class Main {
 
-    // 이동할 네가지 방향 정의 (상, 하, 좌, 우)
-    public static int dx[] = {-1,1,0,0};
-    public static int dy[] = {0,0,-1,1};
-
-    public static int N,M;                                              // 입력값 N(행), M(열)
-    public static List<ArrayList<Integer>> list = new ArrayList<>();    // 미로를 표현할 2차원 list
+    static int answer = 0;  // 1번 컴퓨터에 의해 감염된 컴퓨터의 수
 
     public static void main(String[] args) {
         solution();
     }
 
     private static void solution() {
-
         Scanner sc = new Scanner(System.in);
 
-        String[] str = sc.nextLine().split(" ");
-        N = Integer.parseInt(str[0]);
-        M = Integer.parseInt(str[1]);
+        int N = sc.nextInt();   // 컴퓨터의 총 갯수
+        int M = sc.nextInt();   // 연결된 컴퓨터의 간선 갯수
+        sc.nextLine();
 
-        // 행의 크기만큼 기본값 입력
-        for(int i = 0; i < N; i ++) {
+        List<ArrayList<Integer>> list = new ArrayList<>();  // 각 컴퓨터의 연결 정보를 담을 list
+        // 컴퓨터의 갯수만큼 list 초기화
+        for(int i = 0; i <= N; i ++) {
             list.add(i, new ArrayList<>());
         }
 
-        // 미로를 list에 입력
-        for(int i = 0; i < N; i ++) {
-            String[] input = sc.nextLine().split("");
-            for(int j = 0; j < M; j ++) {
-                list.get(i).add(Integer.parseInt(input[j]));
-            }
+        // 입력된 컴퓨터의 연결 정보 list에 저장
+        for(int i = 1; i <= M; i ++) {
+            String[] input = sc.nextLine().split(" ");
+            int s = Integer.parseInt(input[0]);
+            int e = Integer.parseInt(input[1]);
+
+            list.get(s).add(e);
+            list.get(e).add(s);
         }
 
-        int answer = bfs(0,0);
+        /* list 출력
+        for(int i = 0; i < list.size(); i ++) {
+            for(int j = 0; j < list.get(i).size(); j ++) {
+                System.out.print(list.get(i).get(j));
+            }
+            System.out.println();
+        }
+        */
+
+        boolean[] visit = new boolean[list.size()]; // 방문 여부를 표시할 배열
+        dfs(list, visit, 1);
         System.out.println(answer);
     }
 
-    private static int bfs(int x, int y) {
-        Queue<Point> q = new LinkedList<>();    // bfs 구현을 위해 Queue 자료형 사용
-        q.offer(new Point(x, y));               // 초기값 (0,0) 입력
+    private static void dfs(List<ArrayList<Integer>> list, boolean[] visit, int V) {
+        visit[V] = true;
 
-        while(!q.isEmpty()) {
-            Point p = q.poll();
-            x = p.x;
-            y = p.y;
-
-            if(x == N-1 && y == M-1) return list.get(x).get(y); // 현재 좌표가 최우측 하단일 경우 탐색하지 않고 return
-
-            // 현재 위치에서 4가지 방향으로 위치 이동 (상, 하, 좌, 우)
-            for(int i = 0; i < 4; i ++) {
-                int ni = x + dx[i];
-                int nj = y + dy[i];
-
-                if(ni < 0 || ni >= N || nj < 0 || nj >= M) continue;    // 현재 좌표가 정해진 미로의 공간을 벗어난 경우 무시
-                if(list.get(ni).get(nj) == 0) continue;                 // 통과할 수 없는 공간(0)인 경우 무시
-                if(list.get(ni).get(nj) == 1) {                         // 해당 노드를 처음 방문하는 경우 최단 거리 + 1 기록
-                    list.get(ni).set(nj, list.get(x).get(y) + 1);
-                    q.offer(new Point(ni, nj));
-
-                    /* 바뀐 미로 형태 확인
-                    for(int k = 0; k < N; k ++) {
-                        for(int l = 0; l < M; l ++) {
-                            System.out.print(list.get(k).get(l) + " ");
-                        }
-                        System.out.println();
-                    }
-                    System.out.println();
-                    */
-                }
+        for(int i = 0; i < list.get(V).size(); i ++) {
+            if(visit[list.get(V).get(i)] != true) { // 방문한 적 없는 노드라면 컴퓨터 카운팅 후 재탐색
+                answer ++;
+                dfs(list, visit, list.get(V).get(i));
             }
         }
-        // 최우측 하단까지의 최단 거리 반환
-        return list.get(x).get(y);
     }
 
 }
