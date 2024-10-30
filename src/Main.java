@@ -1,31 +1,31 @@
-// 문제 (단지번호붙이기)
-// <그림 1>과 같이 정사각형 모양의 지도가 있다.
-// 1은 집이 있는 곳을, 0은 집이 없는 곳을 나타낸다.
-// 철수는 이 지도를 가지고 연결된 집의 모임인 단지를 정의하고, 단지에 번호를 붙이려 한다.
-// 여기서 연결되었다는 것은 어떤 집이 좌우, 혹은 아래위로 다른 집이 있는 경우를 말한다. 대각선상에 집이 있는 경우는 연결된 것이 아니다.
-// <그림 2>는 <그림 1>을 단지별로 번호를 붙인 것이다.
-// 지도를 입력하여 단지수를 출력하고, 각 단지에 속하는 집의 수를 오름차순으로 정렬하여 출력하는 프로그램을 작성하시오.
+// 문제 (촌수계산)
+// 우리 나라는 가족 혹은 친척들 사이의 관계를 촌수라는 단위로 표현하는 독특한 문화를 가지고 있다.
+// 이러한 촌수는 다음과 같은 방식으로 계산된다.
+// 기본적으로 부모와 자식 사이를 1촌으로 정의하고 이로부터 사람들 간의 촌수를 계산한다.
+// 예를 들면 나와 아버지, 아버지와 할아버지는 각각 1촌으로 나와 할아버지는 2촌이 되고, 아버지 형제들과 할아버지는 1촌, 나와 아버지 형제들과는 3촌이 된다.
+//
+// 여러 사람들에 대한 부모 자식들 간의 관계가 주어졌을 때, 주어진 두 사람의 촌수를 계산하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫 번째 줄에는 지도의 크기 N(정사각형이므로 가로와 세로의 크기는 같으며 5≤N≤25)이 입력되고, 그 다음 N줄에는 각각 N개의 자료(0혹은 1)가 입력된다.
+// 사람들은 1, 2, 3, …, n (1 ≤ n ≤ 100)의 연속된 번호로 각각 표시된다.
+// 입력 파일의 첫째 줄에는 전체 사람의 수 n이 주어지고, 둘째 줄에는 촌수를 계산해야 하는 서로 다른 두 사람의 번호가 주어진다.
+// 그리고 셋째 줄에는 부모 자식들 간의 관계의 개수 m이 주어진다. 넷째 줄부터는 부모 자식간의 관계를 나타내는 두 번호 x,y가 각 줄에 나온다.
+// 이때 앞에 나오는 번호 x는 뒤에 나오는 정수 y의 부모 번호를 나타낸다.
+// 각 사람의 부모는 최대 한 명만 주어진다.
 //
 // 출력
-// 첫 번째 줄에는 총 단지수를 출력하시오. 그리고 각 단지내 집의 수를 오름차순으로 정렬하여 한 줄에 하나씩 출력하시오.
+// 입력에서 요구한 두 사람의 촌수를 나타내는 정수를 출력한다. 어떤 경우에는 두 사람의 친척 관계가 전혀 없어 촌수를 계산할 수 없을 때가 있다.
+// 이때에는 -1을 출력해야 한다.
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class Main {
 
-    private static int N;
-    private static List<ArrayList<Integer>> list = new ArrayList<>();
-    private static int[] dx = {-1,1,0,0};
-    private static int[] dy = {0,0,-1,1};
+    private static List<ArrayList<Integer>> list = new ArrayList<>();   // 촌수 관계를 담을 이차원 리스트
+    private static int N, start, end, M;                                // 각 입력값을 담을 변수
+    private static boolean relative = false;                            // start와 end의 촌수 관계 유무를 담을 변수
 
     public static void main(String[] args) {
         solution();
@@ -33,66 +33,70 @@ public class Main {
 
     private static void solution() {
 
+        // 입력값 받기
         Scanner sc = new Scanner(System.in);
 
         N = sc.nextInt();
         sc.nextLine();
+        String[] str = sc.nextLine().split(" ");
+        start = Integer.parseInt(str[0]);
+        end = Integer.parseInt(str[1]);
+        M = sc.nextInt();
+        sc.nextLine();
 
-        // 지도를 담을 list 세팅
-        for(int i = 0; i < N; i ++) {
+        // list에 총 인원 수 만큼 기본값 세팅
+        for(int i = 0; i <= N; i ++) {
             list.add(new ArrayList<>());
-            String[] arr = sc.nextLine().split("");
-
-            for(int j = 0; j < N; j ++) {
-                list.get(i).add(Integer.parseInt(arr[j]));
-            }
         }
 
-        int[][] visit = new int[N][N];            // 방문 여부를 표시할 배열
-        List<Integer> answer = new ArrayList<>(); // 결과를 담을 list
+        // 정의된 관계 수 만큼 list에 양방향으로 담는다.
+        for(int i = 0; i < M; i ++) {
+            String[] input = sc.nextLine().split(" ");
+            int x = Integer.parseInt(input[0]);
+            int y = Integer.parseInt(input[1]);
 
-        for(int i = 0; i < N; i ++) {
-            for(int j = 0; j < N; j ++) {
-                if(list.get(i).get(j) == 1 && visit[i][j] == 0) {
-                    answer.add(bfs(i, j, visit));
-                }
-            }
+            list.get(x).add(y);
+            list.get(y).add(x);
         }
 
-        Collections.sort(answer);
-        answer.add(0, answer.size());
+        /* list에 담긴 값 확인
+        for(int i = 0; i < list.size(); i ++) {
+            for(int j = 0; j < list.get(i).size(); j ++) {
+                System.out.print(list.get(i).get(j));
+            }
+            System.out.println();
+        }
+        */
 
-        for(int i : answer) System.out.println(i);
+        int[] visit = new int[N+1]; // 각 노드의 방문 여부 및 이동 거리를 담을 배열
+        dfs(visit, start);
+
+        int answer = relative ? visit[end] : -1;
+        System.out.println(answer);
+
     }
 
-    private static int bfs(int i, int j, int[][] visit) {
-        Queue<Point> q = new LinkedList<>();    // bfs 탐색을 위한 큐 생성
-        q.offer(new Point(i, j));               // 초기값 세팅
-        visit[i][j] = 1;                        // 방문 체크
-        int cnt = 1;                            // 탐색 중인 단지 안의 집 개수
+    private static void dfs(int[] visit, int V) {
 
-        while(!q.isEmpty()) {
-            Point p = q.poll();
-            int x = p.x;
-            int y = p.y;
+        visit[V]++; // 방문 처리 -> 이동 거리 1 증가
 
-            // 상, 하, 좌, 우 네방향 이동 체크
-            for(int k = 0; k < 4; k ++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
+        for(int i = 0; i < list.get(V).size(); i ++) {
 
-                if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;    // 지도를 벗어났다면 무시
-                if(list.get(nx).get(ny) == 0) continue;                 // 집이 없는 곳이라면 무시
+            if(relative) return;    // 종료 조건 : 촌수 관계를 찾았다면 탐색 종료
 
-                if(visit[nx][ny] == 0) {        // 방문하지 않은 집인 경우
-                    q.offer(new Point(nx,ny));
-                    visit[nx][ny] = 1;
-                    cnt ++;
+            if(visit[list.get(V).get(i)] == 0) {    // 방문한 적 없는 노드라면
+                visit[list.get(V).get(i)] = visit[V];   // 현재까지 이동한 거리를 담는다.
+
+                if(list.get(V).get(i) == end) {
+                    // 탐색 노드가 end와 같다면 관계 여부를 담고 종료 처리
+                    relative = true;
+                    return;
+                } else {
+                    // 탐색 노드가 end와 같지 않다면 다른 노드 이어서 탐색
+                    dfs(visit, list.get(V).get(i));
                 }
             }
         }
-
-        return cnt;
     }
 
 }
