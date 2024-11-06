@@ -1,31 +1,67 @@
-// 문제 (촌수계산)
-// 우리 나라는 가족 혹은 친척들 사이의 관계를 촌수라는 단위로 표현하는 독특한 문화를 가지고 있다.
-// 이러한 촌수는 다음과 같은 방식으로 계산된다.
-// 기본적으로 부모와 자식 사이를 1촌으로 정의하고 이로부터 사람들 간의 촌수를 계산한다.
-// 예를 들면 나와 아버지, 아버지와 할아버지는 각각 1촌으로 나와 할아버지는 2촌이 되고, 아버지 형제들과 할아버지는 1촌, 나와 아버지 형제들과는 3촌이 된다.
+// 문제 (토마토)
+// 철수의 토마토 농장에서는 토마토를 보관하는 큰 창고를 가지고 있다.
+// 토마토는 아래의 그림과 같이 격자모양 상자의 칸에 하나씩 넣은 다음, 상자들을 수직으로 쌓아 올려서 창고에 보관한다.
 //
-// 여러 사람들에 대한 부모 자식들 간의 관계가 주어졌을 때, 주어진 두 사람의 촌수를 계산하는 프로그램을 작성하시오.
+// 창고에 보관되는 토마토들 중에는 잘 익은 것도 있지만, 아직 익지 않은 토마토들도 있을 수 있다.
+// 보관 후 하루가 지나면, 익은 토마토들의 인접한 곳에 있는 익지 않은 토마토들은 익은 토마토의 영향을 받아 익게 된다.
+// 하나의 토마토에 인접한 곳은 위, 아래, 왼쪽, 오른쪽, 앞, 뒤 여섯 방향에 있는 토마토를 의미한다.
+// 대각선 방향에 있는 토마토들에게는 영향을 주지 못하며, 토마토가 혼자 저절로 익는 경우는 없다고 가정한다.
+// 철수는 창고에 보관된 토마토들이 며칠이 지나면 다 익게 되는지 그 최소 일수를 알고 싶어 한다.
+//
+// 토마토를 창고에 보관하는 격자모양의 상자들의 크기와 익은 토마토들과 익지 않은 토마토들의 정보가 주어졌을 때,
+// 며칠이 지나면 토마토들이 모두 익는지, 그 최소 일수를 구하는 프로그램을 작성하라. 단, 상자의 일부 칸에는 토마토가 들어있지 않을 수도 있다.
 //
 // 입력
-// 사람들은 1, 2, 3, …, n (1 ≤ n ≤ 100)의 연속된 번호로 각각 표시된다.
-// 입력 파일의 첫째 줄에는 전체 사람의 수 n이 주어지고, 둘째 줄에는 촌수를 계산해야 하는 서로 다른 두 사람의 번호가 주어진다.
-// 그리고 셋째 줄에는 부모 자식들 간의 관계의 개수 m이 주어진다. 넷째 줄부터는 부모 자식간의 관계를 나타내는 두 번호 x,y가 각 줄에 나온다.
-// 이때 앞에 나오는 번호 x는 뒤에 나오는 정수 y의 부모 번호를 나타낸다.
-// 각 사람의 부모는 최대 한 명만 주어진다.
+// 첫 줄에는 상자의 크기를 나타내는 두 정수 M,N과 쌓아올려지는 상자의 수를 나타내는 H가 주어진다.
+// M은 상자의 가로 칸의 수, N은 상자의 세로 칸의 수를 나타낸다. 단, 2 ≤ M ≤ 100, 2 ≤ N ≤ 100, 1 ≤ H ≤ 100 이다.
+// 둘째 줄부터는 가장 밑의 상자부터 가장 위의 상자까지에 저장된 토마토들의 정보가 주어진다.
+// 즉, 둘째 줄부터 N개의 줄에는 하나의 상자에 담긴 토마토의 정보가 주어진다.
+// 각 줄에는 상자 가로줄에 들어있는 토마토들의 상태가 M개의 정수로 주어진다.
+// 정수 1은 익은 토마토, 정수 0 은 익지 않은 토마토, 정수 -1은 토마토가 들어있지 않은 칸을 나타낸다. 이러한 N개의 줄이 H번 반복하여 주어진다.
+// 토마토가 하나 이상 있는 경우만 입력으로 주어진다.
 //
 // 출력
-// 입력에서 요구한 두 사람의 촌수를 나타내는 정수를 출력한다. 어떤 경우에는 두 사람의 친척 관계가 전혀 없어 촌수를 계산할 수 없을 때가 있다.
-// 이때에는 -1을 출력해야 한다.
+// 여러분은 토마토가 모두 익을 때까지 최소 며칠이 걸리는지를 계산해서 출력해야 한다.
+// 만약, 저장될 때부터 모든 토마토가 익어있는 상태이면 0을 출력해야 하고, 토마토가 모두 익지는 못하는 상황이면 -1을 출력해야 한다.
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
+
+// 세자리 좌표를 표현할 클래스 선언
+class Point3D {
+
+    private int w, x, y;
+
+    public Point3D(int w, int x, int y) {
+        this.w = w;
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getW() {
+        return w;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+}
 
 public class Main {
 
-    private static List<ArrayList<Integer>> list = new ArrayList<>();   // 촌수 관계를 담을 이차원 리스트
-    private static int N, start, end, M;                                // 각 입력값을 담을 변수
-    private static boolean relative = false;                            // start와 end의 촌수 관계 유무를 담을 변수
+    private static int N, M, H, cnt;
+    private static List<ArrayList<ArrayList<Integer>>> list = new ArrayList<>();
+
+    private static int[] dw = {1, -1, 0, 0, 0, 0};
+    private static int[] dx = {0, 0, 1, -1, 0, 0};
+    private static int[] dy = {0, 0, 0, 0, 1, -1};
 
     public static void main(String[] args) {
         solution();
@@ -33,70 +69,76 @@ public class Main {
 
     private static void solution() {
 
-        // 입력값 받기
         Scanner sc = new Scanner(System.in);
+        String[] input = sc.nextLine().split(" ");
+        N = Integer.parseInt(input[0]);
+        M = Integer.parseInt(input[1]);
+        H = Integer.parseInt(input[2]);
 
-        N = sc.nextInt();
-        sc.nextLine();
-        String[] str = sc.nextLine().split(" ");
-        start = Integer.parseInt(str[0]);
-        end = Integer.parseInt(str[1]);
-        M = sc.nextInt();
-        sc.nextLine();
+        // 입력값을 3차원 리스트에 추가
+        for(int i = 0; i < H; i ++) {
+            list.add(new ArrayList<ArrayList<Integer>>());
 
-        // list에 총 인원 수 만큼 기본값 세팅
-        for(int i = 0; i <= N; i ++) {
-            list.add(new ArrayList<>());
-        }
+            for(int j = 0; j < M; j ++) {
+                list.get(i).add(new ArrayList<Integer>());
+                String[] str = sc.nextLine().split(" ");
 
-        // 정의된 관계 수 만큼 list에 양방향으로 담는다.
-        for(int i = 0; i < M; i ++) {
-            String[] input = sc.nextLine().split(" ");
-            int x = Integer.parseInt(input[0]);
-            int y = Integer.parseInt(input[1]);
-
-            list.get(x).add(y);
-            list.get(y).add(x);
-        }
-
-        /* list에 담긴 값 확인
-        for(int i = 0; i < list.size(); i ++) {
-            for(int j = 0; j < list.get(i).size(); j ++) {
-                System.out.print(list.get(i).get(j));
-            }
-            System.out.println();
-        }
-        */
-
-        int[] visit = new int[N+1]; // 각 노드의 방문 여부 및 이동 거리를 담을 배열
-        dfs(visit, start);
-
-        int answer = relative ? visit[end] : -1;
-        System.out.println(answer);
-
-    }
-
-    private static void dfs(int[] visit, int V) {
-
-        visit[V]++; // 방문 처리 -> 이동 거리 1 증가
-
-        for(int i = 0; i < list.get(V).size(); i ++) {
-
-            if(relative) return;    // 종료 조건 : 촌수 관계를 찾았다면 탐색 종료
-
-            if(visit[list.get(V).get(i)] == 0) {    // 방문한 적 없는 노드라면
-                visit[list.get(V).get(i)] = visit[V];   // 현재까지 이동한 거리를 담는다.
-
-                if(list.get(V).get(i) == end) {
-                    // 탐색 노드가 end와 같다면 관계 여부를 담고 종료 처리
-                    relative = true;
-                    return;
-                } else {
-                    // 탐색 노드가 end와 같지 않다면 다른 노드 이어서 탐색
-                    dfs(visit, list.get(V).get(i));
+                for(int k = 0; k < N; k ++) {
+                    list.get(i).get(j).add(Integer.parseInt(str[k]));
+                    // 익지 않은 토마토의 개수 계산
+                    if(Integer.parseInt(str[k]) == 0) cnt ++;
                 }
             }
         }
+
+        int answer = cnt == 0 ? 0 : bfs();
+        System.out.println(answer);
     }
 
+    private static int bfs() {
+
+        Queue<Point3D> q = new LinkedList<>();
+        int[][][] visit = new int[H][M][N];
+
+        for(int i = 0; i < H; i ++) {
+            for(int j = 0; j < M; j ++) {
+                for(int k = 0; k < N; k ++) {
+                    if(list.get(i).get(j).get(k) == 1) {
+                        q.offer(new Point3D(i, j, k));
+                        visit[i][j][k] = 1;
+                    }
+                }
+            }
+        }
+
+        while(q.size() != 0) {
+            Point3D point3D = q.poll();
+            int w = point3D.getW();
+            int x = point3D.getX();
+            int y = point3D.getY();
+
+            // 이동 가능한 6가지 방향
+            for(int i = 0; i < 6; i ++) {
+                int nw = w + dw[i];
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                // 범위를 벗어난 경우 무시
+                if(nw < 0 || nw >= H || nx < 0 || nx >= M || ny < 0 || ny >= N) continue;
+                // 이동 위치가 벽인경우 무시
+                if(list.get(nw).get(nx).get(ny) == -1) continue;
+                // 이미 방문한 경우 무시
+                if(visit[nw][nx][ny] != 0) continue;
+
+                q.add(new Point3D(nw, nx, ny));
+                visit[nw][nx][ny] = visit[w][x][y] + 1;
+                cnt -= 1;    // 익지않은 토마토의 총계 -1 처리
+
+                if(cnt == 0) return visit[nw][nx][ny] - 1;    // 날짜를 1일부터 시작했으므로 -1 처리
+            }
+        }
+
+        // 마지막까지 큐를 조회한 경우 -1 반환
+        return -1;
+    }
 }
