@@ -1,72 +1,79 @@
-// 문제 (알파벳)
-// 세로 R칸, 가로C칸으로 된 표 모양의 보드가 있다. 보드의 각 칸에는 대문자 알파벳이 하나씩 적혀 있고, 좌측 상단 칸 (1행1열) 에는 말이 놓여 있다.
-// 말은 상하좌우로 인접한 네 칸 중의 한 칸으로 이동할 수 있는데, 새로 이동한 칸에 적혀 있는 알파벳은 지금까지 지나온 모든 칸에 적혀 있는 알파벳과는 달라야 한다.
-// 즉, 같은 알파벳이 적힌 칸을 두 번 지날 수 없다.
-// 좌측 상단에서 시작해서, 말이 최대한 몇 칸을 지날 수 있는지를 구하는 프로그램을 작성하시오. 말이 지나는 칸은 좌측 상단의 칸도 포함된다.
+// 문제 (스타트링크)
+// 강호는 코딩 교육을 하는 스타트업 스타트링크에 지원했다. 오늘은 강호의 면접날이다. 하지만, 늦잠을 잔 강호는 스타트링크가 있는 건물에 늦게 도착하고 말았다.
+// 스타트링크는 총 F층으로 이루어진 고층 건물에 사무실이 있고, 스타트링크가 있는 곳의 위치는 G층이다.
+// 강호가 지금 있는 곳은 S층이고, 이제 엘리베이터를 타고 G층으로 이동하려고 한다.
+// 보통 엘리베이터에는 어떤 층으로 이동할 수 있는 버튼이 있지만, 강호가 탄 엘리베이터는 버튼이 2개밖에 없다.
+// U버튼은 위로 U층을 가는 버튼, D버튼은 아래로 D층을 가는 버튼이다. (만약, U층 위, 또는 D층 아래에 해당하는 층이 없을 때는, 엘리베이터는 움직이지 않는다)
+// 강호가 G층에 도착하려면, 버튼을 적어도 몇 번 눌러야 하는지 구하는 프로그램을 작성하시오.
+// 만약, 엘리베이터를 이용해서 G층에 갈 수 없다면, "use the stairs"를 출력한다.
 //
 // 입력
-// 첫째 줄에 R과 C가 빈칸을 사이에 두고 주어진다. (1 ≤ R,C ≤ 20) 둘째 줄부터 R개의 줄에 걸쳐서 보드에 적혀 있는 C개의 대문자 알파벳들이 빈칸 없이 주어진다.
+// 첫째 줄에 F, S, G, U, D가 주어진다. (1 ≤ S, G ≤ F ≤ 1000000, 0 ≤ U, D ≤ 1000000) 건물은 1층부터 시작하고, 가장 높은 층은 F층이다.
 //
 // 출력
-// 첫째 줄에 말이 지날 수 있는 최대의 칸 수를 출력한다.
+// 첫째 줄에 강호가 S층에서 G층으로 가기 위해 눌러야 하는 버튼의 수의 최솟값을 출력한다. 만약, 엘리베이터로 이동할 수 없을 때는 "use the stairs"를 출력한다.
 
 import java.util.*;
 
 public class Main {
 
-    private static int R, C;                // 세로칸 수, 가로칸 수
-    private static int[] dx = {-1,1,0,0};   // 상,하 움직임 좌표
-    private static int[] dy = {0,0,-1,1};   // 좌,우 움직임 좌표
-    private static List<ArrayList<String>> list = new ArrayList<>();    // 알파벳을 담을 2차원 리스트
-    private static Set<String> set = new HashSet<>();   // 중복 여부를 체크할 set
-    private static int answer = 1;  // 최대 이동 거리
+    private static int F, S, G, U, D;
 
     public static void main(String[] args) {
         solution();
     }
 
     private static void solution() {
-
         Scanner sc = new Scanner(System.in);
 
         String[] input = sc.nextLine().split(" ");
-        R = Integer.parseInt(input[0]);
-        C = Integer.parseInt(input[1]);
+        F = Integer.parseInt(input[0]);
+        S = Integer.parseInt(input[1]);
+        G = Integer.parseInt(input[2]);
+        U = Integer.parseInt(input[3]);
+        D = Integer.parseInt(input[4]);
 
-        for(int i = 0; i < R; i ++) {
-            list.add(new ArrayList<>());
-            String[] arr = sc.nextLine().split("");
-            for(int j = 0; j < C; j ++) {
-                list.get(i).add(arr[j]);
+        int[] visit = new int[F+1];
+        int answer = bfs(visit);
+
+        if(S == G) {
+            System.out.println(0);
+        } else if(answer == 0) {
+            System.out.println("use the stairs");
+        } else {
+            System.out.println(answer);
+        }
+    }
+
+    private static int bfs(int[] visit) {
+
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(S);
+        visit[S] = 1;
+
+        while(!q.isEmpty()) {
+            int cur = q.poll();
+
+            int up = cur + U;
+            int down = cur - D;
+
+            if(up == G || down == G) {
+                visit[G] = visit[cur];
+                break;
+            }
+
+            if(up > 0 && up <= F && visit[up] == 0) {
+                q.offer(up);
+                visit[up] = visit[cur] + 1;
+            }
+
+            if(down > 0 && down <= F && visit[down] == 0) {
+                q.offer(down);
+                visit[down] = visit[cur] + 1;
             }
         }
 
-        int[][] visit = new int[R][C];  // 이동 거리를 체크할 이차원 배열
-        visit[0][0] = 1;                // 시작점 거리 세팅
-        set.add(list.get(0).get(0));    // 시작점 중복 여부 세팅
-        dfs(0,0, visit);
-
-        System.out.println(answer);
-    }
-
-    private static void dfs(int x, int y, int[][] visit) {
-
-        answer = Math.max(answer, visit[x][y]); // 이동 거리에 최대값 세팅
-
-        for(int i = 0; i < 4; i ++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-
-            // 범위 바깥으로 이동했다면 continue
-            if(nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
-            // set에 이미 포함된 요소라면 continue
-            if(set.contains(list.get(nx).get(ny))) continue;
-
-            set.add(list.get(nx).get(ny));      // 중복값 세팅
-            visit[nx][ny] = visit[x][y] + 1;    // 이동거리 1 증가
-            dfs(nx, ny, visit);                 // 재귀 호출
-            set.remove(list.get(nx).get(ny));   // 다른 방향으로 다시 이동할 경우를 대비하여 중복 세팅 해제
-        }
+        return visit[G];
     }
 
 }
