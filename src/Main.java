@@ -1,57 +1,31 @@
-// 문제 (안전 영역)
-// 재난방재청에서는 많은 비가 내리는 장마철에 대비해서 다음과 같은 일을 계획하고 있다. 먼저 어떤 지역의 높이 정보를 파악한다.
-// 그 다음에 그 지역에 많은 비가 내렸을 때 물에 잠기지 않는 안전한 영역이 최대로 몇 개가 만들어 지는 지를 조사하려고 한다.
-// 이때, 문제를 간단하게 하기 위하여, 장마철에 내리는 비의 양에 따라 일정한 높이 이하의 모든 지점은 물에 잠긴다고 가정한다.
+// 문제 (맥주 마시면서 걸어가기)
+// 송도에 사는 상근이와 친구들은 송도에서 열리는 펜타포트 락 페스티벌에 가려고 한다. 올해는 맥주를 마시면서 걸어가기로 했다.
+// 출발은 상근이네 집에서 하고, 맥주 한 박스를 들고 출발한다. 맥주 한 박스에는 맥주가 20개 들어있다. 목이 마르면 안되기 때문에 50미터에 한 병씩 마시려고 한다.
+// 즉, 50미터를 가려면 그 직전에 맥주 한 병을 마셔야 한다.
 //
-// 어떤 지역의 높이 정보는 행과 열의 크기가 각각 N인 2차원 배열 형태로 주어지며 배열의 각 원소는 해당 지점의 높이를 표시하는 자연수이다.
-// 예를 들어, 다음은 N=5인 지역의 높이 정보이다.
+// 상근이의 집에서 페스티벌이 열리는 곳은 매우 먼 거리이다. 따라서, 맥주를 더 구매해야 할 수도 있다. 미리 인터넷으로 조사를 해보니 다행히도 맥주를 파는 편의점이 있다.
+// 편의점에 들렸을 때, 빈 병은 버리고 새 맥주 병을 살 수 있다.
+// 하지만, 박스에 들어있는 맥주는 20병을 넘을 수 없다. 편의점을 나선 직후에도 50미터를 가기 전에 맥주 한 병을 마셔야 한다.
 //
-// 6	8	2	6	2
-// 3	2	3	4	6
-// 6	7	3	3	2
-// 7	2	5	3	6
-// 8	9	5	2	7
-// 이제 위와 같은 지역에 많은 비가 내려서 높이가 4 이하인 모든 지점이 물에 잠겼다고 하자. 이 경우에 물에 잠기는 지점을 회색으로 표시하면 다음과 같다.
-//
-// 6	8	2	6	2
-// 3	2	3	4	6
-// 6	7	3	3	2
-// 7	2	5	3	6
-// 8	9	5	2	7
-// 물에 잠기지 않는 안전한 영역이라 함은 물에 잠기지 않는 지점들이 위, 아래, 오른쪽 혹은 왼쪽으로 인접해 있으며 그 크기가 최대인 영역을 말한다.
-// 위의 경우에서 물에 잠기지 않는 안전한 영역은 5개가 된다(꼭짓점으로만 붙어 있는 두 지점은 인접하지 않는다고 취급한다).
-//
-// 또한 위와 같은 지역에서 높이가 6이하인 지점을 모두 잠기게 만드는 많은 비가 내리면 물에 잠기지 않는 안전한 영역은 아래 그림에서와 같이 네 개가 됨을 확인할 수 있다.
-//
-// 6	8	2	6	2
-// 3	2	3	4	6
-// 6	7	3	3	2
-// 7	2	5	3	6
-// 8	9	5	2	7
-// 이와 같이 장마철에 내리는 비의 양에 따라서 물에 잠기지 않는 안전한 영역의 개수는 다르게 된다.
-// 위의 예와 같은 지역에서 내리는 비의 양에 따른 모든 경우를 다 조사해 보면 물에 잠기지 않는 안전한 영역의 개수 중에서 최대인 경우는 5임을 알 수 있다.
-//
-// 어떤 지역의 높이 정보가 주어졌을 때, 장마철에 물에 잠기지 않는 안전한 영역의 최대 개수를 계산하는 프로그램을 작성하시오.
+// 편의점, 상근이네 집, 펜타포트 락 페스티벌의 좌표가 주어진다. 상근이와 친구들이 행복하게 페스티벌에 도착할 수 있는지 구하는 프로그램을 작성하시오.
 //
 // 입력
-// 첫째 줄에는 어떤 지역을 나타내는 2차원 배열의 행과 열의 개수를 나타내는 수 N이 입력된다. N은 2 이상 100 이하의 정수이다.
-// 둘째 줄부터 N개의 각 줄에는 2차원 배열의 첫 번째 행부터 N번째 행까지 순서대로 한 행씩 높이 정보가 입력된다.
-// 각 줄에는 각 행의 첫 번째 열부터 N번째 열까지 N개의 높이 정보를 나타내는 자연수가 빈 칸을 사이에 두고 입력된다. 높이는 1이상 100 이하의 정수이다.
+// 첫째 줄에 테스트 케이스의 개수 t가 주어진다. (t ≤ 50)
+// 각 테스트 케이스의 첫째 줄에는 맥주를 파는 편의점의 개수 n이 주어진다. (0 ≤ n ≤ 100).
+// 다음 n+2개 줄에는 상근이네 집, 편의점, 펜타포트 락 페스티벌 좌표가 주어진다. 각 좌표는 두 정수 x와 y로 이루어져 있다. (두 값 모두 미터, -32768 ≤ x, y ≤ 32767)
+// 송도는 직사각형 모양으로 생긴 도시이다. 두 좌표 사이의 거리는 x 좌표의 차이 + y 좌표의 차이 이다. (맨해튼 거리)
 //
 // 출력
-// 첫째 줄에 장마철에 물에 잠기지 않는 안전한 영역의 최대 개수를 출력한다.
+// 각 테스트 케이스에 대해서 상근이와 친구들이 행복하게 페스티벌에 갈 수 있으면 "happy", 중간에 맥주가 바닥나서 더 이동할 수 없으면 "sad"를 출력한다.
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Main {
 
-    private static int N;
+    private static int t, n, x, y, tx, ty;
     private static List<ArrayList<Integer>> list = new ArrayList<>();
-    private static int[] dx = {1,-1,0,0};
-    private static int[] dy = {0,0,-1,1};
-    private static int answer = 0;
-    private static int max = 0;
-    private static int min = 101;
 
     public static void main(String[] args) {
         solution();
@@ -60,54 +34,64 @@ public class Main {
     private static void solution() {
         Scanner sc = new Scanner(System.in);
 
-        N = sc.nextInt();
-        sc.nextLine();
+        t = sc.nextInt();
+        for(int i = 0; i < t; i ++) {
+            n = sc.nextInt();
+            sc.nextLine();
 
-        for(int i = 0; i < N; i ++) {
-            list.add(new ArrayList<>());
-            String[] input = sc.nextLine().split(" ");
+            String[] startPoint = sc.nextLine().split(" ");
+            x = Integer.parseInt(startPoint[0]);
+            y = Integer.parseInt(startPoint[1]);
 
-            for(int j = 0; j < N; j ++) {
-                list.get(i).add(Integer.parseInt(input[j]));
-                max = Math.max(max, list.get(i).get(j));
-                min = Math.min(min, list.get(i).get(j));
+            list.clear();
+            for(int j = 0; j < n; j ++) {
+                String[] storePoint = sc.nextLine().split(" ");
+                list.add(new ArrayList<>());
+                list.get(j).add(Integer.parseInt(storePoint[0]));
+                list.get(j).add(Integer.parseInt(storePoint[1]));
             }
-        }
 
-        if(min == max) {
-            System.out.println(1);
-            return;
-        }
+            String[] endPoint = sc.nextLine().split(" ");
+            tx = Integer.parseInt(endPoint[0]);
+            ty = Integer.parseInt(endPoint[1]);
 
-        for(int k = min; k <= max; k ++) {
-            boolean[][] visit = new boolean[N+1][N+1];
-            int cnt = 0;
-            for(int i = 0; i < N; i ++) {
-                for(int j = 0; j < N; j ++) {
-                    if(list.get(i).get(j) > k && !visit[i][j]) {
-                        dfs(i,j,k,visit);
-                        cnt ++;
-                    }
-                }
-            }
-            answer = Math.max(answer, cnt);
+            boolean[] visit = new boolean[n];
+            bfs(x, y, visit);
         }
-
-        System.out.println(answer);
     }
 
-    private static void dfs(int x, int y, int h, boolean[][] visit) {
+    private static void bfs(int x, int y,  boolean[] visit) {
 
-        visit[x][y] = true;
-        for(int k = 0; k < 4; k ++) {
-            int nx = x + dx[k];
-            int ny = y + dy[k];
+        Queue<Point> q = new LinkedList<>();
+        q.add(new Point(x,y));
 
-            if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-            if(list.get(nx).get(ny) <= h) continue;
-            if(visit[nx][ny] == true) continue;
-            dfs(nx, ny, h, visit);
+        while(!q.isEmpty()) {
+
+            Point point = q.poll();
+            int px = point.x;
+            int py = point.y;
+
+            // 도착지 체크
+            if(Math.abs(tx - px) + Math.abs(ty - py) <= 1000) {
+                System.out.println("happy");
+                return;
+            }
+
+            for(int i = 0; i < list.size(); i ++) {
+                int nx = list.get(i).get(0);
+                int ny = list.get(i).get(1);
+
+                // 범위 체크
+                if(Math.abs(px - nx) + Math.abs(py - ny) > 1000) continue;
+                // 방문 체크
+                if(visit[i] == true) continue;
+
+                q.add(new Point(nx, ny));
+                visit[i] = true;
+            }
         }
+
+        System.out.println("sad");
     }
 
 }
